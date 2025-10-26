@@ -82,7 +82,7 @@ void setup()
 
     drv_7seg_2x595.init_bb(0, 0, 
                            DATA_PIN, LATCH_PIN, CLOCK_PIN,
-                           5
+                           5, 1
                           );
 }
 
@@ -138,7 +138,8 @@ void loop()
     }
 
     // Output a glyph on the display.
-    drv_7seg_2x595.output(byte_to_shift, 1, 500);
+    drv_7seg_2x595.output(byte_to_shift, 1);
+    drv_7seg_2x595.output(byte_to_shift, 2);
 
 
     /*--- Counter and output trigger, continued ---*/

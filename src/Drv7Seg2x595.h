@@ -145,7 +145,7 @@ class Drv7Seg2x595 {
          * Returns: zero if a driver setup was successful, negative integer otherwise
          * (see the preprocessor macros list for possible values).
          */
-        int32_t output(uint8_t seg_byte, uint32_t pos, uint32_t ghosting_prevention_delay = 2);
+        int32_t output(uint8_t seg_byte, uint32_t pos, uint32_t ghosting_prevention_delay = 2000);
 
     private:
         /*--- Variables ---*/
