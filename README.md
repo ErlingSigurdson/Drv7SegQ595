@@ -9,8 +9,7 @@ Typically, 7-segment displays come in models with 1, 2, 3 or 4 digits (character
 for any given model equals 8 + number of digits, thus 12 pins is the maximum. Driving a display requires a number
 of individual signals equal to the number of input pins:
 * 8 signals to turn ON and OFF individual segments (including a dot segment).
-* 1 to 4 signals to turn ON and OFF whole digits (although for a single-digit display there's usually no need
-for a switchable signal and its common pin is typically connected to GND or VCC directly).
+* 1 to 4 signals to turn ON and OFF whole digits.
 
 Due to significant number of output signals required for driving a 7-segment display, output-extending devices,
 such as output shift registers, are commonly used.
@@ -31,14 +30,14 @@ The library API allows for any order of `seg_byte` and `pos_byte` placement with
 any of these bytes may be either upper or lower byte. 
 
 `pos_byte` bits switch active character positions by electrically connecting and disconnecting the display's
-common pin to a ground (for a common cathode) or to a positive rail (for a common anode). Usually it is done
-via a switching device (most commonly a transistor), since 595's ability to source/sink current itself
-for a whole set of 7 LEDs gets close to exceeds its electrical limitations.
+common pin to a ground (GND, for a common cathode) or to a positive rail (VCC, for a common anode). Usually
+it is done via a switching device (most commonly a transistor), since 595's ability to source/sink current
+itself for a whole set of 7 LEDs gets close to exceeds its electrical limitations.
 
 Here's a typical circuit diagram for the described arrangement (assumes a common cathode display):
 ![Circuit diagram (schematic)](assets/circuit_diagram_(schematic).png)
 
-Wiring for a common anode display is almost identical, the only difference being that the transistors' emitters
+Wiring for a common-anode display is almost identical, the only difference being that the transistors' emitters
 should connect to the display's common pins and their collectors should connect to the circuit's positive rail (VCC).
 
 The wiring in your circuit **may** differ from the schematic provided in this README, and the library will still
@@ -47,6 +46,16 @@ be applicable. The only premise that must be followed is the distinction of `seg
 ## Multiplexing
 
 Multiplexing is
+
+## Single-digit displays
+
+With a single-digit display there's usually no purpose in a switchable signal that turns the only digit ON and OFF
+wholly. Instead, the common pin would go directly to GND (for common cathode) or VCC (for common anode). With such
+configuration using daisy-chained 595s would be commonly regarded as redundant. However, the library still supports
+driving a single-digit display. This assumes that one of `pos_byte` bits controls the only available digit.
+
+
+for a switchable signal and its common pin is typically connected to GND or VCC directly)
 
 
 In this configuration first IC (first 8 bits) can be used to
