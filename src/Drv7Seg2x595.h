@@ -117,13 +117,13 @@ class Drv7Seg2x595 {
         // TODO: comment about reinit
 
         // Set a driver object to use bit-banging.
-        int32_t init_bb(int32_t  byte_order, int32_t display_common_pin,
+        int32_t init_bb(int32_t  byte_order, int32_t display_common_pin, int32_t switch_polarity,
                         uint32_t data_pin, uint32_t latch_pin, uint32_t clock_pin,
                         uint32_t pos_bit_1 = 0, uint32_t pos_bit_2 = 0, uint32_t pos_bit_3 = 0, uint32_t pos_bit_4 = 0
                        );
 
         // Set a driver object to use default SPI pins.
-        int32_t init_spi(int32_t  byte_order, int32_t display_common_pin,
+        int32_t init_spi(int32_t  byte_order, int32_t display_common_pin, int32_t switch_polarity,
                          uint32_t latch_pin,
                          uint32_t pos_bit_1 = 0, uint32_t pos_bit_2 = 0, uint32_t pos_bit_3 = 0, uint32_t pos_bit_4 = 0
                         );
@@ -134,7 +134,7 @@ class Drv7Seg2x595 {
          * expose the SPI.begin() version that takes custom pins.
          */
         #if defined(ARDUINO_ARCH_ESP32) || defined(ARDUINO_ARCH_STM32)
-        int32_t init_spi_custom(int32_t  byte_order, int32_t display_common_pin,
+        int32_t init_spi_custom(int32_t  byte_order, int32_t display_common_pin, int32_t switch_polarity,
                                 uint32_t mosi_pin, uint32_t latch_pin, uint32_t sck_pin,
                                 uint32_t pos_bit_1 = 0, uint32_t pos_bit_2 = 0, uint32_t pos_bit_3 = 0, uint32_t pos_bit_4 = 0
                                );
