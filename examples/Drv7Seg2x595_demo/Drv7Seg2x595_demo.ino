@@ -17,7 +17,7 @@
 #include <Drv7Seg2x595.h>
 
 
-/*--- Library API parameters ---*/
+/*--- SegMap595 library API parameters ---*/
 
 /* Specify the relevant string according to the actual
  * (physical) order of connections in your circuit.
@@ -103,32 +103,15 @@ void loop()
     }
 
     // Output trigger.
-    static bool output_due = true;
+    static bool update_due = true;
 
 
     /*--- Demo output ---*/
 
-    static uint8_t byte_to_shift = 0x00;
-    if (output_due) {
+    static uint8_t byte_to_shift = DRV7SEG2X595_BLANK_GLYPH;
+
+    if (update_due) {
         byte_to_shift = SegMap595.get_mapped_byte(counter);
-
-        // Print mapping information via UART.
-        Serial.print("Based on map string ");
-        Serial.print(SegMap595.get_map_str());
-
-        char represented_char = SegMap595.get_represented_char(counter);
-        if (represented_char == '*') {        /* An asterisk represents a degree symbol because
-                                               * the actual degree symbol isn't listed in ASCII.
-                                               */
-            Serial.print(" degree symbol ");
-        } else {
-            Serial.print(" character '");
-            Serial.print(represented_char);
-            Serial.print("' ");
-        }
-
-        Serial.print("corresponds to mapped byte ");
-        Serial.println(SegMap595.get_byte_bin_notation_as_str(byte_to_shift));
 
         // Dot segment blink.
         if (counter % 2) {
@@ -137,7 +120,7 @@ void loop()
             byte_to_shift ^= mask;
         }
 
-        output_due = false;
+        update_due = false;
     }
 
     // Output a glyph on the display.
@@ -149,7 +132,7 @@ void loop()
 
     if (current_millis - previous_millis >= INTERVAL) {
         ++counter;
-        output_due = true;
+        update_due = true;
         previous_millis = current_millis;
     }
 }
