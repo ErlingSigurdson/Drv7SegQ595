@@ -36,9 +36,9 @@ Drv7Seg2x595::Drv7Seg2x595() {}
 
 /*--- Misc functions ---*/
 
-int32_t Drv7Seg2x595::init_bb(int32_t  byte_order, int32_t display_common_pin,
-                              uint32_t data_pin, uint32_t latch_pin, uint32_t clock_pin,
-                              uint32_t pos_bit_1, uint32_t pos_bit_2, uint32_t pos_bit_3, uint32_t pos_bit_4
+int32_t Drv7Seg2x595::init_bb(int32_t byte_order, int32_t display_common_pin, int32_t switch_polarity,
+                              int32_t data_pin, int32_t latch_pin, int32_t clock_pin,
+                              int32_t pos_bit_1, int32_t pos_bit_2, int32_t pos_bit_3, int32_t pos_bit_4
                              )
 {
     _variant = DRV7SEG2X595_VARIANT_BIT_BANGING;
@@ -49,7 +49,7 @@ int32_t Drv7Seg2x595::init_bb(int32_t  byte_order, int32_t display_common_pin,
 
     /*--- Bit-banging pins ---*/
     
-    if (data_pin == 0 || latch_pin == 0 || clock_pin == 0) {
+    if (data_pin < 0 || latch_pin < 0 || clock_pin < 0) {
         return _status = DRV7SEG2X595_STATUS_ERR_SIG_PINS;
     } else {
         _data_pin =  data_pin;
@@ -64,7 +64,7 @@ int32_t Drv7Seg2x595::init_bb(int32_t  byte_order, int32_t display_common_pin,
 
     /*--- Character position bits ---*/
 
-    if (pos_bit_1 == 0 && pos_bit_2 == 0 && pos_bit_3 == 0 && pos_bit_4 == 0) {
+    if (pos_bit_1 < 0 && pos_bit_2 < 0 && pos_bit_3 < 0 && pos_bit_4 < 0) {
         return _status = DRV7SEG2X595_STATUS_ERR_POS_BITS;
     } else {
         _pos_bit_1 = pos_bit_1;

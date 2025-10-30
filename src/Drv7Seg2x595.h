@@ -58,6 +58,7 @@
  *           TODO up to 4 digits (positions)
  *           TODO what if not first digit on a physical display?
  *           TODO API method for status check?
+ *           TODO delay() --> millis()-based timer.
  */
 
 
@@ -78,7 +79,7 @@
 
 #define DRV7SEG2X595_MAX_POS              4
 
-#define DRV7SEG2X595_ALL_BITS_SET_MASK    0xFF
+#define DRV7SEG2X595_ALL_BITS_SET_MASK    0xFF  // TODO: is it used?
 #define DRV7SEG2X595_BLANK_GLYPH          0x00
 
 #define DRV7SEG2X595_POS_BYTE_FIRST       0
@@ -103,8 +104,6 @@
 #define DRV7SEG2X595_ERR_VARIANT_NOT_SET -5
 
 
-
-
 /****************** DATA TYPES ******************/
 
 class Drv7Seg2x595 {
@@ -118,14 +117,14 @@ class Drv7Seg2x595 {
 
         // Set a driver object to use bit-banging.
         int32_t init_bb(int32_t  byte_order, int32_t display_common_pin, int32_t switch_polarity,
-                        uint32_t data_pin, uint32_t latch_pin, uint32_t clock_pin,
-                        uint32_t pos_bit_1 = 0, uint32_t pos_bit_2 = 0, uint32_t pos_bit_3 = 0, uint32_t pos_bit_4 = 0
+                        int32_t data_pin, int32_t latch_pin, int32_t clock_pin,
+                        int32_t pos_bit_1 = -1, int32_t pos_bit_2 = -1, int32_t pos_bit_3 = -1, int32_t pos_bit_4 = -1
                        );
 
         // Set a driver object to use default SPI pins.
         int32_t init_spi(int32_t  byte_order, int32_t display_common_pin, int32_t switch_polarity,
-                         uint32_t latch_pin,
-                         uint32_t pos_bit_1 = 0, uint32_t pos_bit_2 = 0, uint32_t pos_bit_3 = 0, uint32_t pos_bit_4 = 0
+                         int32_t latch_pin,
+                         int32_t pos_bit_1 = -1, int32_t pos_bit_2 = -1, int32_t pos_bit_3 = -1, int32_t pos_bit_4 = -1
                         );
 
         /* Set a driver object to use custom-assigned SPI pins.
@@ -134,9 +133,9 @@ class Drv7Seg2x595 {
          * expose the SPI.begin() version that takes custom pins.
          */
         #if defined(ARDUINO_ARCH_ESP32) || defined(ARDUINO_ARCH_STM32)
-        int32_t init_spi_custom(int32_t  byte_order, int32_t display_common_pin, int32_t switch_polarity,
-                                uint32_t mosi_pin, uint32_t latch_pin, uint32_t sck_pin,
-                                uint32_t pos_bit_1 = 0, uint32_t pos_bit_2 = 0, uint32_t pos_bit_3 = 0, uint32_t pos_bit_4 = 0
+        int32_t init_spi_custom(int32_t byte_order, int32_t display_common_pin, int32_t switch_polarity,
+                                int32_t mosi_pin, int32_t latch_pin, int32_t sck_pin,
+                                int32_t pos_bit_1 = -1, int32_t pos_bit_2 = -1, int32_t pos_bit_3 = -1, int32_t pos_bit_4 = -1
                                );
         #endif
 
@@ -150,25 +149,27 @@ class Drv7Seg2x595 {
     private:
         /*--- Variables ---*/
 
-        int32_t  _status;
+        int32_t  _status = DRV7SEG2X595_STATUS_INITIAL;
         int32_t  _variant = DRV7SEG2X595_STATUS_INITIAL;
 
         int32_t  _byte_order;
         int32_t  _display_common_pin;
 
-        uint32_t _latch_pin;
+        int32_t _latch_pin = -1;
         
-        uint32_t _data_pin;
-        uint32_t _clock_pin;
+        int32_t _data_pin  = -1;
+        int32_t _clock_pin = -1;
 
-        uint32_t _mosi_pin;
-        uint32_t _sck_pin;
+        int32_t _mosi_pin  = -1;
+        int32_t _sck_pin   = -1;
 
-        uint32_t _pos_bit_1 = 0;
-        uint32_t _pos_bit_2 = 0;
-        uint32_t _pos_bit_3 = 0;
-        uint32_t _pos_bit_4 = 0;
-        uint8_t  _pos_byte = 0x00;
+        // Default values are specified in init() declaration to provide for omittability.
+        int32_t _pos_bit_1;
+        int32_t _pos_bit_2;
+        int32_t _pos_bit_3;
+        int32_t _pos_bit_4;
+        
+        uint8_t _pos_byte = 0x00;
 
         /* A duration (in milliseconds) of a tiny pause that prevents the so-called
          * "ghosting" of characters being output to a multiplexed 7-segment display.
