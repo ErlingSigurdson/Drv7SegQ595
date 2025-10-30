@@ -45,6 +45,7 @@ int32_t Drv7Seg2x595::init_bb(int32_t byte_order, int32_t display_common_pin, in
 
     _byte_order = byte_order;
     _display_common_pin = display_common_pin;
+    _switch_polarity = switch_polarity.
 
 
     /*--- Bit-banging pins ---*/
@@ -73,7 +74,7 @@ int32_t Drv7Seg2x595::init_bb(int32_t byte_order, int32_t display_common_pin, in
         _pos_bit_4 = pos_bit_4;
     }
 
-    return DRV7SEG2X595_STATUS_OK;
+    return _status = DRV7SEG2X595_STATUS_OK;
 }
 
 /*

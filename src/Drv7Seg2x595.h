@@ -118,13 +118,13 @@ class Drv7Seg2x595 {
         // Set a driver object to use bit-banging.
         int32_t init_bb(int32_t  byte_order, int32_t display_common_pin, int32_t switch_polarity,
                         int32_t data_pin, int32_t latch_pin, int32_t clock_pin,
-                        int32_t pos_bit_1 = -1, int32_t pos_bit_2 = -1, int32_t pos_bit_3 = -1, int32_t pos_bit_4 = -1
+                        int32_t pos_bit_1, int32_t pos_bit_2 = -1, int32_t pos_bit_3 = -1, int32_t pos_bit_4 = -1
                        );
 
         // Set a driver object to use default SPI pins.
         int32_t init_spi(int32_t  byte_order, int32_t display_common_pin, int32_t switch_polarity,
                          int32_t latch_pin,
-                         int32_t pos_bit_1 = -1, int32_t pos_bit_2 = -1, int32_t pos_bit_3 = -1, int32_t pos_bit_4 = -1
+                         int32_t pos_bit_1, int32_t pos_bit_2 = -1, int32_t pos_bit_3 = -1, int32_t pos_bit_4 = -1
                         );
 
         /* Set a driver object to use custom-assigned SPI pins.
@@ -135,7 +135,7 @@ class Drv7Seg2x595 {
         #if defined(ARDUINO_ARCH_ESP32) || defined(ARDUINO_ARCH_STM32)
         int32_t init_spi_custom(int32_t byte_order, int32_t display_common_pin, int32_t switch_polarity,
                                 int32_t mosi_pin, int32_t latch_pin, int32_t sck_pin,
-                                int32_t pos_bit_1 = -1, int32_t pos_bit_2 = -1, int32_t pos_bit_3 = -1, int32_t pos_bit_4 = -1
+                                int32_t pos_bit_1, int32_t pos_bit_2 = -1, int32_t pos_bit_3 = -1, int32_t pos_bit_4 = -1
                                );
         #endif
 
@@ -149,11 +149,12 @@ class Drv7Seg2x595 {
     private:
         /*--- Variables ---*/
 
-        int32_t  _status = DRV7SEG2X595_STATUS_INITIAL;
-        int32_t  _variant = DRV7SEG2X595_STATUS_INITIAL;
+        int32_t _status = DRV7SEG2X595_STATUS_INITIAL;
+        int32_t _variant = DRV7SEG2X595_STATUS_INITIAL;
 
-        int32_t  _byte_order;
-        int32_t  _display_common_pin;
+        int32_t _byte_order;
+        int32_t _display_common_pin;
+        int32_t _switch_polarity;
 
         int32_t _latch_pin = -1;
         
@@ -163,8 +164,8 @@ class Drv7Seg2x595 {
         int32_t _mosi_pin  = -1;
         int32_t _sck_pin   = -1;
 
-        // Default values are specified in init() declaration to provide for omittability.
-        int32_t _pos_bit_1;
+        // Default values after first one are specified in init() declaration to provide for omittability.
+        int32_t _pos_bit_1 = -1;
         int32_t _pos_bit_2;
         int32_t _pos_bit_3;
         int32_t _pos_bit_4;
