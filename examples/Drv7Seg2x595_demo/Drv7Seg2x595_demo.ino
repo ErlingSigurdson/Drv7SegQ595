@@ -80,8 +80,10 @@ void setup()
         }
     }
 
-    drv_7seg_2x595.init_bb(0, 0, 
-                           DATA_PIN, LATCH_PIN, CLOCK_PIN,
+    drv_7seg_2x595.init_bb(0, 0, 0,
+                           DATA_PIN,   // Takes unsigned integer.
+                           LATCH_PIN,  // Takes unsigned integer.
+                           CLOCK_PIN,  // Takes unsigned integer.
                            5, 1
                           );
 }

@@ -73,6 +73,29 @@ for common anode inverted (in a sense that `cpbyte` outputs must connect common 
 
 ## API usage
 
+```cpp
+#define DATA_PIN  16
+#define LATCH_PIN 17
+#define CLOCK_PIN 18
+
+#define POS_1_BIT 7
+#define POS_2_BIT 5
+#define POS_3_BIT 3
+#define POS_4_BIT 1
+
+drv_7seg_2x595.init_bb(DRV7SEG2X595_POS_BYTE_FIRST,  // Other option is DRV7SEG2X595_SEG_BYTE_FIRST. 
+                       DRV7SEG2X595_COMMON_CATHODE,  // Other option is DRV7SEG2X595_COMMON_ANODE.
+                       DRV7SEG2X595_POLARITY_N,      // Other option is DRV7SEG2X595_POLARITY_P.
+                       DATA_PIN,   // Takes unsigned integer.
+                       LATCH_PIN,  // Takes unsigned integer.
+                       CLOCK_PIN,  // Takes unsigned integer.
+                       POS_1_BIT,  // Takes unsigned integer.
+                       POS_2_BIT,  // Takes unsigned integer, may be omitted (defaults to 0).
+                       POS_3_BIT,  // Takes unsigned integer, may be omitted (defaults to 0).
+                       POS_4_BIT,  // Takes unsigned integer, may be omitted (defaults to 0).
+                      );
+}
+```
 
 ## Glyphs and byte mapping
 
