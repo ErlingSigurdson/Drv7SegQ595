@@ -1,6 +1,6 @@
 # Overview
 
-**Drv7Seg2x585** is a single-class Arduino library for driving a multiplexed 7-segment display
+**Drv7Seg2x595** is a single-class Arduino library for driving a multiplexed 7-segment display
 using two daisy-chained 74HC595 shift register ICs.
 
 ## Concept
