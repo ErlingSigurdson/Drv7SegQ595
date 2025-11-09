@@ -120,6 +120,15 @@ a simple API for byte mapping and retrieving the necessary bytes.
 
 The library works with any Arduino-compatible MCU capable of bit-banging or SPI data transfer.
 
+## Dependencies
+
+`SPI.h` library implementation for the Arduino core you're using. This library is commonly available
+for all Arduino cores, although it's not guaranteed.
+
+In an unlikely case where `SPI.h` is not implemented for your core you can still use **Drv7Seg2x595**
+in bit-banging mode, but in order to avoid compilation errors you'll have to uncomment
+the `#define DRV7SEG2X595_SPI_NOT_IMPLEMENTED` preprocessor directive in `Drv7Seg2x595.h`.
+
 ## Links
 
 ### This library
