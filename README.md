@@ -123,9 +123,10 @@ The library works with any Arduino-compatible MCU capable of bit-banging or SPI 
 ## Dependencies
 
 * `SPI.h` library implementation for the Arduino core you're using.
-This library is commonly available for all Arduino cores, although it's not guaranteed.
-In an unlikely case where `SPI.h` is not implemented for your core you can still use **Drv7Seg2x595**
-in bit-banging mode, but in order to avoid compilation errors you'll have to uncomment
+
+`SPI.h` is commonly available for all Arduino cores, although it's not guaranteed.
+In an unlikely case where it is not implemented for your core you can still use **Drv7Seg2x595**
+in bit-banging mode, but in order to avoid compilation errors you'll have to manually uncomment
 the `#define DRV7SEG2X595_SPI_NOT_IMPLEMENTED` preprocessor directive in `Drv7Seg2x595.h`.
 
 * **SegMap595** C++ library (see links below) is used in the example sketch to simplify proper glyph output. 
