@@ -5,9 +5,9 @@ using two daisy-chained 74HC595 shift register ICs.
 
 ## Concept
 
-Typically, 7-segment displays come in models with 1, 2, 3 or 4 digits (character positions). Number of input pins
-for any given model equals 8 + number of digits, thus 12 pins is the maximum. Driving a display requires a number
-of individual signals equal to the number of input pins:
+Typically, 7-segment displays come in models with 1 to 4 digits (character positions). Number of input pins for
+any given model equals 8 + number of digits, thus 12 pins is the maximum. Driving a display requires a number o
+individual signals equal to the number of input pins:
 * 8 signals to turn ON and OFF individual segments (including a dot segment).
 * 1 to 4 signals to turn ON and OFF whole digits.
 
@@ -29,10 +29,10 @@ the rest are NC (not connected).
 The library API allows for any order of `seg_byte` and `pos_byte` placement within the register, that is, 
 any of these bytes may be either upper or lower byte. 
 
-`pos_byte` bits switch active character positions by electrically connecting and disconnecting the display's
-common pin to a ground (GND, for a common cathode) or to a positive rail (VCC, for a common anode). Usually
-it is done via a switching device (most commonly a transistor), since 595's ability to source/sink current
-itself for a whole set of 7 LEDs gets close to exceeds its electrical limitations.
+`pos_byte` bits switch digits by electrically connecting and disconnecting the display's common pin to
+a ground (GND, for a common cathode) or to a positive rail (VCC, for a common anode). Usually it is done
+via a switching device (most commonly a transistor), since 595's ability to source/sink current itself for
+a whole set of 7 LEDs gets close to exceeds its electrical limitations.
 
 Here's a typical circuit diagram for the described arrangement (assumes a common cathode display):
 ![Circuit diagram (schematic)](assets/circuit_diagram_(schematic).png)
