@@ -119,3 +119,18 @@ a simple API for byte mapping and retrieving the necessary bytes.
 ## Compatibility
 
 The library works with any Arduino-compatible MCU capable of bit-banging or SPI data transfer.
+
+## Links
+
+### This library
+* [Primary repository on GitHub](https://github.com/ErlingSigurdson/Drv7Seg2x595)
+* [Backup repository on GitFlic](https://gitflic.ru/project/efimov-d-v/drv7seg2x595)
+
+## Contact details
+
+**Maintainer** — Dmitriy Efimov aka Erling Sigurdson
+* <efimov-d-v@yandex.ru>
+* <erlingsigurdson1@gmail.com>
+* Telegram: @erlingsigurdson
+
+Your feedback and pull requests are welcome.
