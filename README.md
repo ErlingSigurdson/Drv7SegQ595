@@ -22,8 +22,8 @@ the same **clock/SCK** and **latch** signals. Two daisy-chained 595s form a 16-b
 for controlling any typical 7-segment display.
 
 This library assumes that the 16-bit register consists of two bytes with distinct roles:
-* segment byte, or **`seg_byte`**, controls individual display segments and makes it possible to output readable glyphs;
-* position byte, or **`pos_byte`**, determines character positions the glyph will be output to. 1 to 4 bits out of 8 are used,
+* **segment byte**, or **`seg_byte`**, controls individual display segments and makes it possible to output readable glyphs;
+* **position byte**, or **`pos_byte`**, determines character positions the glyph will be output to. 1 to 4 bits out of 8 are used
 the rest are NC (not connected).
 
 The library API allows for any order of `seg_byte` and `pos_byte` placement within the register, that is, 
