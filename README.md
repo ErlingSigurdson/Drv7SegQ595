@@ -129,7 +129,8 @@ In an unlikely case where it is not implemented for your core you can still use 
 in bit-banging mode, but in order to avoid compilation errors you'll have to manually uncomment
 the `#define DRV7SEG2X595_SPI_NOT_IMPLEMENTED` preprocessor directive in `Drv7Seg2x595.h`.
 
-* **SegMap595** C++ library (see links below) is used in the example sketch to simplify proper glyph output. 
+* **SegMap595** C++ library (see links below) is used in the example sketch to
+simplify proper glyph output, but otherwise isn't necessary at all. 
 
 ## Links
 
