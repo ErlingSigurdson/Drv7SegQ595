@@ -19,24 +19,26 @@
 #include "Drv7Seg2x595.h"
 
 // Additional Arduino libraries.
-#include <SPI.h>
+#ifndef DRV7SEG2X595_SPI_NOT_IMPLEMENTED
+    #include <SPI.h>
+#endif
 
 
 /*************** GLOBAL VARIABLES ***************/
 
-Drv7Seg2x595 drv_7seg_2x595;
+Drv7Seg2x595Class Drv7Seg;
 
 
 /******************* FUNCTIONS ******************/
 
 /*--- Constructor ---*/
 
-Drv7Seg2x595::Drv7Seg2x595() {}
+Drv7Seg2x595Class::Drv7Seg2x595Class() {}
 
 
 /*--- Misc functions ---*/
 
-int32_t Drv7Seg2x595::init_bb(int32_t byte_order, int32_t display_common_pin, int32_t switch_polarity,
+int32_t Drv7Seg2x595Class::init_bb(int32_t byte_order, int32_t display_common_pin, int32_t switch_polarity,
                               int32_t data_pin, int32_t latch_pin, int32_t clock_pin,
                               int32_t pos_bit_1, int32_t pos_bit_2, int32_t pos_bit_3, int32_t pos_bit_4
                              )
@@ -78,7 +80,8 @@ int32_t Drv7Seg2x595::init_bb(int32_t byte_order, int32_t display_common_pin, in
 }
 
 /*
-void Drv7Seg2x595::init_spi(uint32_t latch_pin, uint32_t ghosting_prevention_delay)
+#ifndef DRV7SEG2X595_SPI_NOT_IMPLEMENTED
+void Drv7Seg2x595Class::init_spi(uint32_t latch_pin, uint32_t ghosting_prevention_delay)
 {
     _variant = Drv7Seg2x595_VARIANT_SPI;
     _latch_pin = latch_pin;
@@ -87,11 +90,12 @@ void Drv7Seg2x595::init_spi(uint32_t latch_pin, uint32_t ghosting_prevention_del
     pinMode(latch_pin, OUTPUT);
     SPI.begin();
 }
+#endif
 */
 
 /*
 #if defined(ARDUINO_ARCH_ESP32) || defined(ARDUINO_ARCH_STM32)
-void Drv7Seg2x595::init_spi(uint32_t mosi_pin, uint32_t latch_pin, uint32_t sck_pin,
+void Drv7Seg2x595Class::init_spi(uint32_t mosi_pin, uint32_t latch_pin, uint32_t sck_pin,
                                   uint32_t ghosting_prevention_delay)
 {
     _variant = Drv7Seg2x595_VARIANT_SPI;
@@ -104,7 +108,7 @@ void Drv7Seg2x595::init_spi(uint32_t mosi_pin, uint32_t latch_pin, uint32_t sck_
 #endif
 */
 
-int32_t Drv7Seg2x595::output(uint8_t seg_byte, uint32_t pos, uint32_t ghosting_prevention_delay)
+int32_t Drv7Seg2x595Class::output(uint8_t seg_byte, uint32_t pos, uint32_t ghosting_prevention_delay)
 {
     if (_status < 0) {
         return _status;
@@ -181,6 +185,7 @@ int32_t Drv7Seg2x595::output(uint8_t seg_byte, uint32_t pos, uint32_t ghosting_p
             digitalWrite(_latch_pin, HIGH);
             break;
 
+        #ifndef DRV7SEG2X595_SPI_NOT_IMPLEMENTED
         case DRV7SEG2X595_VARIANT_SPI:
             digitalWrite(_latch_pin, LOW);
             SPI.transfer(upper_byte);
@@ -193,6 +198,7 @@ int32_t Drv7Seg2x595::output(uint8_t seg_byte, uint32_t pos, uint32_t ghosting_p
             SPI.transfer(DRV7SEG2X595_BLANK_GLYPH);
             digitalWrite(_latch_pin, HIGH);
             break;
+        #endif
 
         default:
             break;  // Do nothing and hail MISRA.

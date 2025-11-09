@@ -97,21 +97,26 @@
 // Driver setup variant codes.
 #define DRV7SEG2X595_VARIANT_INITIAL     -1
 #define DRV7SEG2X595_VARIANT_BIT_BANGING  0
-#define DRV7SEG2X595_VARIANT_SPI          1
+#ifndef DRV7SEG2X595_SPI_NOT_IMPLEMENTED
+    #define DRV7SEG2X595_VARIANT_SPI      1
+#endif
 
 // Function return codes.
 #define DRV7SEG2X595_ERR_MAX_POS         -4
 #define DRV7SEG2X595_ERR_VARIANT_NOT_SET -5
 
+// Uncomment if the Arduino core you're using doesn't provide SPI.h library.
+//#define DRV7SEG2X595_SPI_NOT_IMPLEMENTED
+
 
 /****************** DATA TYPES ******************/
 
-class Drv7Seg2x595 {
+class Drv7Seg2x595Class {
     public:
         /*--- Methods ---*/
 
         // Default constructor.
-        Drv7Seg2x595();
+        Drv7Seg2x595Class();
 
         // TODO: comment about reinit
 
@@ -122,10 +127,12 @@ class Drv7Seg2x595 {
                        );
 
         // Set a driver object to use default SPI pins.
+        #ifndef DRV7SEG2X595_SPI_NOT_IMPLEMENTED
         int32_t init_spi(int32_t  byte_order, int32_t display_common_pin, int32_t switch_polarity,
                          int32_t latch_pin,
                          int32_t pos_bit_1, int32_t pos_bit_2 = -1, int32_t pos_bit_3 = -1, int32_t pos_bit_4 = -1
                         );
+        #endif
 
         /* Set a driver object to use custom-assigned SPI pins.
          *
@@ -161,8 +168,10 @@ class Drv7Seg2x595 {
         int32_t _data_pin  = -1;
         int32_t _clock_pin = -1;
 
+        #ifndef DRV7SEG2X595_SPI_NOT_IMPLEMENTED
         int32_t _mosi_pin  = -1;
         int32_t _sck_pin   = -1;
+        #endif
 
         // Default values after first one are specified in init() declaration to provide for omittability.
         int32_t _pos_bit_1 = -1;
@@ -188,7 +197,7 @@ class Drv7Seg2x595 {
 /* An Arduino-style singleton object.
  * More instances of the same class can be created if necessary.
  */
-extern Drv7Seg2x595 drv_7seg_2x595;
+extern Drv7Seg2x595Class Drv7Seg;
 
 
 #endif  // Include guards.

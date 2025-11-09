@@ -67,7 +67,7 @@ void setup()
     pinMode(CLOCK_PIN, OUTPUT);
 
     // Byte mapping.
-    SegMap595.init(MAP_STR, DISPLAY_COMMON_PIN, GLYPH_SET_NUM);
+    SegMap595.init(MAP_STR, SegMap595CommonCathode, SegMap595GlyphSet1);
 
     // Mapping status check.
     int32_t mapping_status = SegMap595.get_status();
@@ -80,7 +80,7 @@ void setup()
         }
     }
 
-    drv_7seg_2x595.init_bb(0, 0, 0,
+    Drv7Seg.init_bb(0, 0, 0,
                            DATA_PIN,
                            LATCH_PIN,
                            CLOCK_PIN,
@@ -124,8 +124,8 @@ void loop()
     }
 
     // Output a glyph on the display.
-    drv_7seg_2x595.output(byte_to_shift, 1);
-    drv_7seg_2x595.output(byte_to_shift, 2);
+    Drv7Seg.output(byte_to_shift, 1);
+    Drv7Seg.output(byte_to_shift, 2);
 
 
     /*--- Counter and output trigger, continued ---*/
