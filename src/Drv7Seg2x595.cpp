@@ -108,14 +108,21 @@ void Drv7Seg2x595Class::init_spi(uint32_t mosi_pin, uint32_t latch_pin, uint32_t
 #endif
 */
 
-int32_t Drv7Seg2x595Class::output(uint8_t seg_byte, uint32_t pos, uint32_t ghosting_prevention_delay)
+int32_t Drv7Seg2x595Class::output(uint8_t seg_byte, uint32_t pos, uint32_t anti_ghosting_pause)
 {
     if (_status < 0) {
         return _status;
     }
 
+    /* The second expression doesn't get evaluated (the function call doesn't get executed)
+     * if the first expression evaluates to false. It is guaranteed by the language standard.
+     */
+    if (_anti_ghosting_retention == true && anti_ghosting_timer_elapsed(anti_ghosting_pause) == false) {
+        return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
+    }
 
-    /*--- Composing of character position byte ---*/
+
+    /*--- Composing a character position byte ---*/
 
     if (pos > DRV7SEG2X595_MAX_POS) {
         return DRV7SEG2X595_ERR_MAX_POS;
@@ -173,28 +180,42 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte, uint32_t pos, uint32_t ghost
             return DRV7SEG2X595_ERR_VARIANT_NOT_SET;
 
         case DRV7SEG2X595_VARIANT_BIT_BANGING:
-            digitalWrite(_latch_pin, LOW);
-            shiftOut(_data_pin, _clock_pin, MSBFIRST, upper_byte);
-            shiftOut(_data_pin, _clock_pin, MSBFIRST, lower_byte);
-            digitalWrite(_latch_pin, HIGH);
-            delayMicroseconds(ghosting_prevention_delay);
+            if (_anti_ghosting_retention == false) {
+                digitalWrite(_latch_pin, LOW);
+                shiftOut(_data_pin, _clock_pin, MSBFIRST, upper_byte);
+                shiftOut(_data_pin, _clock_pin, MSBFIRST, lower_byte);
+                digitalWrite(_latch_pin, HIGH);
+                
+                _anti_ghosting_retention = true;
+                return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
+            }
             
             digitalWrite(_latch_pin, LOW);
-            // Single byte is enough in this case since it's guaranteed to produce a blank output.
+            /* Shifting a single zeroed byte is enough to produce a blank output,
+             * and byte order is irrelevant, because both seg_byte and pos_byte,
+             * being zeroed, guarantee that either all segments will be turned off.
+             */
             shiftOut(_data_pin, _clock_pin, MSBFIRST, DRV7SEG2X595_BLANK_GLYPH);
             digitalWrite(_latch_pin, HIGH);
             break;
 
         #ifndef DRV7SEG2X595_SPI_NOT_IMPLEMENTED
         case DRV7SEG2X595_VARIANT_SPI:
-            digitalWrite(_latch_pin, LOW);
-            SPI.transfer(upper_byte);
-            SPI.transfer(lower_byte);
-            digitalWrite(_latch_pin, HIGH);
-            delayMicroseconds(ghosting_prevention_delay);
+            if (_anti_ghosting_retention == false) {
+                digitalWrite(_latch_pin, LOW);
+                SPI.transfer(upper_byte);
+                SPI.transfer(lower_byte);
+                digitalWrite(_latch_pin, HIGH);
+
+                _anti_ghosting_retention = true;
+                return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
+            }
             
             digitalWrite(_latch_pin, LOW);
-            // Single byte is enough in this case since it's guaranteed to produce a blank output.
+            /* Shifting a single zeroed byte is enough to produce a blank output,
+             * and byte order is irrelevant, because both seg_byte and pos_byte,
+             * being zeroed, guarantee that either all segments will be turned off.
+             */
             SPI.transfer(DRV7SEG2X595_BLANK_GLYPH);
             digitalWrite(_latch_pin, HIGH);
             break;
@@ -204,5 +225,20 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte, uint32_t pos, uint32_t ghost
             break;  // Do nothing and hail MISRA.
     }
 
+    _anti_ghosting_retention = false;
+
     return DRV7SEG2X595_STATUS_OK;
+}
+
+bool Drv7Seg2x595Class::anti_ghosting_timer_elapsed(uint32_t anti_ghosting_pause)
+{
+    uint64_t current_millis = millis();
+    static uint64_t previous_millis = current_millis;
+
+    if (current_millis - previous_millis >= anti_ghosting_pause) {
+        previous_millis = current_millis;
+        return true;
+    } else {
+        return false;
+    }
 }

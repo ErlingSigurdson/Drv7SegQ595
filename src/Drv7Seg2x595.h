@@ -102,8 +102,10 @@
 #endif
 
 // Function return codes.
-#define DRV7SEG2X595_ERR_MAX_POS         -4
-#define DRV7SEG2X595_ERR_VARIANT_NOT_SET -5
+#define DRV7SEG2X595_ERR_MAX_POS             -4
+#define DRV7SEG2X595_ERR_VARIANT_NOT_SET     -5
+#define DRV7SEG2X595_ANTI_GHOSTING_RETENTION  1
+#define DRV7SEG2X595_OK                       0
 
 // Uncomment if the Arduino core you're using doesn't provide SPI.h library.
 //#define DRV7SEG2X595_SPI_NOT_IMPLEMENTED
@@ -189,6 +191,13 @@ class Drv7Seg2x595Class {
          * TODO: move
          */
         //uint32_t _ghosting_prevention_delay;
+
+        bool _anti_ghosting_retention  = false;
+
+
+        /*--- Methods ---*/
+
+        bool anti_ghosting_timer_elapsed(uint32_t anti_ghosting_pause);
 };
 
 
