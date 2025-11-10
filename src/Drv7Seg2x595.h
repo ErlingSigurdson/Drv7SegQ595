@@ -107,6 +107,8 @@
 #define DRV7SEG2X595_ANTI_GHOSTING_RETENTION  1
 #define DRV7SEG2X595_OK                       0
 
+#define DRV7SEG2X595_DEFAULT_ANTI_GHOSTING_PAUSE 2
+
 // Uncomment if the Arduino core you're using doesn't provide SPI.h library.
 //#define DRV7SEG2X595_SPI_NOT_IMPLEMENTED
 
@@ -153,7 +155,8 @@ class Drv7Seg2x595Class {
          * Returns: zero if a driver setup was successful, negative integer otherwise
          * (see the preprocessor macros list for possible values).
          */
-        int32_t output(uint8_t seg_byte, uint32_t pos, uint32_t ghosting_prevention_delay = 2);
+        int32_t output(uint8_t seg_byte, uint32_t pos,
+                       uint32_t ghosting_prevention_delay = DRV7SEG2X595_DEFAULT_ANTI_GHOSTING_PAUSE);
 
     private:
         /*--- Variables ---*/
