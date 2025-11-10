@@ -124,8 +124,8 @@ void loop()
     }
 
     // Output a glyph on the display.
-    Drv7Seg.output(byte_to_shift, 1);
-    Drv7Seg.output(byte_to_shift, 2);
+    Drv7Seg.output(byte_to_shift, 1, 2);
+    Drv7Seg.output(byte_to_shift, 2, 2);
 
 
     /*--- Counter and output trigger, continued ---*/

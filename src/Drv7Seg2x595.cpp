@@ -114,10 +114,14 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte, uint32_t pos, uint32_t anti_
         return _status;
     }
 
+    if (_anti_ghosting_retention > 0 && _anti_ghosting_retention != pos) {
+        return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
+    }
+
     /* The second expression doesn't get evaluated (the function call doesn't get executed)
      * if the first expression evaluates to false. It is guaranteed by the language standard.
      */
-    if (_anti_ghosting_retention == true && anti_ghosting_timer_elapsed(anti_ghosting_pause) == false) {
+    if (_anti_ghosting_retention > 0 && anti_ghosting_timer_elapsed(anti_ghosting_pause) == false) {
         return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
     }
 
@@ -186,7 +190,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte, uint32_t pos, uint32_t anti_
                 shiftOut(_data_pin, _clock_pin, MSBFIRST, lower_byte);
                 digitalWrite(_latch_pin, HIGH);
                 
-                _anti_ghosting_retention = true;
+                _anti_ghosting_retention = pos;
                 return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
             }
             
@@ -225,7 +229,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte, uint32_t pos, uint32_t anti_
             break;  // Do nothing and hail MISRA.
     }
 
-    _anti_ghosting_retention = false;
+    _anti_ghosting_retention = 0;
 
     return DRV7SEG2X595_STATUS_OK;
 }

@@ -195,7 +195,7 @@ class Drv7Seg2x595Class {
          */
         //uint32_t _ghosting_prevention_delay;
 
-        bool _anti_ghosting_retention  = false;
+        uint32_t _anti_ghosting_retention = 0;
 
 
         /*--- Methods ---*/
