@@ -235,8 +235,14 @@ bool Drv7Seg2x595Class::anti_ghosting_timer_elapsed(uint32_t anti_ghosting_pause
     uint64_t current_millis = millis();
     static uint64_t previous_millis = current_millis;
 
-    if (current_millis - previous_millis >= anti_ghosting_pause) {
+    static bool new_lap = true;
+    if (new_lap == true) {
         previous_millis = current_millis;
+        new_lap = false;
+    }
+
+    if (current_millis - previous_millis >= anti_ghosting_pause) {
+        new_lap = true;
         return true;
     } else {
         return false;
