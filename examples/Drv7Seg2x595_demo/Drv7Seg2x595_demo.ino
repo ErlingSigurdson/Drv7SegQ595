@@ -13,8 +13,8 @@
 
 /*--- Includes ---*/
 
-#include <SegMap595.h>
 #include <Drv7Seg2x595.h>
+#include <SegMap595.h>
 
 
 /*--- SegMap595 library API parameters ---*/
@@ -84,8 +84,8 @@ void setup()
                            DATA_PIN,
                            LATCH_PIN,
                            CLOCK_PIN,
-                           5,
-                           1
+                           7,
+                           5
                           );
 }
 

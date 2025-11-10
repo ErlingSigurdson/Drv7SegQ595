@@ -125,7 +125,7 @@ class Drv7Seg2x595Class {
         // TODO: comment about reinit
 
         // Set a driver object to use bit-banging.
-        int32_t init_bb(int32_t  byte_order, int32_t display_common_pin, int32_t switch_polarity,
+        int32_t init_bb(int32_t byte_order, int32_t display_common_pin, int32_t switch_polarity,
                         int32_t data_pin, int32_t latch_pin, int32_t clock_pin,
                         int32_t pos_bit_1, int32_t pos_bit_2 = -1, int32_t pos_bit_3 = -1, int32_t pos_bit_4 = -1
                        );
