@@ -129,7 +129,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte, uint32_t pos, uint32_t anti_
         } else {
             /* If this function has been called for the character position
              * the retention was started for and the retention timer has elapsed,
-             * finish the retention and let the other character positions be turned on.
+             * finish the retention and let the next character position be turned on.
              */
             _anti_ghosting_retention = 0;
             return DRV7SEG2X595_STATUS_OK;
