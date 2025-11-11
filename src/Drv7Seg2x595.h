@@ -117,6 +117,29 @@
 
 class Drv7Seg2x595Class {
     public:
+        /*--- Data types ---*/
+
+        enum class ByteOrder {
+            PosByteFirst = 0,
+            SegByteFirst = 1
+        };
+
+        enum class DisplayType {
+            CommonCathode = 0,
+            CommonAnode   = 1
+        };
+
+        enum class SwitchPolarity {
+            NType = 0,
+            PType = 1
+        };
+
+        enum class GlyphSetId {
+            GlyphSet1 = 1,
+            GlyphSet2 = 2
+        };
+
+
         /*--- Methods ---*/
 
         // Default constructor.
