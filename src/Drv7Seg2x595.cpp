@@ -114,14 +114,26 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte, uint32_t pos, uint32_t anti_
         return _status;
     }
 
-    if (_anti_ghosting_retention > 0) {
-        /* If the function has been called not for the character position
-         * the retention was started for, return.
-         */
-        if (_anti_ghosting_retention != pos) return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
+    if (_anti_ghosting_retention > 0) {  // If retention is running.
 
-        // If the timer hasn't elapsed, return. 
-        if (anti_ghosting_timer_elapsed(anti_ghosting_pause) == false) return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
+        /* If this function has been called not for the character position
+         * the retention was started for, return and continue the retention.
+         */
+        if (_anti_ghosting_retention != pos) {
+            return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
+        }
+
+        // If the retention timer hasn't elapsed, return and continue the retention.
+        if (anti_ghosting_timer_elapsed(anti_ghosting_pause) == false) {
+            return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
+        } else {
+            /* If this function has been called for the character position
+             * the retention was started for and the retention timer has elapsed,
+             * finish the retention and let the other character positions be turned on.
+             */ 
+            _anti_ghosting_retention = 0;
+            return DRV7SEG2X595_STATUS_OK;
+        }
     }
 
 
@@ -183,16 +195,6 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte, uint32_t pos, uint32_t anti_
             return DRV7SEG2X595_ERR_VARIANT_NOT_SET;
 
         case DRV7SEG2X595_VARIANT_BIT_BANGING:
-            if (_anti_ghosting_retention == false) {
-                digitalWrite(_latch_pin, LOW);
-                shiftOut(_data_pin, _clock_pin, MSBFIRST, upper_byte);
-                shiftOut(_data_pin, _clock_pin, MSBFIRST, lower_byte);
-                digitalWrite(_latch_pin, HIGH);
-                
-                _anti_ghosting_retention = pos;
-                return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
-            }
-            
             digitalWrite(_latch_pin, LOW);
             /* Shifting a single zeroed byte is enough to produce a blank output,
              * and byte order is irrelevant, because both seg_byte and pos_byte,
@@ -200,26 +202,26 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte, uint32_t pos, uint32_t anti_
              */
             shiftOut(_data_pin, _clock_pin, MSBFIRST, DRV7SEG2X595_BLANK_GLYPH);
             digitalWrite(_latch_pin, HIGH);
+        
+            digitalWrite(_latch_pin, LOW);
+            shiftOut(_data_pin, _clock_pin, MSBFIRST, upper_byte);
+            shiftOut(_data_pin, _clock_pin, MSBFIRST, lower_byte);
+            digitalWrite(_latch_pin, HIGH);
             break;
 
         #ifndef DRV7SEG2X595_SPI_NOT_IMPLEMENTED
         case DRV7SEG2X595_VARIANT_SPI:
-            if (_anti_ghosting_retention == false) {
-                digitalWrite(_latch_pin, LOW);
-                SPI.transfer(upper_byte);
-                SPI.transfer(lower_byte);
-                digitalWrite(_latch_pin, HIGH);
-
-                _anti_ghosting_retention = true;
-                return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
-            }
-            
             digitalWrite(_latch_pin, LOW);
             /* Shifting a single zeroed byte is enough to produce a blank output,
              * and byte order is irrelevant, because both seg_byte and pos_byte,
              * being zeroed, guarantee that either all segments will be turned off.
              */
             SPI.transfer(DRV7SEG2X595_BLANK_GLYPH);
+            digitalWrite(_latch_pin, HIGH);
+        
+            digitalWrite(_latch_pin, LOW);
+            SPI.transfer(upper_byte);
+            SPI.transfer(lower_byte);
             digitalWrite(_latch_pin, HIGH);
             break;
         #endif
@@ -228,8 +230,12 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte, uint32_t pos, uint32_t anti_
             break;  // Do nothing and hail MISRA.
     }
 
-    _anti_ghosting_retention = 0;
+    if (_anti_ghosting_retention == 0) {        
+        _anti_ghosting_retention = pos;
+        return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
+    }
 
+    // This statement shouldn't ever be reached by the execution, but it's still added to avoid warnings.
     return DRV7SEG2X595_STATUS_OK;
 }
 
