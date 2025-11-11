@@ -39,9 +39,9 @@ Drv7Seg2x595Class::Drv7Seg2x595Class() {}
 /*--- Misc functions ---*/
 
 int32_t Drv7Seg2x595Class::init_bb(int32_t byte_order, int32_t display_common_pin, int32_t switch_polarity,
-                              int32_t data_pin, int32_t latch_pin, int32_t clock_pin,
-                              int32_t pos_bit_1, int32_t pos_bit_2, int32_t pos_bit_3, int32_t pos_bit_4
-                             )
+                                   int32_t data_pin, int32_t latch_pin, int32_t clock_pin,
+                                   int32_t pos_bit_1, int32_t pos_bit_2, int32_t pos_bit_3, int32_t pos_bit_4
+                                  )
 {
     _variant = DRV7SEG2X595_VARIANT_BIT_BANGING;
 
@@ -120,17 +120,17 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte, uint32_t pos, uint32_t anti_
          * the retention was started for, return and continue the retention.
          */
         if (_anti_ghosting_retention != pos) {
-            return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
+            return DRV7SEG2X595_STATUS_OK;
         }
 
         // If the retention timer hasn't elapsed, return and continue the retention.
-        if (anti_ghosting_timer_elapsed(anti_ghosting_pause) == false) {
-            return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
+        if (anti_ghosting_pause_timer_elapsed(anti_ghosting_pause) == false) {
+            return DRV7SEG2X595_STATUS_OK;
         } else {
             /* If this function has been called for the character position
              * the retention was started for and the retention timer has elapsed,
              * finish the retention and let the other character positions be turned on.
-             */ 
+             */
             _anti_ghosting_retention = 0;
             return DRV7SEG2X595_STATUS_OK;
         }
@@ -202,7 +202,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte, uint32_t pos, uint32_t anti_
              */
             shiftOut(_data_pin, _clock_pin, MSBFIRST, DRV7SEG2X595_BLANK_GLYPH);
             digitalWrite(_latch_pin, HIGH);
-        
+
             digitalWrite(_latch_pin, LOW);
             shiftOut(_data_pin, _clock_pin, MSBFIRST, upper_byte);
             shiftOut(_data_pin, _clock_pin, MSBFIRST, lower_byte);
@@ -218,7 +218,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte, uint32_t pos, uint32_t anti_
              */
             SPI.transfer(DRV7SEG2X595_BLANK_GLYPH);
             digitalWrite(_latch_pin, HIGH);
-        
+
             digitalWrite(_latch_pin, LOW);
             SPI.transfer(upper_byte);
             SPI.transfer(lower_byte);
@@ -230,16 +230,12 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte, uint32_t pos, uint32_t anti_
             break;  // Do nothing and hail MISRA.
     }
 
-    if (_anti_ghosting_retention == 0) {        
-        _anti_ghosting_retention = pos;
-        return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
-    }
+    _anti_ghosting_retention = pos;
 
-    // This statement shouldn't ever be reached by the execution, but it's still added to avoid warnings.
     return DRV7SEG2X595_STATUS_OK;
 }
 
-bool Drv7Seg2x595Class::anti_ghosting_timer_elapsed(uint32_t anti_ghosting_pause)
+bool Drv7Seg2x595Class::anti_ghosting_pause_timer_elapsed(uint32_t anti_ghosting_pause)
 {
     uint64_t current_millis = millis();
     static uint64_t previous_millis = current_millis;

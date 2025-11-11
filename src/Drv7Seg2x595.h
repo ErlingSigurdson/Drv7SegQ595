@@ -200,7 +200,7 @@ class Drv7Seg2x595Class {
 
         /*--- Methods ---*/
 
-        bool anti_ghosting_timer_elapsed(uint32_t anti_ghosting_pause);
+        bool anti_ghosting_pause_timer_elapsed(uint32_t anti_ghosting_pause);
 };
 
 
