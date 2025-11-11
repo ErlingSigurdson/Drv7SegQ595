@@ -84,8 +84,8 @@ void setup()
                            DATA_PIN,
                            LATCH_PIN,
                            CLOCK_PIN,
-                           7,
-                           5
+                           5,
+                           1
                           );
 }
 

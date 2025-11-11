@@ -114,15 +114,14 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte, uint32_t pos, uint32_t anti_
         return _status;
     }
 
-    if (_anti_ghosting_retention > 0 && _anti_ghosting_retention != pos) {
-        return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
-    }
+    if (_anti_ghosting_retention > 0) {
+        /* If the function has been called not for the character position
+         * the retention was started for, return.
+         */
+        if (_anti_ghosting_retention != pos) return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
 
-    /* The second expression doesn't get evaluated (the function call doesn't get executed)
-     * if the first expression evaluates to false. It is guaranteed by the language standard.
-     */
-    if (_anti_ghosting_retention > 0 && anti_ghosting_timer_elapsed(anti_ghosting_pause) == false) {
-        return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
+        // If the timer hasn't elapsed, return. 
+        if (anti_ghosting_timer_elapsed(anti_ghosting_pause) == false) return DRV7SEG2X595_ANTI_GHOSTING_RETENTION;
     }
 
 
