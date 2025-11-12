@@ -19,43 +19,86 @@
 /*--- Includes ---*/
 
 #include <Drv7Seg2x595.h>
-#include <SegMap595.h>
+#include <SegMap595.h>     /* Helper library. Makes it easier to map the parallel outputs of
+                            * your 74HC595 to the segment control pins of your 7-segment display.
+                            */
 
 
 /*--- Drv7Seg2x595 library API parameters ---*/
 
-/* Specify the order in which seg_byte and pos_byte go into the shift register.
- * Use one variant, comment out or delete the other.
+// Specify the data transfer approach. Use one variant, comment out or delete the others.
+#define USE_BIT_BANGING
+//#define USE_SPI_DEFAULT_PINS
+
+/* Only suitable for the Arduino cores that support a respective SPI.h version
+ * (as of the last library update those are ESP32 and STM32 cores).
+ */
+//#define USE_SPI_CUSTOM_PINS
+
+/* Specify the order in which seg_byte and pos_byte are placed within
+ * the shift register. Use one variant, comment out or delete the other.
  */
 Drv7Seg2x595Class::ByteOrder byte_order = Drv7Seg2x595PosByteFirst;
 //Drv7Seg2x595Class::ByteOrder byte_order = Drv7Seg2x595SegByteFirst;
 
-Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7Seg2x595PosByteFirst;
-//Drv7Seg2x595Class::ByteOrder byte_order = Drv7Seg2x595SegByteFirst;
+/* Specify a signal level that turns on the character positions of your display.
+ * Use one variant, comment out or delete the other.
+ */
+Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7Seg2x595ActiveHigh;
+//Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7Seg2x595ActiveLow;
+
+// Specify appropriately based on your wiring. Variant for bit-banging.
+#ifdef USE_BIT_BANGING
+    #define DATA_PIN  16
+    #define LATCH_PIN 17
+    #define CLOCK_PIN 18
+#endif
+
+// Specify appropriately based on your wiring. Variant for SPI with default pins.
+#ifdef USE_SPI_DEFAULT_PINS
+    #define LATCH_PIN 17
+#endif
+
+// Specify appropriately based on your wiring. Variant for SPI with custom-assigned pins.
+#ifdef USE_SPI_CUSTOM_PINS
+    #define MOSI_PIN  16  // TODO sensible default
+    #define LATCH_PIN 17
+    #define SCK_PIN   18  // TODO sensible default
+#endif
+
+/* Specify appropriately based on your wiring: which pos_byte bits
+ * control the character positions of your 7-segment display?
+ */
+#define POS_1_BIT 7
+#define POS_2_BIT 5
 
 
 /*--- SegMap595 library API parameters ---*/
 
-/* Specify the relevant string according to the actual
- * (physical) order of connections in your circuit.
+/* Map string.
+ *
+ * This string must reflect the actual (physical) order of connections made between
+ * parallel outputs of your 74HC595 and segment control pins of your 7-segment display.
+ *
+ * The map string must consist of exactly 8 ASCII characters: @, A, B, C, D, E, F and G.
+ * Every character corresponds to a single segment (@ stands for a dot).
+ *
+ * The first (leftmost) character in the map string corresponds to the 7th (most significant)
+ * bit of the IC's parallel outputs (Q7 output), the last (rightmost) character corresponds to
+ * the 0th (least significant) bit (Q0 output).
+ *
+ * Uppercase characters may be replaced with their lowercase counterparts. Any other characters
+ * are invalid. Duplicating characters is invalid as well.
  */
 #define MAP_STR "ED@CGAFB"
 
-// Specify your display type based on its common pin. Use one directive, comment out or delete the other.
-#define DISPLAY_COMMON_PIN SEGMAP595_COMMON_CATHODE
-//#define DISPLAY_COMMON_PIN SEGMAP595_COMMON_ANODE
+// Specify your display type based on its common pin. Use one variant, comment out or delete the other.
+SegMap595Class::DisplayType display_common_pin = SegMap595CommonCathode;
+//SegMap595Class::DisplayType display_common_pin = SegMap595CommonAnode;
 
-// Select a glyph set. Use one directive, comment out or delete the other.
-#define GLYPH_SET_NUM SEGMAP595_GLYPH_SET_1
-//#define GLYPH_SET_NUM SEGMAP595_GLYPH_SET_2
-
-#ifndef DISPLAY_COMMON_PIN
-    #error "Error: display type (common pin) not specified."
-#endif
-
-#ifndef GLYPH_SET_NUM
-    #error "Error: glyph set not specified."
-#endif
+// Select a glyph set. Use one variant, comment out or delete the other.
+SegMap595Class::GlyphSetId glyph_set_id = SegMap595GlyphSet1;
+//SegMap595Class::GlyphSetId glyph_set_id = SegMap595GlyphSet2;
 
 
 /*--- Misc ---*/
@@ -63,12 +106,7 @@ Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7Seg2x595PosByteFirst;
 // Set appropriately based on the baud rate you use.
 #define BAUD_RATE 115200
 
-// Set appropriately based on your wiring.
-#define DATA_PIN  16
-#define LATCH_PIN 17
-#define CLOCK_PIN 18
-
-// Output interval ("once in X milliseconds").
+// Counting interval ("once in X milliseconds").
 #define INTERVAL  1000
 
 
@@ -78,18 +116,16 @@ void setup()
 {
     Serial.begin(BAUD_RATE);
 
-    // Pin setup.
-    pinMode(DATA_PIN,  OUTPUT);
-    pinMode(LATCH_PIN, OUTPUT);
-    pinMode(CLOCK_PIN, OUTPUT);
-
     // Byte mapping.
-    SegMap595.init(MAP_STR, SegMap595CommonCathode, SegMap595GlyphSet1);
+    SegMap595.init(MAP_STR, display_common_pin, glyph_set_id);
 
-    // Mapping status check.
+    /* Mapping status check.
+     * You can also check value returned by init() instead of calling get_status().
+     */
     int32_t mapping_status = SegMap595.get_status();
+
     // Loop error output if mapping was unsuccessful.
-    if (mapping_status < 0) {
+    if (mapping_status < 0) {  // If error is detected.
         while(true) {
             Serial.print("Error: mapping failed, error code ");
             Serial.println(mapping_status);
@@ -97,82 +133,60 @@ void setup()
         }
     }
 
-    Drv7Seg.begin_bb(Drv7Seg2x595PosByteFirst,
-                     Drv7Seg2x595ActiveHigh,
-                     DATA_PIN,
-                     LATCH_PIN,
-                     CLOCK_PIN,
-                     7,
-                     5,
-                     3,
-                     1
+    #ifdef USE_BIT_BANGING
+    Drv7Seg.begin_bb(byte_order,
+                     pos_switch_type,
+                     DATA_PIN, LATCH_PIN, CLOCK_PIN,
+                     POS_1_BIT, POS_2_BIT
                     );
+    #endif
 
-    //Drv7Seg.begin_spi
-    //Drv7Seg.begin_spi_custom_pins
+    #ifdef USE_SPI_DEFAULT_PINS
+    Drv7Seg.begin_bb(byte_order,
+                     pos_switch_type,
+                     LATCH_PIN,
+                     POS_1_BIT, POS_2_BIT
+                    );
+    #endif
+
+    #ifdef USE_SPI_CUSTOM_PINS
+    Drv7Seg.begin_bb(byte_order,
+                     pos_switch_type,
+                     MOSI_PIN, LATCH_PIN, SCK_PIN,
+                     POS_1_BIT, POS_2_BIT
+                    );
+    #endif
 }
 
 void loop()
 {
-    /*--- Counter and output trigger ---*/
+    /*--- Counter and output update trigger ---*/
 
     uint64_t current_millis = millis();
     static uint64_t previous_millis = current_millis;
 
     static size_t counter = 0;
-    static size_t glyph_num = SegMap595.get_glyph_num();
-    if (counter >= glyph_num) {
+    static size_t counter_max = 60;
+    if (counter > counter_max) {
         counter = 0;
     }
-
-    // Output trigger.
+    
     static bool update_due = true;
 
 
     /*--- Demo output ---*/
 
-    static uint8_t byte_to_shift = DRV7SEG2X595_BLANK_GLYPH;
+    static uint8_t byte_to_shift_tens = DRV7SEG2X595_BLANK_GLYPH;
+    static uint8_t byte_to_shift_ones = DRV7SEG2X595_BLANK_GLYPH;
 
     if (update_due) {
-        byte_to_shift = SegMap595.get_mapped_byte(counter);
-        Serial.println("DEBUG 1");
-        Serial.println("DEBUG 2");
-        Serial.println("DEBUG 3");
-        Serial.println("DEBUG 4");
-        Serial.println("DEBUG 5");
-        Serial.println("DEBUG 6");
-        Serial.println("DEBUG 7");
-        Serial.println("DEBUG 8");
-        Serial.println("DEBUG 9");
-        Serial.println("DEBUG 10");
-
-        // Dot segment blink.
-        if (counter % 2) {
-            static uint32_t dot_bit_pos = SegMap595.get_dot_bit_pos();
-            static uint8_t mask = static_cast<uint8_t>(1u << dot_bit_pos);
-            byte_to_shift ^= mask;
-        }
-
+        byte_to_shift_tens = SegMap595.get_mapped_byte(counter / 10);
+        byte_to_shift_tens = SegMap595.get_mapped_byte(counter % 10);
         update_due = false;
     }
 
-    // Output a glyph on the display.
-
-    byte_to_shift = SegMap595.get_mapped_byte(counter);
-    
-    Drv7Seg.output(byte_to_shift, 1);
-
-    byte_to_shift = SegMap595.get_mapped_byte(counter+1);
-    
-    Drv7Seg.output(byte_to_shift, 2);
-
-    byte_to_shift = SegMap595.get_mapped_byte(counter+2);
-    
-    Drv7Seg.output(byte_to_shift, 3);
-
-    byte_to_shift = SegMap595.get_mapped_byte(counter+3);
-    
-    Drv7Seg.output(byte_to_shift, 4);
+    Drv7Seg.output(byte_to_shift_tens, 1);
+    Drv7Seg.output(byte_to_shift_ones, 2);
 
 
     /*--- Counter and output trigger, continued ---*/
