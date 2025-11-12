@@ -174,7 +174,7 @@ void loop()
 
     static size_t counter = 0;
     static size_t counter_max = 60;  // TODO: comment or macrosize
-    if (counter > counter_max) {
+    if (counter >= counter_max) {
         counter = 0;
     }
     
