@@ -6,53 +6,7 @@
  * Purpose:  A class for driving a multiplexed 7-segment display using
  *           two daisy-chained 74HC595 shift register ICs.
  * ----------------------------------------------------------------------------|---------------------------------------|
- * Notes:    One byte is supposed to have just one bit set and all other bits
- *           cleared. The set bit has to be mapped to a display pin (usually
- *           connected to a respective IC pin via a transistor or a similar
- *           switch) that corresponds to a current active digit.
- *
- *           Another byte is supposed to hold a mapped character, that is,
- *           a combination of set and cleared bits that corresponds to display
- *           segments in a pattern that will provide for an output of a desired
- *           character. This byte may also hold a fully zeroed byte, which
- *           leads to a blank output.
- *
- *           Idiomatic use example:
- *           * * *
- *           // Once (pick just one variant):
- *           driver7seg.init_bb(DRV7SEG2X595_DATA_PIN, DRV7SEG2X595_LATCH_PIN, DRV7SEG2X595_CLOCK_PIN,
- *                              DRV7SEG2X595_GHOSTING_PREVENTION_DELAY);
- *
- *           driver7seg.init_spi(DRV7SEG2X595_MOSI_PIN, DRV7SEG2X595_LATCH_PIN, DRV7SEG2X595_SCK_PIN,
- *                               DRV7SEG2X595_GHOSTING_PREVENTION_DELAY);
- *
- *           driver7seg.init_spi(DRV7SEG2X595_LATCH_PIN, DRV7SEG2X595_GHOSTING_PREVENTION_DELAY);
- *
- *
- *           // In a loop:
- *           counter.update();
- *
- *           uint32_t minutes_tens = counter.minutes / 10;
- *           uint32_t minutes_ones = counter.minutes % 10;
- *           uint32_t seconds_tens = counter.seconds / 10;
- *           uint32_t seconds_ones = counter.seconds % 10;
- *
- *           uint8_t digit_1 = mapped_characters[minutes_tens];
- *           uint8_t digit_2 = mapped_characters[minutes_ones];
- *           uint8_t digit_3 = mapped_characters[seconds_tens];
- *           uint8_t digit_4 = mapped_characters[seconds_ones];
- *
- *           if (counter.seconds % 2) {
- *               uint8_t dot_bit_pos_mask = (1 << DRV7SEG2X595_DOT_BIT_POS);
- *               digit_2 |= dot_bit_pos_mask;
- *           }
- *
- *           driver7seg.shift_out((1 << DRV7SEG2X595_D1), digit_1);
- *           driver7seg.shift_out((1 << DRV7SEG2X595_D2), digit_2);
- *           driver7seg.shift_out((1 << DRV7SEG2X595_D3), digit_3);
- *           driver7seg.shift_out((1 << DRV7SEG2X595_D4), digit_4);
- *           * * *
- *
+ * Notes:
  *           TODO dependencies (SPI.h).
  *           TODO up to 4 digits (positions)
  *           TODO what if not first digit on a physical display?
