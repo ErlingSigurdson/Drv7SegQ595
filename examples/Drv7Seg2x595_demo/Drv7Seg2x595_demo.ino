@@ -80,13 +80,19 @@ void setup()
         }
     }
 
-    Drv7Seg.init_bb(0, 0, 0,
-                           DATA_PIN,
-                           LATCH_PIN,
-                           CLOCK_PIN,
-                           5,
-                           1
-                          );
+    Drv7Seg.begin_bb(Drv7Seg2x595PosByteFirst,
+                     Drv7Seg2x595ActiveHigh,
+                     DATA_PIN,
+                     LATCH_PIN,
+                     CLOCK_PIN,
+                     7,
+                     5,
+                     3,
+                     1
+                    );
+
+    //Drv7Seg.begin_spi
+    //Drv7Seg.begin_spi_custom_pins
 }
 
 void loop()
@@ -112,6 +118,16 @@ void loop()
 
     if (update_due) {
         byte_to_shift = SegMap595.get_mapped_byte(counter);
+        Serial.println("DEBUG 1");
+        Serial.println("DEBUG 2");
+        Serial.println("DEBUG 3");
+        Serial.println("DEBUG 4");
+        Serial.println("DEBUG 5");
+        Serial.println("DEBUG 6");
+        Serial.println("DEBUG 7");
+        Serial.println("DEBUG 8");
+        Serial.println("DEBUG 9");
+        Serial.println("DEBUG 10");
 
         // Dot segment blink.
         if (counter % 2) {
@@ -124,8 +140,22 @@ void loop()
     }
 
     // Output a glyph on the display.
-    Drv7Seg.output(byte_to_shift, 1, 2);
-    Drv7Seg.output(byte_to_shift, 2, 2);
+
+    byte_to_shift = SegMap595.get_mapped_byte(counter);
+    
+    Drv7Seg.output(byte_to_shift, 1);
+
+    byte_to_shift = SegMap595.get_mapped_byte(counter+1);
+    
+    Drv7Seg.output(byte_to_shift, 2);
+
+    byte_to_shift = SegMap595.get_mapped_byte(counter+2);
+    
+    Drv7Seg.output(byte_to_shift, 3);
+
+    byte_to_shift = SegMap595.get_mapped_byte(counter+3);
+    
+    Drv7Seg.output(byte_to_shift, 4);
 
 
     /*--- Counter and output trigger, continued ---*/

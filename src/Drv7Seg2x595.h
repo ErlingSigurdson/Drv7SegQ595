@@ -3,9 +3,7 @@
 /**
  * Filename: Drv7Seg2x595.h
  * ----------------------------------------------------------------------------|---------------------------------------|
- * Purpose:  A class for shifting 2-byte data into 2 daisy-chained 74HC595 ICs.
- *           Usually used to drive a multiplexed 4-digit 7-segment display.
- *           Intended for use with the ESP32 or ESP8266 Arduino core.
+ * Purpose:
  * ----------------------------------------------------------------------------|---------------------------------------|
  * Notes:    One byte is supposed to have just one bit set and all other bits
  *           cleared. The set bit has to be mapped to a display pin (usually
@@ -77,40 +75,32 @@
 
 /*--- Misc ---*/
 
-#define DRV7SEG2X595_MAX_POS              4
+#define DRV7SEG2X595_BLANK_GLYPH       0x00
+#define DRV7SEG2X595_ALL_BITS_SET_MASK 0xFF
 
-#define DRV7SEG2X595_ALL_BITS_SET_MASK    0xFF  // TODO: is it used?
-#define DRV7SEG2X595_BLANK_GLYPH          0x00
+// Duration (in microseconds) of a tiny pause that prevents glyph ghosting.
+#define DRV7SEG2X595_DEFAULT_ANTI_GHOSTING_PAUSE 3000
 
-#define DRV7SEG2X595_POS_BYTE_FIRST       0
-#define DRV7SEG2X595_SEG_BYTE_FIRST       1
+// Comment out if the Arduino core you're using doesn't provide SPI.h library.
+#define DRV7SEG2X595_SPI_IMPLEMENTED
 
-#define DRV7SEG2X595_COMMON_CATHODE       0
-#define DRV7SEG2X595_COMMON_ANODE         1
+// Driver object configuration status codes. Double as return codes for begin_* functions.
+#define DRV7SEG2X595_CONFIG_STATUS_INITIAL      -1
+#define DRV7SEG2X595_CONFIG_STATUS_ERR_SIG_PINS -2
+#define DRV7SEG2X595_CONFIG_STATUS_ERR_POS_BITS -3
+#define DRV7SEG2X595_CONFIG_STATUS_OK            0
 
-// Driver setup status codes. Double as return codes for some functions.
-#define DRV7SEG2X595_STATUS_INITIAL      -1
-#define DRV7SEG2X595_STATUS_ERR_SIG_PINS -2
-#define DRV7SEG2X595_STATUS_ERR_POS_BITS -3
-#define DRV7SEG2X595_STATUS_OK            0
+// output() function return codes.
+#define DRV7SEG2X595_OUTPUT_ERR_NEGATIVE_POS_BIT -4
+#define DRV7SEG2X595_OUTPUT_ERR_INVALID_POS      -5
+#define DRV7SEG2X595_OUTPUT_OK                    0
 
-// Driver setup variant codes.
-#define DRV7SEG2X595_VARIANT_INITIAL     -1
-#define DRV7SEG2X595_VARIANT_BIT_BANGING  0
-#ifndef DRV7SEG2X595_SPI_NOT_IMPLEMENTED
-    #define DRV7SEG2X595_VARIANT_SPI      1
+// Driver object configuration variant codes.
+#define DRV7SEG2X595_CONFIG_VARIANT_INITIAL     -1
+#define DRV7SEG2X595_CONFIG_VARIANT_BIT_BANGING  0
+#ifdef DRV7SEG2X595_SPI_IMPLEMENTED
+    #define DRV7SEG2X595_CONFIG_VARIANT_SPI      1
 #endif
-
-// Function return codes.
-#define DRV7SEG2X595_ERR_MAX_POS             -4
-#define DRV7SEG2X595_ERR_VARIANT_NOT_SET     -5
-#define DRV7SEG2X595_ANTI_GHOSTING_RETENTION  1
-#define DRV7SEG2X595_OK                       0
-
-#define DRV7SEG2X595_DEFAULT_ANTI_GHOSTING_PAUSE 2
-
-// Uncomment if the Arduino core you're using doesn't provide SPI.h library.
-//#define DRV7SEG2X595_SPI_NOT_IMPLEMENTED
 
 
 /****************** DATA TYPES ******************/
@@ -124,19 +114,9 @@ class Drv7Seg2x595Class {
             SegByteFirst = 1
         };
 
-        enum class DisplayType {
-            CommonCathode = 0,
-            CommonAnode   = 1
-        };
-
-        enum class SwitchPolarity {
-            NType = 0,
-            PType = 1
-        };
-
-        enum class GlyphSetId {
-            GlyphSet1 = 1,
-            GlyphSet2 = 2
+        enum class PosSwitchType {
+            ActiveHigh = 1,
+            ActiveLow  = 0
         };
 
 
@@ -145,86 +125,124 @@ class Drv7Seg2x595Class {
         // Default constructor.
         Drv7Seg2x595Class();
 
-        // TODO: comment about reinit
+        // TODO: comments on parameters.
 
-        // Set a driver object to use bit-banging.
-        int32_t init_bb(int32_t byte_order, int32_t display_common_pin, int32_t switch_polarity,
-                        int32_t data_pin, int32_t latch_pin, int32_t clock_pin,
-                        int32_t pos_bit_1, int32_t pos_bit_2 = -1, int32_t pos_bit_3 = -1, int32_t pos_bit_4 = -1
-                       );
-
-        // Set a driver object to use default SPI pins.
-        #ifndef DRV7SEG2X595_SPI_NOT_IMPLEMENTED
-        int32_t init_spi(int32_t  byte_order, int32_t display_common_pin, int32_t switch_polarity,
+        /* Configure a driver object to use bit-banging.
+         *
+         * Returns: zero if configuration was successful, negative integer otherwise
+         * (see the preprocessor macros list for possible values).
+         *
+         * Multiple calls to this method are valid, each call will lead to a fresh configuration.
+         */
+        int32_t begin_bb(ByteOrder byte_order,
+                         PosSwitchType pos_switch_type,
+                         int32_t data_pin,
                          int32_t latch_pin,
-                         int32_t pos_bit_1, int32_t pos_bit_2 = -1, int32_t pos_bit_3 = -1, int32_t pos_bit_4 = -1
+                         int32_t clock_pin,
+                         int32_t pos_bit_1,
+                         int32_t pos_bit_2 = -1,
+                         int32_t pos_bit_3 = -1,
+                         int32_t pos_bit_4 = -1
                         );
+
+        /* Configure a driver object to use SPI with default pins.
+         *
+         * Returns: zero if configuration was successful, negative integer otherwise
+         * (see the preprocessor macros list for possible values).
+         *
+         * Safety of multiple calls to this method depends on hardware and SPI.h implementation.
+         */
+        #ifdef DRV7SEG2X595_SPI_IMPLEMENTED
+        int32_t begin_spi(ByteOrder byte_order,
+                          PosSwitchType pos_switch_type,
+                          int32_t latch_pin,
+                          int32_t pos_bit_1,
+                          int32_t pos_bit_2 = -1,
+                          int32_t pos_bit_3 = -1,
+                          int32_t pos_bit_4 = -1
+                         );
         #endif
 
-        /* Set a driver object to use custom-assigned SPI pins.
+        /* Configure a driver object to use SPI with custom-assigned pins.
          *
-         * Conditional compilation is used because not all Arduino cores
-         * expose the SPI.begin() version that takes custom pins.
+         * Returns: zero if configuration was successful, negative integer otherwise
+         * (see the preprocessor macros list for possible values).
+         *
+         * Conditional compilation is used because only certain Arduino cores (e.g., ESP32 and STM32)
+         * expose the begin() method version that takes custom pins.
+         *
+         * Safety of multiple calls to this method depends on hardware and SPI.h implementation.
          */
         #if defined(ARDUINO_ARCH_ESP32) || defined(ARDUINO_ARCH_STM32)
-        int32_t init_spi_custom(int32_t byte_order, int32_t display_common_pin, int32_t switch_polarity,
-                                int32_t mosi_pin, int32_t latch_pin, int32_t sck_pin,
-                                int32_t pos_bit_1, int32_t pos_bit_2 = -1, int32_t pos_bit_3 = -1, int32_t pos_bit_4 = -1
-                               );
+        int32_t begin_spi_custom_pins(ByteOrder byte_order, 
+                                      PosSwitchType pos_switch_type,
+                                      int32_t mosi_pin,
+                                      int32_t latch_pin,
+                                      int32_t sck_pin,
+                                      int32_t pos_bit_1,
+                                      int32_t pos_bit_2 = -1,
+                                      int32_t pos_bit_3 = -1,
+                                      int32_t pos_bit_4 = -1
+                                     );
         #endif
 
-        /* Shift data into two daisy-chained 595s to output a glyph on a display.
+        /* Shift two bytes into two daisy-chained 595s and then transfer the data into the output register.
          *
-         * Returns: zero if a driver setup was successful, negative integer otherwise
-         * (see the preprocessor macros list for possible values).
+         * Returns: zero if driver object configuration was successful and the specified character position is valid,
+         * negative integer otherwise (see the preprocessor macros list for possible values).
          */
-        int32_t output(uint8_t seg_byte, uint32_t pos,
-                       uint32_t ghosting_prevention_delay = DRV7SEG2X595_DEFAULT_ANTI_GHOSTING_PAUSE);
+        int32_t output(uint8_t  seg_byte,
+                       uint32_t pos,
+                       uint32_t anti_ghosting_pause = DRV7SEG2X595_DEFAULT_ANTI_GHOSTING_PAUSE
+                      );
 
     private:
         /*--- Variables ---*/
 
-        int32_t _status = DRV7SEG2X595_STATUS_INITIAL;
-        int32_t _variant = DRV7SEG2X595_STATUS_INITIAL;
+        int32_t _status  = DRV7SEG2X595_CONFIG_STATUS_INITIAL;
+        int32_t _variant = DRV7SEG2X595_CONFIG_VARIANT_INITIAL;
 
-        int32_t _byte_order;
-        int32_t _display_common_pin;
-        int32_t _switch_polarity;
-
-        int32_t _latch_pin = -1;
+        ByteOrder     _byte_order;
+        PosSwitchType _pos_switch_type;
         
         int32_t _data_pin  = -1;
+        int32_t _latch_pin = -1;
         int32_t _clock_pin = -1;
 
-        #ifndef DRV7SEG2X595_SPI_NOT_IMPLEMENTED
+        #ifdef DRV7SEG2X595_SPI_IMPLEMENTED
         int32_t _mosi_pin  = -1;
         int32_t _sck_pin   = -1;
         #endif
 
-        // Default values after first one are specified in init() declaration to provide for omittability.
-        int32_t _pos_bit_1 = -1;
+        int32_t _pos_bit_1;
         int32_t _pos_bit_2;
         int32_t _pos_bit_3;
         int32_t _pos_bit_4;
-        
-        uint8_t _pos_byte = 0x00;
+        uint8_t _pos_byte = DRV7SEG2X595_BLANK_GLYPH;
 
-        /* A duration (in milliseconds) of a tiny pause that prevents the so-called
-         * "ghosting" of characters being output to a multiplexed 7-segment display.
-         *
-         * Usually 2 milliseconds is enough.
-         *
-         * TODO: move
+        /* Number of a character position where last output glyph is currently retained to prevent ghosting. 
+         * Zero means that nothing is retained right now. 
          */
-        //uint32_t _ghosting_prevention_delay;
-
         uint32_t _anti_ghosting_retention = 0;
-
+        
 
         /*--- Methods ---*/
 
-        bool anti_ghosting_pause_timer_elapsed(uint32_t anti_ghosting_pause);
+        bool anti_ghosting_pause_timer(uint32_t anti_ghosting_pause);
 };
+
+// Class-related aliases.
+constexpr Drv7Seg2x595Class::ByteOrder Drv7Seg2x595PosByteFirst =
+          Drv7Seg2x595Class::ByteOrder::PosByteFirst;
+
+constexpr Drv7Seg2x595Class::ByteOrder Drv7Seg2x595SegByteFirst =
+          Drv7Seg2x595Class::ByteOrder::SegByteFirst;
+
+constexpr Drv7Seg2x595Class::PosSwitchType Drv7Seg2x595ActiveHigh =
+          Drv7Seg2x595Class::PosSwitchType::ActiveHigh;
+
+constexpr Drv7Seg2x595Class::PosSwitchType Drv7Seg2x595ActiveLow =
+          Drv7Seg2x595Class::PosSwitchType::ActiveLow;
 
 
 /*************** GLOBAL VARIABLES ***************/
