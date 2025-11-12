@@ -3,7 +3,12 @@
 /**
  * Filename: Drv7Seg2x595_demo.ino
  * ----------------------------------------------------------------------------|---------------------------------------|
- * Purpose:
+ * Purpose:  An example sketch demonstrating basic usage of the Drv7Seg2x595
+ *           library.
+ *
+ *           Counts seconds from 0 to 60 and outputs tens digit and ones digit
+ *           on two character positions of a 7-segment display. Additionally,
+ *           prints diagnostic information via UART.
  * ----------------------------------------------------------------------------|---------------------------------------|
  * Notes:
  */
@@ -15,6 +20,18 @@
 
 #include <Drv7Seg2x595.h>
 #include <SegMap595.h>
+
+
+/*--- Drv7Seg2x595 library API parameters ---*/
+
+/* Specify the order in which seg_byte and pos_byte go into the shift register.
+ * Use one variant, comment out or delete the other.
+ */
+Drv7Seg2x595Class::ByteOrder byte_order = Drv7Seg2x595PosByteFirst;
+//Drv7Seg2x595Class::ByteOrder byte_order = Drv7Seg2x595SegByteFirst;
+
+Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7Seg2x595PosByteFirst;
+//Drv7Seg2x595Class::ByteOrder byte_order = Drv7Seg2x595SegByteFirst;
 
 
 /*--- SegMap595 library API parameters ---*/

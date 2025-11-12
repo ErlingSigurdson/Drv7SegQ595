@@ -3,7 +3,8 @@
 /**
  * Filename: Drv7Seg2x595.h
  * ----------------------------------------------------------------------------|---------------------------------------|
- * Purpose:
+ * Purpose:  A class for driving a multiplexed 7-segment display using
+ *           two daisy-chained 74HC595 shift register ICs.
  * ----------------------------------------------------------------------------|---------------------------------------|
  * Notes:    One byte is supposed to have just one bit set and all other bits
  *           cleared. The set bit has to be mapped to a display pin (usually
