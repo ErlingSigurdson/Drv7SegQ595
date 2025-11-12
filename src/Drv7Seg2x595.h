@@ -173,7 +173,6 @@ class Drv7Seg2x595Class {
         int32_t _pos_bit_2;
         int32_t _pos_bit_3;
         int32_t _pos_bit_4;
-        uint8_t _pos_byte = DRV7SEG2X595_BLANK_GLYPH;
 
         /* Number of a character position where last output glyph is currently retained to prevent ghosting. 
          * Zero means that nothing is retained right now. 

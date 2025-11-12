@@ -68,34 +68,69 @@ int32_t Drv7Seg2x595Class::begin_bb(ByteOrder byte_order,
     return _status = DRV7SEG2X595_CONFIG_STATUS_OK;
 }
 
-/*
 #ifdef DRV7SEG2X595_SPI_IMPLEMENTED
-void Drv7Seg2x595Class::init_spi(uint32_t latch_pin, uint32_t ghosting_prevention_delay)
+int32_t Drv7Seg2x595Class::begin_spi(ByteOrder byte_order,
+                                     PosSwitchType pos_switch_type,
+                                     int32_t latch_pin,
+                                     int32_t pos_bit_1,
+                                     int32_t pos_bit_2,
+                                     int32_t pos_bit_3,
+                                     int32_t pos_bit_4
+                                    )
 {
-    _variant = Drv7Seg2x595_VARIANT_SPI;
+    _variant = DRV7SEG2X595_CONFIG_VARIANT_SPI;
+
+    _byte_order         = byte_order;
+    _pos_switch_type    = pos_switch_type;
+
     _latch_pin = latch_pin;
-    _ghosting_prevention_delay = ghosting_prevention_delay;
-
-    pinMode(latch_pin, OUTPUT);
-    SPI.begin();
-}
-#endif
-*/
-
-/*
-#if defined(ARDUINO_ARCH_ESP32) || defined(ARDUINO_ARCH_STM32)
-void Drv7Seg2x595Class::init_spi(uint32_t mosi_pin, uint32_t latch_pin, uint32_t sck_pin,
-                                  uint32_t ghosting_prevention_delay)
-{
-    _variant = Drv7Seg2x595_VARIANT_SPI;
-    _latch_pin = latch_pin;
-    _ghosting_prevention_delay = ghosting_prevention_delay;
-
     pinMode(_latch_pin, OUTPUT);
-    SPI.begin(sck_pin, -1, mosi_pin, -1);
+
+    SPI.begin();
+
+    _pos_bit_1 = pos_bit_1;
+    _pos_bit_2 = pos_bit_2;
+    _pos_bit_3 = pos_bit_3;
+    _pos_bit_4 = pos_bit_4;
+
+    return _status = DRV7SEG2X595_CONFIG_STATUS_OK;
 }
 #endif
-*/
+
+#if defined(ARDUINO_ARCH_ESP32) || defined(ARDUINO_ARCH_STM32)
+int32_t Drv7Seg2x595Class::begin_spi_custom_pins(ByteOrder byte_order,
+                                                 PosSwitchType pos_switch_type,
+                                                 int32_t mosi_pin,
+                                                 int32_t latch_pin,
+                                                 int32_t sck_pin,
+                                                 int32_t pos_bit_1,
+                                                 int32_t pos_bit_2,
+                                                 int32_t pos_bit_3,
+                                                 int32_t pos_bit_4
+                                                )
+{
+    _variant = DRV7SEG2X595_CONFIG_VARIANT_SPI;
+
+    _byte_order         = byte_order;
+    _pos_switch_type    = pos_switch_type;
+
+    _mosi_pin  = mosi_pin;
+    _latch_pin = latch_pin;
+    _sck_pin   = sck_pin;
+    pinMode(_mosi_pin,  OUTPUT);
+    pinMode(_latch_pin, OUTPUT);
+    pinMode(_sck_pin,   OUTPUT);
+
+    SPI.begin(_sck_pin, -1, mosi_pin, -1);
+
+    _pos_bit_1 = pos_bit_1;
+    _pos_bit_2 = pos_bit_2;
+    _pos_bit_3 = pos_bit_3;
+    _pos_bit_4 = pos_bit_4;
+
+    return _status = DRV7SEG2X595_CONFIG_STATUS_OK;
+}
+#endif
 
 int32_t Drv7Seg2x595Class::output(uint8_t  seg_byte,
                                   uint32_t pos,
@@ -129,27 +164,27 @@ int32_t Drv7Seg2x595Class::output(uint8_t  seg_byte,
 
     /*--- Composing pos_byte ---*/
 
-    _pos_byte = DRV7SEG2X595_BLANK_GLYPH;
+    uint8_t pos_byte = DRV7SEG2X595_BLANK_GLYPH;
 
     switch (pos) {
         case 1:
             if (_pos_bit_1 < 0) return DRV7SEG2X595_OUTPUT_ERR_NEGATIVE_POS_BIT;
-            _pos_byte |= 1 << _pos_bit_1;
+            pos_byte |= 1 << _pos_bit_1;
             break;
 
         case 2:
             if (_pos_bit_2 < 0) return DRV7SEG2X595_OUTPUT_ERR_NEGATIVE_POS_BIT;
-            _pos_byte |= 1 << _pos_bit_2;
+            pos_byte |= 1 << _pos_bit_2;
             break;
 
         case 3:
             if (_pos_bit_3 < 0) return DRV7SEG2X595_OUTPUT_ERR_NEGATIVE_POS_BIT;
-            _pos_byte |= 1 << _pos_bit_3;
+            pos_byte |= 1 << _pos_bit_3;
             break;
 
         case 4:
             if (_pos_bit_4 < 0) return DRV7SEG2X595_OUTPUT_ERR_NEGATIVE_POS_BIT;
-            _pos_byte |= 1 << _pos_bit_4;
+            pos_byte |= 1 << _pos_bit_4;
             break;
 
         default:
@@ -160,7 +195,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t  seg_byte,
     /*--- Account for character position switch type ---*/
 
     if (_pos_switch_type == Drv7Seg2x595ActiveLow) {
-        _pos_byte ^= static_cast<uint8_t>(DRV7SEG2X595_ALL_BITS_SET_MASK);
+        pos_byte ^= static_cast<uint8_t>(DRV7SEG2X595_ALL_BITS_SET_MASK);
     }
 
 
@@ -170,11 +205,11 @@ int32_t Drv7Seg2x595Class::output(uint8_t  seg_byte,
     uint8_t lower_byte;
     
     if (_byte_order == Drv7Seg2x595PosByteFirst) {
-        upper_byte = _pos_byte;
+        upper_byte = pos_byte;
         lower_byte = seg_byte;
     } else {
         upper_byte = seg_byte;
-        lower_byte = _pos_byte;       
+        lower_byte = pos_byte;
     }
 
 
