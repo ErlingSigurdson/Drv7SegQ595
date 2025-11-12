@@ -138,17 +138,17 @@ int32_t Drv7Seg2x595Class::output(uint8_t  seg_byte,
             break;
 
         case 2:
-            if (_pos_bit_1 < 0) return DRV7SEG2X595_OUTPUT_ERR_NEGATIVE_POS_BIT;
+            if (_pos_bit_2 < 0) return DRV7SEG2X595_OUTPUT_ERR_NEGATIVE_POS_BIT;
             _pos_byte |= 1 << _pos_bit_2;
             break;
 
         case 3:
-            if (_pos_bit_1 < 0) return DRV7SEG2X595_OUTPUT_ERR_NEGATIVE_POS_BIT;
+            if (_pos_bit_3 < 0) return DRV7SEG2X595_OUTPUT_ERR_NEGATIVE_POS_BIT;
             _pos_byte |= 1 << _pos_bit_3;
             break;
 
         case 4:
-            if (_pos_bit_1 < 0) return DRV7SEG2X595_OUTPUT_ERR_NEGATIVE_POS_BIT;
+            if (_pos_bit_4 < 0) return DRV7SEG2X595_OUTPUT_ERR_NEGATIVE_POS_BIT;
             _pos_byte |= 1 << _pos_bit_4;
             break;
 

@@ -6,9 +6,9 @@
  * Purpose:  An example sketch demonstrating basic usage of the Drv7Seg2x595
  *           library.
  *
- *           Counts seconds from 0 to 60 and outputs tens digit and ones digit
- *           on two character positions of a 7-segment display. Additionally,
- *           prints diagnostic information via UART.
+ *           Counts from 0 to 60 and outputs tens digit and ones digit on two
+ *           character positions of a 7-segment display. Additionally, prints
+ *           diagnostic information via UART.
  * ----------------------------------------------------------------------------|---------------------------------------|
  * Notes:
  */
@@ -107,7 +107,7 @@ SegMap595Class::GlyphSetId glyph_set_id = SegMap595GlyphSet1;
 #define BAUD_RATE 115200
 
 // Counting interval ("once in X milliseconds").
-#define INTERVAL  1000
+#define INTERVAL 500
 
 
 /******************* FUNCTIONS ******************/
@@ -116,7 +116,9 @@ void setup()
 {
     Serial.begin(BAUD_RATE);
 
-    // Byte mapping.
+
+    /*--- Byte mapping ---*/
+
     SegMap595.init(MAP_STR, display_common_pin, glyph_set_id);
 
     /* Mapping status check.
@@ -132,6 +134,11 @@ void setup()
             delay(INTERVAL);
         }
     }
+
+
+    /*--- Driver object configuration ---*/
+
+    // TODO: same status check for Drv7Seg.
 
     #ifdef USE_BIT_BANGING
     Drv7Seg.begin_bb(byte_order,
@@ -166,7 +173,7 @@ void loop()
     static uint64_t previous_millis = current_millis;
 
     static size_t counter = 0;
-    static size_t counter_max = 60;
+    static size_t counter_max = 60;  // TODO: comment or macrosize
     if (counter > counter_max) {
         counter = 0;
     }
@@ -181,7 +188,7 @@ void loop()
 
     if (update_due) {
         byte_to_shift_tens = SegMap595.get_mapped_byte(counter / 10);
-        byte_to_shift_tens = SegMap595.get_mapped_byte(counter % 10);
+        byte_to_shift_ones = SegMap595.get_mapped_byte(counter % 10);
         update_due = false;
     }
 
