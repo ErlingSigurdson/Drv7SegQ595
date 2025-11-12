@@ -201,9 +201,7 @@ constexpr Drv7Seg2x595Class::PosSwitchType Drv7Seg2x595ActiveLow =
 
 /*************** GLOBAL VARIABLES ***************/
 
-/* An Arduino-style singleton object.
- * More instances of the same class can be created if necessary.
- */
+// An Arduino-style singleton object.
 extern Drv7Seg2x595Class Drv7Seg;
 
 
