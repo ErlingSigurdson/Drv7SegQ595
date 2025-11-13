@@ -109,6 +109,8 @@ SegMap595Class::GlyphSetId glyph_set_id = SegMap595GlyphSet1;
 // Counting interval ("once in X milliseconds").
 #define INTERVAL 500
 
+#define MAX_COUNT 100
+
 
 /******************* FUNCTIONS ******************/
 
@@ -173,7 +175,7 @@ void loop()
     static uint64_t previous_millis = current_millis;
 
     static size_t counter = 0;
-    static size_t counter_max = 60;  // TODO: comment or macrosize
+    static size_t counter_max = MAX_COUNT;
     if (counter >= counter_max) {
         counter = 0;
     }
