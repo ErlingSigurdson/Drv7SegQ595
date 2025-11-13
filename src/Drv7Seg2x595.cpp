@@ -134,31 +134,36 @@ int32_t Drv7Seg2x595Class::begin_spi_custom_pins(ByteOrder byte_order,
 
 int32_t Drv7Seg2x595Class::output(uint8_t  seg_byte,
                                   uint32_t pos,
-                                  uint32_t anti_ghosting_pause
+                                  uint32_t anti_ghosting_retention_duration_us
                                  )
 {
+    /*--- Configuration status check ---*/
+
     if (_status < 0) {
         return _status;
     }
 
-    if (_anti_ghosting_retention > 0) {  // If retention is in process.
 
-        // If this method has been called not for the character position the retention was started for.
-        if (_anti_ghosting_retention != pos) {
-            return DRV7SEG2X595_OUTPUT_OK;
+    /*--- Anti-ghosting retention ---*/
+
+    static bool first_call = true;
+
+    if (first_call == false) {  /* On the first call to this method the anti-ghosting retention is not in effect yet,
+                                 * therefore the following condition checks take place only on subsequent calls.
+
+        /* If this method has been called not for the character position
+         * that must be turned on next, return and continue the retention.
+         */
+        if (pos != anti_ghosting_retention_next_pos_to_output(_anti_ghosting_retained_pos)) {
+            return DRV7SEG2X595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING;
         }
 
         // If the retention timer hasn't elapsed, return and continue the retention.
-        if (anti_ghosting_pause_timer(anti_ghosting_pause) == false) {
-            return DRV7SEG2X595_OUTPUT_OK;
-        } else {
-            /* If this function has been called for the character position
-             * the retention was started for and the retention timer has elapsed,
-             * finish the retention and let the next character position be turned on.
-             */
-            _anti_ghosting_retention = 0;
-            return DRV7SEG2X595_OUTPUT_OK;
+        if (anti_ghosting_retention_timer(anti_ghosting_retention_duration_us) == false) {
+            return DRV7SEG2X595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING;
         }
+    } else {
+        first_call == false;
     }
 
 
@@ -254,7 +259,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t  seg_byte,
             break;  // Do nothing and hail MISRA.
     }
 
-    _anti_ghosting_retention = pos;
+    _anti_ghosting_retained_pos = pos;
 
     return DRV7SEG2X595_OUTPUT_OK;
 }
@@ -262,7 +267,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t  seg_byte,
 
 /*--- Private methods ---*/
 
-bool Drv7Seg2x595Class::anti_ghosting_pause_timer(uint32_t anti_ghosting_pause)
+bool Drv7Seg2x595Class::anti_ghosting_retention_timer(uint32_t anti_ghosting_retention_duration_us)
 {
     uint64_t current_micros = micros();
     static uint64_t previous_micros = current_micros;
@@ -273,10 +278,27 @@ bool Drv7Seg2x595Class::anti_ghosting_pause_timer(uint32_t anti_ghosting_pause)
         new_lap = false;
     }
 
-    if (current_micros - previous_micros >= anti_ghosting_pause) {
+    if (current_micros - previous_micros >= anti_ghosting_retention_duration_us) {
         new_lap = true;
         return true;
     } else {
         return false;
     }
 }
+
+uint32_t Drv7Seg2x595Class::anti_ghosting_next_pos(uint32_t retained_pos)
+{
+    /* When a character position is retained (output glyph is)
+     *
+     */
+
+
+    if (retained_pos != 4) {
+        return retained_pos + 1;  // Next position to output glyph on is the 
+    } else {
+        return 1;                 /* If 4th position is retained,
+                                   * next position to output glyph on is 1st.
+                                   */ 
+    }
+}
+

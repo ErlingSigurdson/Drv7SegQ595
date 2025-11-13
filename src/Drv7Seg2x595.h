@@ -177,12 +177,13 @@ class Drv7Seg2x595Class {
         /* Number of a character position where last output glyph is currently retained to prevent ghosting. 
          * Zero means that nothing is retained right now. 
          */
-        uint32_t _anti_ghosting_retention = 0;
+        uint32_t _anti_ghosting_retained_pos = 0;
         
 
         /*--- Methods ---*/
 
-        bool anti_ghosting_pause_timer(uint32_t anti_ghosting_pause);
+        bool anti_ghosting_retention_timer(uint32_t anti_ghosting_pause);
+        uint32_t anti_ghosting_next_pos_to_output(uint32_t retained_pos);
 };
 
 // Class-related aliases.
