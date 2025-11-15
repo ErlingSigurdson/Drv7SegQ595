@@ -6,7 +6,8 @@
  * Purpose:  A class for driving a multiplexed 7-segment display using
  *           two daisy-chained 74HC595 shift register ICs.
  * ----------------------------------------------------------------------------|---------------------------------------|
- * Notes:    Number of controlled character positions (digits) is from 1 to 4.
+ * Notes:    Works with displays that have from 1 to 4
+ *           character positions (digits).
  *
  *           TODO dependencies (SPI.h).
  *           TODO up to 4 digits (positions)
