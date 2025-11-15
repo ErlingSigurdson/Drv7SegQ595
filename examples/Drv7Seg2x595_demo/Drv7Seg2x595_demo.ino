@@ -6,11 +6,13 @@
  * Purpose:  An example sketch demonstrating basic usage of the Drv7Seg2x595
  *           library.
  *
- *           Counts from 0 to 60 and outputs tens digit and ones digit on two
- *           character positions of a 7-segment display. Additionally, prints
- *           diagnostic information via UART.
+ *           Counts from 0 to 9999 and outputs the digits by rank
+ *           on a 7-segment display with the number of character positions
+ *           (digits) from 1 to 4. Additionally, prints diagnostic information
+ *           via UART.
  * ----------------------------------------------------------------------------|---------------------------------------|
- * Notes:
+ * Notes:    Refer to the README for a general library overview.
+ *           Refer to Drv7Seg2x595.h for a detailed API description.
  */
 
 
@@ -38,14 +40,14 @@
 /* Specify the order in which seg_byte and pos_byte are placed within
  * the shift register. Use one variant, comment out or delete the other.
  */
-Drv7Seg2x595Class::ByteOrder byte_order = Drv7Seg2x595PosByteFirst;
-//Drv7Seg2x595Class::ByteOrder byte_order = Drv7Seg2x595SegByteFirst;
+Drv7Seg2x595Class::ByteOrder byte_order = Drv7SegPosByteFirst;
+//Drv7Seg2x595Class::ByteOrder byte_order = Drv7SegSegByteFirst;
 
 /* Specify a signal level that turns on the character positions of your display.
  * Use one variant, comment out or delete the other.
  */
-Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7Seg2x595ActiveHigh;
-//Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7Seg2x595ActiveLow;
+Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7SegActiveHigh;
+//Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7SegActiveLow;
 
 // Specify appropriately based on your wiring. Variant for bit-banging.
 #ifdef USE_BIT_BANGING
@@ -56,21 +58,29 @@ Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7Seg2x595ActiveHigh;
 
 // Specify appropriately based on your wiring. Variant for SPI with default pins.
 #ifdef USE_SPI_DEFAULT_PINS
-    #define LATCH_PIN 17
+    #ifdef LATCH_PIN
+        #undef LATCH_PIN
+        #define LATCH_PIN 17
+    #endif
 #endif
 
 // Specify appropriately based on your wiring. Variant for SPI with custom-assigned pins.
 #ifdef USE_SPI_CUSTOM_PINS
-    #define MOSI_PIN  16  // TODO sensible default
-    #define LATCH_PIN 17
-    #define SCK_PIN   18  // TODO sensible default
+    #define MOSI_PIN      16  // TODO sensible default
+    #ifdef LATCH_PIN
+        #undef LATCH_PIN
+        #define LATCH_PIN 17
+    #endif
+    #define SCK_PIN       18  // TODO sensible default
 #endif
 
 /* Specify appropriately based on your wiring: which pos_byte bits
  * control the character positions of your 7-segment display?
  */
-#define POS_1_BIT 7
-#define POS_2_BIT 5
+#define POS_1_BIT Drv7SegPosBit7
+#define POS_2_BIT Drv7SegPosBit5
+#define POS_3_BIT Drv7SegPosBit3
+#define POS_4_BIT Drv7SegPosBit1
 
 
 /*--- SegMap595 library API parameters ---*/
@@ -78,7 +88,7 @@ Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7Seg2x595ActiveHigh;
 /* Map string.
  *
  * This string must reflect the actual (physical) order of connections made between
- * parallel outputs of your 74HC595 and segment control pins of your 7-segment display.
+ * the parallel outputs of your 74HC595 and segment control pins of your 7-segment display.
  *
  * The map string must consist of exactly 8 ASCII characters: @, A, B, C, D, E, F and G.
  * Every character corresponds to a single segment (@ stands for a dot).
@@ -146,24 +156,33 @@ void setup()
     Drv7Seg.begin_bb(byte_order,
                      pos_switch_type,
                      DATA_PIN, LATCH_PIN, CLOCK_PIN,
+                     //POS_1_BIT
                      POS_1_BIT, POS_2_BIT
+                     //POS_1_BIT, POS_2_BIT, POS_3_BIT
+                     //POS_1_BIT, POS_2_BIT, POS_3_BIT, POS_4_BIT
                     );
     #endif
 
     #ifdef USE_SPI_DEFAULT_PINS
-    Drv7Seg.begin_bb(byte_order,
-                     pos_switch_type,
-                     LATCH_PIN,
-                     POS_1_BIT, POS_2_BIT
+    Drv7Seg.begin_spi(byte_order,
+                      pos_switch_type,
+                      LATCH_PIN,
+                      //POS_1_BIT,
+                      POS_1_BIT, POS_2_BIT
+                      //POS_1_BIT, POS_2_BIT, POS_3_BIT
+                      //POS_1_BIT, POS_2_BIT, POS_3_BIT, POS_4_BIT
                     );
     #endif
 
     #ifdef USE_SPI_CUSTOM_PINS
-    Drv7Seg.begin_bb(byte_order,
-                     pos_switch_type,
-                     MOSI_PIN, LATCH_PIN, SCK_PIN,
-                     POS_1_BIT, POS_2_BIT
-                    );
+    Drv7Seg.begin_spi_custom_pins(byte_order,
+                                  pos_switch_type,
+                                  MOSI_PIN, LATCH_PIN, SCK_PIN,
+                                  //POS_1_BIT
+                                  POS_1_BIT, POS_2_BIT
+                                  //POS_1_BIT, POS_2_BIT, POS_3_BIT
+                                  //POS_1_BIT, POS_2_BIT, POS_3_BIT, POS_4_BIT
+                                 );
     #endif
 }
 
@@ -185,8 +204,8 @@ void loop()
 
     /*--- Demo output ---*/
 
-    static uint8_t byte_to_shift_tens = DRV7SEG2X595_BLANK_GLYPH;
-    static uint8_t byte_to_shift_ones = DRV7SEG2X595_BLANK_GLYPH;
+    static uint8_t byte_to_shift_tens;
+    static uint8_t byte_to_shift_ones;
 
     if (update_due) {
         byte_to_shift_tens = SegMap595.get_mapped_byte(counter / 10);
@@ -194,8 +213,8 @@ void loop()
         update_due = false;
     }
 
-    Drv7Seg.output(byte_to_shift_tens, 1);
-    Drv7Seg.output(byte_to_shift_ones, 2);
+    Drv7Seg.output(byte_to_shift_tens, Drv7SegPos1);
+    Drv7Seg.output(byte_to_shift_ones, Drv7SegPos2);
 
 
     /*--- Counter and output trigger, continued ---*/
@@ -204,5 +223,6 @@ void loop()
         ++counter;
         update_due = true;
         previous_millis = current_millis;
+        Serial.println("DEBUG 1");
     }
 }

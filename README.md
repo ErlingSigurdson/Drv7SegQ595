@@ -132,6 +132,8 @@ the `#define DRV7SEG2X595_SPI_NOT_IMPLEMENTED` preprocessor directive in `Drv7Se
 * **SegMap595** C++ library (see links below) is used in the example sketch to
 simplify proper glyph output, but otherwise isn't necessary at all. 
 
+TODO: micros provided
+
 ## Links
 
 ### This library

@@ -6,12 +6,11 @@
  * Purpose:  A class for driving a multiplexed 7-segment display using
  *           two daisy-chained 74HC595 shift register ICs.
  * ----------------------------------------------------------------------------|---------------------------------------|
- * Notes:
+ * Notes:    Number of controlled character positions (digits) is from 1 to 4.
+ *
  *           TODO dependencies (SPI.h).
  *           TODO up to 4 digits (positions)
  *           TODO what if not first digit on a physical display?
- *           TODO API method for status check?
- *           TODO delay() --> millis()-based timer.
  */
 
 
@@ -30,25 +29,30 @@
 
 /*--- Misc ---*/
 
-#define DRV7SEG2X595_BLANK_GLYPH       0x00
-#define DRV7SEG2X595_ALL_BITS_SET_MASK 0xFF
+#define DRV7SEG2X595_MSB 7
+#define DRV7SEG2X595_LSB 0
 
-// Duration (in microseconds) of a tiny pause that prevents glyph ghosting.
-#define DRV7SEG2X595_DEFAULT_ANTI_GHOSTING_PAUSE 3000
+#define DRV7SEG2X595_POS_MIN 1
+#define DRV7SEG2X595_POS_MAX 4
+
+#define DRV7SEG2X595_ALL_BITS_CLEARED_MASK 0x00
+#define DRV7SEG2X595_ALL_BITS_SET_MASK     0xFF
+
+// Duration (in microseconds) of a tiny pause that prevents the glyph ghosting.
+#define DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION_US 100
+
+// Driver object configuration status codes. Double as return codes for begin_* functions and their helpers.
+#define DRV7SEG2X595_CONFIG_STATUS_INITIAL     -1
+#define DRV7SEG2X595_CONFIG_STATUS_ERR_POS_BIT -2
+#define DRV7SEG2X595_CONFIG_STATUS_OK           0
+
+// output() function return codes.
+#define DRV7SEG2X595_OUTPUT_POS_BIT_NOT_SPECIFIED_FOR_POS   -1
+#define DRV7SEG2X595_OUTPUT_INVALID_POS                     -2
+#define DRV7SEG2X595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING  0
 
 // Comment out if the Arduino core you're using doesn't provide SPI.h library.
 #define DRV7SEG2X595_SPI_IMPLEMENTED
-
-// Driver object configuration status codes. Double as return codes for begin_* functions.
-#define DRV7SEG2X595_CONFIG_STATUS_INITIAL      -1
-#define DRV7SEG2X595_CONFIG_STATUS_ERR_SIG_PINS -2
-#define DRV7SEG2X595_CONFIG_STATUS_ERR_POS_BITS -3
-#define DRV7SEG2X595_CONFIG_STATUS_OK            0
-
-// output() function return codes.
-#define DRV7SEG2X595_OUTPUT_ERR_NEGATIVE_POS_BIT -4
-#define DRV7SEG2X595_OUTPUT_ERR_INVALID_POS      -5
-#define DRV7SEG2X595_OUTPUT_OK                    0
 
 // Driver object configuration variant codes.
 #define DRV7SEG2X595_CONFIG_VARIANT_INITIAL     -1
@@ -74,6 +78,25 @@ class Drv7Seg2x595Class {
             ActiveLow  = 0
         };
 
+        enum class PosBit {
+            PosBitInitial = -1,
+            PosBit0       =  DRV7SEG2X595_LSB,  // 0
+            PosBit1       =  1,
+            PosBit2       =  2,
+            PosBit3       =  3,
+            PosBit4       =  4,
+            PosBit5       =  5,
+            PosBit6       =  6,
+            PosBit7       =  DRV7SEG2X595_MSB   // 7
+        };
+
+        enum class Pos {
+            Pos1 = DRV7SEG2X595_POS_MIN,  // 1
+            Pos2 = 2,
+            Pos3 = 3,
+            Pos4 = DRV7SEG2X595_POS_MAX   // 4
+        };
+
 
         /*--- Methods ---*/
 
@@ -82,7 +105,7 @@ class Drv7Seg2x595Class {
 
         // TODO: comments on parameters.
 
-        /* Configure a driver object to use bit-banging.
+        /* Configure the driver object to use bit-banging.
          *
          * Returns: zero if configuration was successful, negative integer otherwise
          * (see the preprocessor macros list for possible values).
@@ -91,16 +114,16 @@ class Drv7Seg2x595Class {
          */
         int32_t begin_bb(ByteOrder byte_order,
                          PosSwitchType pos_switch_type,
-                         int32_t data_pin,
-                         int32_t latch_pin,
-                         int32_t clock_pin,
-                         int32_t pos_bit_1,
-                         int32_t pos_bit_2 = -1,
-                         int32_t pos_bit_3 = -1,
-                         int32_t pos_bit_4 = -1
+                         uint32_t data_pin,
+                         uint32_t latch_pin,
+                         uint32_t clock_pin,
+                         PosBit pos_1_bit,
+                         PosBit pos_2_bit = PosBit::PosBitInitial,
+                         PosBit pos_3_bit = PosBit::PosBitInitial,
+                         PosBit pos_4_bit = PosBit::PosBitInitial
                         );
 
-        /* Configure a driver object to use SPI with default pins.
+        /* Configure the driver object to use SPI with default pins.
          *
          * Returns: zero if configuration was successful, negative integer otherwise
          * (see the preprocessor macros list for possible values).
@@ -110,15 +133,15 @@ class Drv7Seg2x595Class {
         #ifdef DRV7SEG2X595_SPI_IMPLEMENTED
         int32_t begin_spi(ByteOrder byte_order,
                           PosSwitchType pos_switch_type,
-                          int32_t latch_pin,
-                          int32_t pos_bit_1,
-                          int32_t pos_bit_2 = -1,
-                          int32_t pos_bit_3 = -1,
-                          int32_t pos_bit_4 = -1
+                          uint32_t latch_pin,
+                          PosBit pos_1_bit,
+                          PosBit pos_2_bit = PosBit::PosBitInitial,
+                          PosBit pos_3_bit = PosBit::PosBitInitial,
+                          PosBit pos_4_bit = PosBit::PosBitInitial
                          );
         #endif
 
-        /* Configure a driver object to use SPI with custom-assigned pins.
+        /* Configure the driver object to use SPI with custom-assigned pins.
          *
          * Returns: zero if configuration was successful, negative integer otherwise
          * (see the preprocessor macros list for possible values).
@@ -131,24 +154,25 @@ class Drv7Seg2x595Class {
         #if defined(ARDUINO_ARCH_ESP32) || defined(ARDUINO_ARCH_STM32)
         int32_t begin_spi_custom_pins(ByteOrder byte_order, 
                                       PosSwitchType pos_switch_type,
-                                      int32_t mosi_pin,
-                                      int32_t latch_pin,
-                                      int32_t sck_pin,
-                                      int32_t pos_bit_1,
-                                      int32_t pos_bit_2 = -1,
-                                      int32_t pos_bit_3 = -1,
-                                      int32_t pos_bit_4 = -1
+                                      uint32_t mosi_pin,
+                                      uint32_t latch_pin,
+                                      uint32_t sck_pin,
+                                      PosBit pos_1_bit,
+                                      PosBit pos_2_bit = PosBit::PosBitInitial,
+                                      PosBit pos_3_bit = PosBit::PosBitInitial,
+                                      PosBit pos_4_bit = PosBit::PosBitInitial
                                      );
         #endif
 
         /* Shift two bytes into two daisy-chained 595s and then transfer the data into the output register.
          *
-         * Returns: zero if driver object configuration was successful and the specified character position is valid,
+         * Returns: zero if the driver object configuration was successful and the specified character position is valid,
          * negative integer otherwise (see the preprocessor macros list for possible values).
          */
-        int32_t output(uint8_t  seg_byte,
-                       uint32_t pos,
-                       uint32_t anti_ghosting_pause = DRV7SEG2X595_DEFAULT_ANTI_GHOSTING_PAUSE
+        int32_t output(uint8_t seg_byte,
+                       Pos pos,
+                       uint32_t anti_ghosting_retention_duration_us =
+                           DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION_US
                       );
 
     private:
@@ -159,9 +183,10 @@ class Drv7Seg2x595Class {
 
         ByteOrder     _byte_order;
         PosSwitchType _pos_switch_type;
+
+        int32_t _latch_pin = -1;
         
         int32_t _data_pin  = -1;
-        int32_t _latch_pin = -1;
         int32_t _clock_pin = -1;
 
         #ifdef DRV7SEG2X595_SPI_IMPLEMENTED
@@ -169,35 +194,79 @@ class Drv7Seg2x595Class {
         int32_t _sck_pin   = -1;
         #endif
 
-        int32_t _pos_bit_1;
-        int32_t _pos_bit_2;
-        int32_t _pos_bit_3;
-        int32_t _pos_bit_4;
+        PosBit _pos_1_bit;
+        PosBit _pos_2_bit;
+        PosBit _pos_3_bit;
+        PosBit _pos_4_bit;
+        uint32_t _active_positions = 0;
 
-        /* Number of a character position where last output glyph is currently retained to prevent ghosting. 
-         * Zero means that nothing is retained right now. 
-         */
-        uint32_t _anti_ghosting_retained_pos = 0;
-        
+        bool     _anti_ghosting_first_output_call = true;
+        Pos      _anti_ghosting_retained_pos;
+        bool     _anti_ghosting_timer_new_lap = true;
+        uint64_t _anti_ghosting_timer_previous_micros;
+
 
         /*--- Methods ---*/
 
-        bool anti_ghosting_retention_timer(uint32_t anti_ghosting_pause);
-        uint32_t anti_ghosting_next_pos_to_output(uint32_t retained_pos);
+        // Helper method that assigns the values of the parameters common to all configuration variants.
+        int32_t begin_helper(int32_t config_variant,
+                             ByteOrder byte_order,
+                             PosSwitchType pos_switch_type,
+
+                             // Latch pin is used in all variants.
+                             int32_t latch_pin,
+
+                             /* These parameters always have values, even if they were omitted
+                              * in the begin_*() method call (in this case default values are assigned).
+                              */
+                             PosBit pos_1_bit,
+                             PosBit pos_2_bit,
+                             PosBit pos_3_bit,
+                             PosBit pos_4_bit
+                            );
+
+        bool anti_ghosting_timer(uint32_t retention_duration_us);
+        Pos  anti_ghosting_next_pos_to_output(Pos retained_pos);
 };
 
 // Class-related aliases.
-constexpr Drv7Seg2x595Class::ByteOrder Drv7Seg2x595PosByteFirst =
+constexpr Drv7Seg2x595Class::ByteOrder Drv7SegPosByteFirst =
           Drv7Seg2x595Class::ByteOrder::PosByteFirst;
-
-constexpr Drv7Seg2x595Class::ByteOrder Drv7Seg2x595SegByteFirst =
+constexpr Drv7Seg2x595Class::ByteOrder Drv7SegSegByteFirst =
           Drv7Seg2x595Class::ByteOrder::SegByteFirst;
 
-constexpr Drv7Seg2x595Class::PosSwitchType Drv7Seg2x595ActiveHigh =
+constexpr Drv7Seg2x595Class::PosSwitchType Drv7SegActiveHigh =
           Drv7Seg2x595Class::PosSwitchType::ActiveHigh;
-
-constexpr Drv7Seg2x595Class::PosSwitchType Drv7Seg2x595ActiveLow =
+constexpr Drv7Seg2x595Class::PosSwitchType Drv7SegActiveLow =
           Drv7Seg2x595Class::PosSwitchType::ActiveLow;
+
+constexpr Drv7Seg2x595Class::PosBit Drv7SegPosBitInitial =
+          Drv7Seg2x595Class::PosBit::PosBitInitial;
+constexpr Drv7Seg2x595Class::PosBit Drv7SegPosBit0 =
+          Drv7Seg2x595Class::PosBit::PosBit0;
+constexpr Drv7Seg2x595Class::PosBit Drv7SegPosBit1 =
+          Drv7Seg2x595Class::PosBit::PosBit1;
+constexpr Drv7Seg2x595Class::PosBit Drv7SegPosBit2 =
+          Drv7Seg2x595Class::PosBit::PosBit2;
+constexpr Drv7Seg2x595Class::PosBit Drv7SegPosBit3 =
+          Drv7Seg2x595Class::PosBit::PosBit3;
+constexpr Drv7Seg2x595Class::PosBit Drv7SegPosBit4 =
+          Drv7Seg2x595Class::PosBit::PosBit4;
+constexpr Drv7Seg2x595Class::PosBit Drv7SegPosBit5 =
+          Drv7Seg2x595Class::PosBit::PosBit5;
+constexpr Drv7Seg2x595Class::PosBit Drv7SegPosBit6 =
+          Drv7Seg2x595Class::PosBit::PosBit6;
+constexpr Drv7Seg2x595Class::PosBit Drv7SegPosBit7 =
+          Drv7Seg2x595Class::PosBit::PosBit7;
+
+constexpr Drv7Seg2x595Class::Pos Drv7SegPos1 =
+          Drv7Seg2x595Class::Pos::Pos1;
+constexpr Drv7Seg2x595Class::Pos Drv7SegPos2 =
+          Drv7Seg2x595Class::Pos::Pos2;
+constexpr Drv7Seg2x595Class::Pos Drv7SegPos3 =
+          Drv7Seg2x595Class::Pos::Pos3;
+constexpr Drv7Seg2x595Class::Pos Drv7SegPos4 =
+          Drv7Seg2x595Class::Pos::Pos4;
 
 
 /*************** GLOBAL VARIABLES ***************/
