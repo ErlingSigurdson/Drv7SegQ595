@@ -262,6 +262,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
              * individually or the whole character position will be turned off.
              */
             shiftOut(_data_pin, _clock_pin, MSBFIRST, DRV7SEG2X595_ALL_BITS_CLEARED_MASK);
+            shiftOut(_data_pin, _clock_pin, MSBFIRST, DRV7SEG2X595_ALL_BITS_CLEARED_MASK);
             digitalWrite(_latch_pin, HIGH);
 
             digitalWrite(_latch_pin, LOW);
@@ -278,6 +279,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
              * being zeroed, guarantee that either all segments will be turned off
              * individually or the whole character position will be turned off.
              */
+            SPI.transfer(DRV7SEG2X595_ALL_BITS_CLEARED_MASK);
             SPI.transfer(DRV7SEG2X595_ALL_BITS_CLEARED_MASK);
             digitalWrite(_latch_pin, HIGH);
 

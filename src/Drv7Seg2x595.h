@@ -39,7 +39,7 @@
 #define DRV7SEG2X595_ALL_BITS_SET_MASK     0xFF
 
 // Duration (in microseconds) of a tiny pause that prevents the glyph ghosting.
-#define DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION_US 100
+#define DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION_US 200
 
 // Driver object configuration status codes. Double as return codes for begin_* functions and their helpers.
 #define DRV7SEG2X595_CONFIG_STATUS_INITIAL     -1
