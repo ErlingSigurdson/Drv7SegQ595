@@ -5,7 +5,7 @@ using two daisy-chained 74HC595 shift register ICs.
 
 ## Concept
 
-Typically, 7-segment displays come in models with 1 to 4 digits (character positions). Number of input pins for
+Typically, 7-segment displays come in models with 1 to 4 character positions (digits). Number of input pins for
 any given model equals 8 + number of digits, thus 12 pins is the maximum. Driving a display requires a number o
 individual signals equal to the number of input pins:
 * 8 signals to turn ON and OFF individual segments (including a dot segment).
@@ -42,6 +42,8 @@ should connect to the display's common pins and their collectors should connect 
 
 The wiring in your circuit **may** differ from the schematic provided in this README, and the library will still
 be applicable. The only premise that must be followed is the distinction of `seg_byte` and `pos_byte` roles.
+
+TODO: defaults in the examples sketch corresponds to the circuit diagram image.
 
 ## Multiplexing
 
