@@ -6,9 +6,14 @@
  * Purpose:  An example sketch demonstrating basic usage of the Drv7Seg2x595
  *           library.
  *
- *           Works as a simple electronic clock that counts seconds and minutes
+ *           Works as a simple electronic clock: counts seconds and minutes
  *           and outputs current values on a 7-segment 4-digit display.
- *           Additionally, prints diagnostic information via UART.
+ *           Additionally, prints the values and diagnostic information 
+ *           via UART.
+ *
+ *           The dot (decimal-point, DP) segment of the second character
+ *           position (second digit, where the minutes' ones are output)
+ *           blinks (toggles ON or OFF) once per second (at 0.5 Hz).
  * ----------------------------------------------------------------------------|---------------------------------------|
  * Notes:    Refer to the README for a general library overview.
  *           Refer to Drv7Seg2x595.h for a detailed API description.
