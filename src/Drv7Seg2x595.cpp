@@ -49,7 +49,7 @@ int32_t Drv7Seg2x595Class::begin_bb(ByteOrder byte_order,
                                     PosBit pos_4_bit
                                    )
 {
-    _status = begin_helper(DRV7SEG2X595_CONFIG_VARIANT_BIT_BANGING,
+    _status = begin_helper(DRV7SEG2X595_VARIANT_BIT_BANGING,
                            byte_order,
                            pos_switch_type,
                            latch_pin,
@@ -81,7 +81,7 @@ int32_t Drv7Seg2x595Class::begin_spi(ByteOrder byte_order,
                                      PosBit pos_4_bit
                                     )
 {
-    _status = begin_helper(DRV7SEG2X595_CONFIG_VARIANT_SPI,
+    _status = begin_helper(DRV7SEG2X595_VARIANT_SPI,
                            byte_order,
                            pos_switch_type,
                            latch_pin,
@@ -113,7 +113,7 @@ int32_t Drv7Seg2x595Class::begin_spi_custom_pins(ByteOrder byte_order,
                                                  PosBit pos_4_bit
                                                 )
 {
-    _status = begin_helper(DRV7SEG2X595_CONFIG_VARIANT_SPI,
+    _status = begin_helper(DRV7SEG2X595_VARIANT_SPI,
                            byte_order,
                            pos_switch_type,
                            latch_pin,
@@ -129,7 +129,7 @@ int32_t Drv7Seg2x595Class::begin_spi_custom_pins(ByteOrder byte_order,
     
     _mosi_pin = mosi_pin;
     _sck_pin  = sck_pin;
-    SPI.begin(_sck_pin, -1, mosi_pin, -1);
+    SPI.begin(_sck_pin, -1, _mosi_pin, -1);
     
     return _status;
 }
@@ -195,7 +195,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
     switch (pos) {
         case Drv7SegPos1:
             if (_pos_1_bit == Drv7SegPosBitInitial) {
-                return DRV7SEG2X595_OUTPUT_POS_BIT_NOT_SPECIFIED_FOR_POS;
+                return DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
             } else {
                 pos_byte |= 1u << static_cast<uint32_t>(_pos_1_bit);   
             }
@@ -203,7 +203,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
 
         case Drv7SegPos2:
             if (_pos_2_bit == Drv7SegPosBitInitial) {
-                return DRV7SEG2X595_OUTPUT_POS_BIT_NOT_SPECIFIED_FOR_POS;
+                return DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
             } else {
                 pos_byte |= 1u << static_cast<uint32_t>(_pos_2_bit);   
             }
@@ -211,7 +211,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
 
         case Drv7SegPos3:
             if (_pos_3_bit == Drv7SegPosBitInitial) {
-                return DRV7SEG2X595_OUTPUT_POS_BIT_NOT_SPECIFIED_FOR_POS;
+                return DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
             } else {
                 pos_byte |= 1u << static_cast<uint32_t>(_pos_3_bit);   
             }
@@ -219,7 +219,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
 
         case Drv7SegPos4:
             if (_pos_4_bit == Drv7SegPosBitInitial) {
-                return DRV7SEG2X595_OUTPUT_POS_BIT_NOT_SPECIFIED_FOR_POS;
+                return DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
             } else {
                 pos_byte |= 1u << static_cast<uint32_t>(_pos_4_bit);   
             }
@@ -227,7 +227,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
 
         default:
             // Protection from tricky casts. 
-            return DRV7SEG2X595_OUTPUT_INVALID_POS;
+            return DRV7SEG2X595_OUTPUT_ERR_INVALID_POS;
     }
 
 
@@ -255,12 +255,17 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
     /*--- Shift data ---*/
     
     switch (_variant) {
-        case DRV7SEG2X595_CONFIG_VARIANT_BIT_BANGING:
+        case DRV7SEG2X595_VARIANT_BIT_BANGING:
             digitalWrite(_latch_pin, LOW);
-            /* Shifting a single zeroed byte is enough to produce a blank output,
-             * and byte order is irrelevant, because both seg_byte and pos_byte,
-             * being zeroed, guarantee that either all segments will be turned off
-             * individually or the whole character position will be turned off.
+            /* In theory, shifting a single zeroed byte is enough to produce a blank output,
+             * and byte order is irrelevant, because both seg_byte and pos_byte, being zeroed,
+             * guarantee that either all segments will be turned off individually or the whole
+             * character position will be turned off.
+             *
+             * However, in practice in can lead to artifacts due to imperfectness of shift
+             * register ICs and switching devices. Therefore two bytes are shifted.
+             *
+             * The same is relevant to the SPI variant.
              */
             shiftOut(_data_pin, _clock_pin, MSBFIRST, DRV7SEG2X595_ALL_BITS_CLEARED_MASK);
             shiftOut(_data_pin, _clock_pin, MSBFIRST, DRV7SEG2X595_ALL_BITS_CLEARED_MASK);
@@ -273,13 +278,8 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
             break;
 
         #ifdef DRV7SEG2X595_SPI_IMPLEMENTED
-        case DRV7SEG2X595_CONFIG_VARIANT_SPI:
+        case DRV7SEG2X595_VARIANT_SPI:
             digitalWrite(_latch_pin, LOW);
-            /* Shifting a single zeroed byte is enough to produce a blank output,
-             * and byte order is irrelevant, because both seg_byte and pos_byte,
-             * being zeroed, guarantee that either all segments will be turned off
-             * individually or the whole character position will be turned off.
-             */
             SPI.transfer(DRV7SEG2X595_ALL_BITS_CLEARED_MASK);
             SPI.transfer(DRV7SEG2X595_ALL_BITS_CLEARED_MASK);
             digitalWrite(_latch_pin, HIGH);
@@ -311,8 +311,8 @@ int32_t Drv7Seg2x595Class::begin_helper(int32_t variant,
                                         // Latch pin is used in all variants.
                                         int32_t latch_pin,
 
-                                        /* These parameters always have values, even if they 
-                                         * were omitted in the begin_*() method call
+                                        /* These parameters always have values, even if
+                                         * they were omitted in the begin_*() method call
                                          * (in this case default values are assigned).
                                          */
                                         PosBit pos_1_bit,
@@ -321,25 +321,42 @@ int32_t Drv7Seg2x595Class::begin_helper(int32_t variant,
                                         PosBit pos_4_bit
                                        )
 {
+    /* Highly unlikely to occur without messing with the code,
+     * but still preserved as a redundant safety measure.
+     */
+    if (variant < 0) {
+        return DRV7SEG2X595_STATUS_ERR_VARIANT_NOT_SPECIFIED;
+    }
+
+    // Byte order validity check.
+    if (byte_order != Drv7SegPosByteFirst && byte_order != Drv7SegSegByteFirst) {
+        return DRV7SEG2X595_STATUS_ERR_INVALID_BYTE_ORDER;
+    }
+
+    // Position switch type validity check.
+    if (pos_switch_type != Drv7SegActiveHigh && pos_switch_type != Drv7SegActiveLow) {
+        return DRV7SEG2X595_STATUS_ERR_INVALID_POS_SWITCH_TYPE;
+    }
+
     // Position bits validity check.
     PosBit pos_bit_arr[DRV7SEG2X595_POS_MAX] = {pos_1_bit, pos_2_bit, pos_3_bit, pos_4_bit};
     for (uint32_t i = 0; i < DRV7SEG2X595_POS_MAX; ++i) {
 
-        // First position bit (zero index in the array) must belong to the 0..7 range (from LSB to MSB).
+        // First position bit (array index zero) must belong to the 0..7 range (from LSB to MSB).
         if (i == 0) {
             if (pos_bit_arr[i] < Drv7SegPosBit0 || pos_bit_arr[i] > Drv7SegPosBit7) {
-                return DRV7SEG2X595_CONFIG_STATUS_ERR_POS_BIT;
+                return DRV7SEG2X595_STATUS_ERR_INVALID_POS_BIT;
             } else {
-                ++_active_positions;
+                ++_active_positions;  // Active positions are counted for anti-ghosting purposes.
             }
         }
 
-        // Other position bits must belong to the -1..7 range (from PosBitInitial to MSB).
+        // Other position bits must belong to the -1..7 range (from the initial value to MSB).
         if (i > 0) {
             if (pos_bit_arr[i] < Drv7SegPosBitInitial || pos_bit_arr[i] > Drv7SegPosBit7) {
-                return DRV7SEG2X595_CONFIG_STATUS_ERR_POS_BIT;
+                return DRV7SEG2X595_STATUS_ERR_INVALID_POS_BIT;
             } else if (pos_bit_arr[i] > Drv7SegPosBitInitial) {
-                ++_active_positions;
+                ++_active_positions;  // Active positions are counted for anti-ghosting purposes.
             }
         }
     }
@@ -355,7 +372,7 @@ int32_t Drv7Seg2x595Class::begin_helper(int32_t variant,
 
     pinMode(_latch_pin, OUTPUT);
 
-    return DRV7SEG2X595_CONFIG_STATUS_OK;
+    return DRV7SEG2X595_STATUS_OK;
 }
 
 bool Drv7Seg2x595Class::anti_ghosting_timer(uint32_t anti_ghosting_retention_duration_us)

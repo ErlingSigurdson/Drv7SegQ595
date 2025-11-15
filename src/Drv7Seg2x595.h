@@ -10,7 +10,6 @@
  *           character positions (digits).
  *
  *           TODO dependencies (SPI.h).
- *           TODO up to 4 digits (positions)
  *           TODO what if not first digit on a physical display?
  */
 
@@ -39,27 +38,32 @@
 #define DRV7SEG2X595_ALL_BITS_CLEARED_MASK 0x00
 #define DRV7SEG2X595_ALL_BITS_SET_MASK     0xFF
 
-// Duration (in microseconds) of a tiny pause that prevents the glyph ghosting.
+/* Duration (in microseconds) of a tiny period during which a currently output glyph
+ * is retained on a respective character position. Intended for a glyph ghosting prevention.
+ */
 #define DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION_US 200
 
-// Driver object configuration status codes. Double as return codes for begin_* functions and their helpers.
-#define DRV7SEG2X595_CONFIG_STATUS_INITIAL     -1
-#define DRV7SEG2X595_CONFIG_STATUS_ERR_POS_BIT -2
-#define DRV7SEG2X595_CONFIG_STATUS_OK           0
+// Driver configuration status codes. Double as return codes for begin_* functions and their helpers.
+#define DRV7SEG2X595_STATUS_INITIAL                     -1
+#define DRV7SEG2X595_STATUS_ERR_VARIANT_NOT_SPECIFIED   -2
+#define DRV7SEG2X595_STATUS_ERR_INVALID_BYTE_ORDER      -3
+#define DRV7SEG2X595_STATUS_ERR_INVALID_POS_SWITCH_TYPE -4
+#define DRV7SEG2X595_STATUS_ERR_INVALID_POS_BIT         -5
+#define DRV7SEG2X595_STATUS_OK                           0
 
-// output() function return codes.
-#define DRV7SEG2X595_OUTPUT_POS_BIT_NOT_SPECIFIED_FOR_POS   -1
-#define DRV7SEG2X595_OUTPUT_INVALID_POS                     -2
-#define DRV7SEG2X595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING  0
+// output() method return codes.
+#define DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS -1
+#define DRV7SEG2X595_OUTPUT_ERR_INVALID_POS                   -2
+#define DRV7SEG2X595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING    0
 
 // Comment out if the Arduino core you're using doesn't provide SPI.h library.
 #define DRV7SEG2X595_SPI_IMPLEMENTED
 
-// Driver object configuration variant codes.
-#define DRV7SEG2X595_CONFIG_VARIANT_INITIAL     -1
-#define DRV7SEG2X595_CONFIG_VARIANT_BIT_BANGING  0
+// Driver configuration variant codes.
+#define DRV7SEG2X595_VARIANT_INITIAL     -1
+#define DRV7SEG2X595_VARIANT_BIT_BANGING  0
 #ifdef DRV7SEG2X595_SPI_IMPLEMENTED
-    #define DRV7SEG2X595_CONFIG_VARIANT_SPI      1
+    #define DRV7SEG2X595_VARIANT_SPI      1
 #endif
 
 
@@ -106,7 +110,7 @@ class Drv7Seg2x595Class {
 
         // TODO: comments on parameters.
 
-        /* Configure the driver object to use bit-banging.
+        /* Configure the driver to use bit-banging.
          *
          * Returns: zero if configuration was successful, negative integer otherwise
          * (see the preprocessor macros list for possible values).
@@ -124,7 +128,7 @@ class Drv7Seg2x595Class {
                          PosBit pos_4_bit = PosBit::PosBitInitial
                         );
 
-        /* Configure the driver object to use SPI with default pins.
+        /* Configure the driver to use SPI with default pins.
          *
          * Returns: zero if configuration was successful, negative integer otherwise
          * (see the preprocessor macros list for possible values).
@@ -142,7 +146,7 @@ class Drv7Seg2x595Class {
                          );
         #endif
 
-        /* Configure the driver object to use SPI with custom-assigned pins.
+        /* Configure the driver to use SPI with custom-assigned pins.
          *
          * Returns: zero if configuration was successful, negative integer otherwise
          * (see the preprocessor macros list for possible values).
@@ -167,7 +171,7 @@ class Drv7Seg2x595Class {
 
         /* Shift two bytes into two daisy-chained 595s and then transfer the data into the output register.
          *
-         * Returns: zero if the driver object configuration was successful and the specified character position is valid,
+         * Returns: zero if the driver configuration was successful and the specified character position is valid,
          * negative integer otherwise (see the preprocessor macros list for possible values).
          */
         int32_t output(uint8_t seg_byte,
@@ -179,8 +183,8 @@ class Drv7Seg2x595Class {
     private:
         /*--- Variables ---*/
 
-        int32_t _status  = DRV7SEG2X595_CONFIG_STATUS_INITIAL;
-        int32_t _variant = DRV7SEG2X595_CONFIG_VARIANT_INITIAL;
+        int32_t _status  = DRV7SEG2X595_STATUS_INITIAL;
+        int32_t _variant = DRV7SEG2X595_VARIANT_INITIAL;
 
         ByteOrder     _byte_order;
         PosSwitchType _pos_switch_type;
