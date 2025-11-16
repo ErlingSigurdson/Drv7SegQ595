@@ -6,8 +6,7 @@
  * Purpose:  A class for driving a multiplexed 7-segment display using
  *           two daisy-chained 74HC595 shift register ICs.
  * ----------------------------------------------------------------------------|---------------------------------------|
- * Notes:    Works with displays that have from 1 to 4
- *           character positions (digits).
+ * Notes:    Intended for displays with 1 to 4 character positions (digits).
  */
 
 
@@ -146,52 +145,29 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
         return _status;
     }
 
-    //Serial.println("DEBUG: output func call status check passed.");
-
 
     /*--- Anti-ghosting retention ---*/
 
     if (_anti_ghosting_first_output_call == false) {
-        //Serial.println("DEBUG: _anti_ghosting_first_output_call is __FALSE__");
-    } else {
-        //Serial.println("DEBUG: _anti_ghosting_first_output_call is __TRUE__");
-    }
-
-    if (_anti_ghosting_first_output_call == false) {
-
-        //Serial.println("DEBUG: after first retention has started.");
-        //Serial.print("DEBUG: retained pos is ");
-        //Serial.println(static_cast<uint32_t>(_anti_ghosting_retained_pos));
-
         /* If this method has been called not for the character position
-         * that must be turned on next, return and continue the retention.
+         * that must be light up next, return and continue the retention.
          */
-        if (pos != anti_ghosting_next_pos_to_output(_anti_ghosting_retained_pos)) {
+        if (pos != anti_ghosting_next_pos_to_output()) {
             return DRV7SEG2X595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING;
         }
-
-        //Serial.println("DEBUG: next pos to output reached.");
 
         // If the retention timer hasn't elapsed, return and continue the retention.
         if (anti_ghosting_timer(anti_ghosting_retention_duration_us) == false) {
             return DRV7SEG2X595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING;
         }
-
-        //Serial.println("DEBUG: anti-ghosting timer lapsing detected.");
     } else {
         _anti_ghosting_first_output_call = false;
-    }
-
-    if (_anti_ghosting_first_output_call == false) {
-        //Serial.println("DEBUG: _anti_ghosting_first_output_call is now FALSE.");
     }
 
 
     /*--- Composing pos_byte ---*/
 
     uint8_t pos_byte = DRV7SEG2X595_ALL_BITS_CLEARED_MASK;
-    //Serial.println("DEBUG: composing pos_byte started.");
-
     switch (pos) {
         case Drv7SegPos1:
             if (_pos_1_bit == Drv7SegPosBitInitial) {
@@ -231,14 +207,14 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
     }
 
 
-    /*--- Account for character position switch type ---*/
+    /*--- Account for a character position switch type ---*/
 
     if (_pos_switch_type == Drv7SegActiveLow) {
         pos_byte ^= static_cast<uint8_t>(DRV7SEG2X595_ALL_BITS_SET_MASK);
     }
 
 
-    /*--- Account for byte order ---*/
+    /*--- Account for a byte order ---*/
     
     uint8_t upper_byte;
     uint8_t lower_byte;
@@ -296,7 +272,6 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
     }
 
     _anti_ghosting_retained_pos = pos;
-    //Serial.println("DEBUG: retention started.");
 
     return DRV7SEG2X595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING;
 }
@@ -386,21 +361,22 @@ bool Drv7Seg2x595Class::anti_ghosting_timer(uint32_t anti_ghosting_retention_dur
 
     if (current_micros - _anti_ghosting_timer_previous_micros >= anti_ghosting_retention_duration_us) {
         _anti_ghosting_timer_new_lap = true;
-        return true;
+        return true;   // The timer has lapsed.
     } else {
-        return false;
+        return false;  // The timer hasn't lapsed yet.
     }
 }
 
-Drv7Seg2x595Class::Pos Drv7Seg2x595Class::anti_ghosting_next_pos_to_output(Drv7Seg2x595Class::Pos retained_pos)
+Drv7Seg2x595Class::Pos Drv7Seg2x595Class::anti_ghosting_next_pos_to_output()
 {
-    // If the fourth position is retained, the next position to light up is the first one.
-    if (retained_pos == static_cast<Pos>(_active_positions)) {
+    uint32_t retained_pos_as_int = static_cast<uint32_t>(_anti_ghosting_retained_pos);
+
+    /* If a currently retained position is the last one in the list of active positions,
+     * the next position to light up is the first one (the queue wraps around the edge).
+     */
+    if (retained_pos_as_int >= _active_positions) {
         return Drv7SegPos1;
-    // Otherwise the next position to light up = currently retained position + 1.
-    } else {
-        uint32_t next_pos_as_int = static_cast<uint32_t>(retained_pos) + 1;
-        return static_cast<Pos>(next_pos_as_int);        
+    } else {  // Otherwise the next position to light up = currently retained position number + 1.
+        return static_cast<Pos>(retained_pos_as_int + 1);
     }
 }
-

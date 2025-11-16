@@ -6,11 +6,7 @@
  * Purpose:  A class for driving a multiplexed 7-segment display using
  *           two daisy-chained 74HC595 shift register ICs.
  * ----------------------------------------------------------------------------|---------------------------------------|
- * Notes:    Works with displays that have from 1 to 4
- *           character positions (digits).
- *
- *           TODO dependencies (SPI.h).
- *           TODO what if not first digit on a physical display?
+ * Notes:    Intended for displays with 1 to 4 character positions (digits).
  */
 
 
@@ -43,7 +39,7 @@
  */
 #define DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION_US 200
 
-// Driver configuration status codes. Double as return codes for begin_* functions and their helpers.
+// Driver configuration status codes. Double as return codes for some methods.
 #define DRV7SEG2X595_STATUS_INITIAL                     -1
 #define DRV7SEG2X595_STATUS_ERR_VARIANT_NOT_SPECIFIED   -2
 #define DRV7SEG2X595_STATUS_ERR_INVALID_BYTE_ORDER      -3
@@ -51,9 +47,9 @@
 #define DRV7SEG2X595_STATUS_ERR_INVALID_POS_BIT         -5
 #define DRV7SEG2X595_STATUS_OK                           0
 
-// output() method return codes.
-#define DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS -1
-#define DRV7SEG2X595_OUTPUT_ERR_INVALID_POS                   -2
+// output() method additional return codes.
+#define DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS -6
+#define DRV7SEG2X595_OUTPUT_ERR_INVALID_POS                   -7
 #define DRV7SEG2X595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING    0
 
 // Comment out if the Arduino core you're using doesn't provide SPI.h library.
@@ -79,8 +75,8 @@ class Drv7Seg2x595Class {
         };
 
         enum class PosSwitchType {
-            ActiveHigh = 1,
-            ActiveLow  = 0
+            ActiveHigh = 0,
+            ActiveLow  = 1
         };
 
         enum class PosBit {
@@ -230,8 +226,8 @@ class Drv7Seg2x595Class {
                              PosBit pos_4_bit
                             );
 
-        bool anti_ghosting_timer(uint32_t retention_duration_us);
-        Pos  anti_ghosting_next_pos_to_output(Pos retained_pos);
+        bool anti_ghosting_timer(uint32_t anti_ghosting_retention_duration_us);
+        Pos  anti_ghosting_next_pos_to_output();
 };
 
 // Class-related aliases.

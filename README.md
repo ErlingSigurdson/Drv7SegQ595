@@ -154,3 +154,6 @@ TODO: micros provided
 * Telegram: @erlingsigurdson
 
 Your feedback and pull requests are welcome.
+
+ *           TODO dependencies (SPI.h).
+ *           TODO what if not first digit on a physical display?
