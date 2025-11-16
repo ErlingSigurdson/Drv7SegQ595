@@ -157,3 +157,4 @@ Your feedback and pull requests are welcome.
 
  *           TODO dependencies (SPI.h).
  *           TODO what if not first digit on a physical display?
+ * TODO: note on not using a blocking timer.
