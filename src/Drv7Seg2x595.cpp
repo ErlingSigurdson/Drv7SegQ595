@@ -352,6 +352,12 @@ int32_t Drv7Seg2x595Class::begin_helper(int32_t variant,
 
 bool Drv7Seg2x595Class::anti_ghosting_timer(uint32_t anti_ghosting_retention_duration_us)
 {
+    if (anti_ghosting_retention_duration_us == 0) {
+        return true;  /* If the retention duration is zero, the timer lapses 
+                       * without further calculations and returns early.
+                       */
+    }
+
     uint32_t current_micros = micros();
 
     if (_anti_ghosting_timer_new_lap == true) {
