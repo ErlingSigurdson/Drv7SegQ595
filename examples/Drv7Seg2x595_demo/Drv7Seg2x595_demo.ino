@@ -206,8 +206,8 @@ void loop()
 {
     /*--- Counter and value update trigger ---*/
 
-    uint64_t current_millis = millis();
-    static uint64_t previous_millis = current_millis;
+    uint32_t current_millis = millis();
+    static uint32_t previous_millis = current_millis;
 
     static size_t counter_seconds = 0;
     static size_t counter_minutes = 0;
