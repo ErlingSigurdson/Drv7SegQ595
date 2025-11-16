@@ -44,9 +44,9 @@
  * that provide a suitable SPI.h version (as of the last library
  * update those are ESP32 and STM32 cores).
  */
-//#define USE_BIT_BANGING
+#define USE_BIT_BANGING
 //#define USE_SPI_DEFAULT_PINS
-#define USE_SPI_CUSTOM_PINS
+//#define USE_SPI_CUSTOM_PINS
 
 /* Specify the order in which seg_byte and pos_byte are placed within
  * the shift register. Use one variant, comment out or delete the other.
@@ -69,20 +69,14 @@ Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7SegActiveHigh;
 
 // Specify appropriately based on your wiring. Variant for SPI with default pins.
 #ifdef USE_SPI_DEFAULT_PINS
-    #ifdef LATCH_PIN
-        #undef LATCH_PIN
-    #endif
     #define LATCH_PIN 17
 #endif
 
 // Specify appropriately based on your wiring. Variant for SPI with custom-assigned pins.
 #ifdef USE_SPI_CUSTOM_PINS
-    #define MOSI_PIN     23  // TODO sensible default
-    #ifdef LATCH_PIN
-        #undef LATCH_PIN
-    #endif
-    #define LATCH_PIN    17
-    #define SCK_PIN      19  // TODO sensible default
+    #define MOSI_PIN  23
+    #define LATCH_PIN 17
+    #define SCK_PIN   18
 #endif
 
 /* Specify appropriately based on which pos_byte bits
