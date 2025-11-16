@@ -37,7 +37,7 @@
 /* Duration (in microseconds) of a tiny period during which a currently output glyph
  * is retained on a respective character position. Intended for a glyph ghosting prevention.
  */
-#define DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION_US 200
+#define DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION_US 2000
 
 // Driver configuration status codes. Double as return codes for some methods.
 #define DRV7SEG2X595_STATUS_INITIAL                     -1
