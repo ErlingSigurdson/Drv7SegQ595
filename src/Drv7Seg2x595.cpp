@@ -7,6 +7,11 @@
  *           two daisy-chained 74HC595 shift register ICs.
  * ----------------------------------------------------------------------------|---------------------------------------|
  * Notes:    Intended for displays with 1 to 4 character positions (digits).
+ *
+ *           seg_byte means a byte that turns ON and OFF individual segments.
+ *
+ *           pos_byte means a byte that turns ON and OFF whole character
+ *           positions (digits).
  */
 
 
@@ -18,7 +23,7 @@
 #include "Drv7Seg2x595.h"
 
 // Additional Arduino libraries.
-#ifdef DRV7SEG2X595_SPI_IMPLEMENTED
+#ifdef DRV7SEG2X595_SPI_PROVIDED
     #include <SPI.h>
 #endif
 
@@ -70,7 +75,7 @@ int32_t Drv7Seg2x595Class::begin_bb(ByteOrder byte_order,
     return _status;
 }
 
-#ifdef DRV7SEG2X595_SPI_IMPLEMENTED
+#ifdef DRV7SEG2X595_SPI_PROVIDED
 int32_t Drv7Seg2x595Class::begin_spi(ByteOrder byte_order,
                                      PosSwitchType pos_switch_type,
                                      uint32_t latch_pin,
@@ -100,7 +105,7 @@ int32_t Drv7Seg2x595Class::begin_spi(ByteOrder byte_order,
 }
 #endif
 
-#if defined(ARDUINO_ARCH_ESP32) || defined(ARDUINO_ARCH_STM32)
+#ifdef DRV7SEG2X595_SPI_PROVIDED_CUSTOM_PINS
 int32_t Drv7Seg2x595Class::begin_spi_custom_pins(ByteOrder byte_order,
                                                  PosSwitchType pos_switch_type,
                                                  uint32_t mosi_pin,
@@ -173,7 +178,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
             if (_pos_1_bit == Drv7SegPosBitInitial) {
                 return DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
             } else {
-                pos_byte |= 1u << static_cast<uint32_t>(_pos_1_bit);   
+                pos_byte |= 1u << static_cast<uint8_t>(_pos_1_bit);   
             }
             break;
 
@@ -181,7 +186,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
             if (_pos_2_bit == Drv7SegPosBitInitial) {
                 return DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
             } else {
-                pos_byte |= 1u << static_cast<uint32_t>(_pos_2_bit);   
+                pos_byte |= 1u << static_cast<uint8_t>(_pos_2_bit);   
             }
             break;
 
@@ -189,7 +194,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
             if (_pos_3_bit == Drv7SegPosBitInitial) {
                 return DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
             } else {
-                pos_byte |= 1u << static_cast<uint32_t>(_pos_3_bit);   
+                pos_byte |= 1u << static_cast<uint8_t>(_pos_3_bit);   
             }
             break;
 
@@ -197,12 +202,12 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
             if (_pos_4_bit == Drv7SegPosBitInitial) {
                 return DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
             } else {
-                pos_byte |= 1u << static_cast<uint32_t>(_pos_4_bit);   
+                pos_byte |= 1u << static_cast<uint8_t>(_pos_4_bit);   
             }
             break;
 
         default:
-            // Protection from tricky casts. 
+            // Protection from unexpected casts. 
             return DRV7SEG2X595_OUTPUT_ERR_INVALID_POS;
     }
 
@@ -233,13 +238,13 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
     switch (_variant) {
         case DRV7SEG2X595_VARIANT_BIT_BANGING:
             digitalWrite(_latch_pin, LOW);
-            /* In theory, shifting a single zeroed byte is enough to produce a blank output,
-             * and byte order is irrelevant, because both seg_byte and pos_byte, being zeroed,
-             * guarantee that either all segments will be turned off individually or the whole
-             * character position will be turned off.
+            /* In theory, shifting a single zeroed byte, whether it is seg_byte or pos_byte,
+             * is enough to produce a blank output, because both seg_byte and pos_byte, being
+             * zeroed, guarantee that either all segments will be turned off individually or
+             * the whole character position will be turned off.
              *
-             * However, in practice in can lead to artifacts due to imperfectness of shift
-             * register ICs and switching devices. Therefore two bytes are shifted.
+             * However, in practice it can lead to artifacts due to imperfectness of
+             * shift register ICs and switching devices. Therefore two bytes are shifted.
              *
              * The same is relevant to the SPI variant.
              */
@@ -253,7 +258,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
             digitalWrite(_latch_pin, HIGH);
             break;
 
-        #ifdef DRV7SEG2X595_SPI_IMPLEMENTED
+        #ifdef DRV7SEG2X595_SPI_PROVIDED
         case DRV7SEG2X595_VARIANT_SPI:
             digitalWrite(_latch_pin, LOW);
             SPI.transfer(DRV7SEG2X595_ALL_BITS_CLEARED_MASK);
@@ -282,14 +287,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
 int32_t Drv7Seg2x595Class::begin_helper(int32_t variant,
                                         ByteOrder byte_order,
                                         PosSwitchType pos_switch_type,
-
-                                        // Latch pin is used in all variants.
-                                        int32_t latch_pin,
-
-                                        /* These parameters always have values, even if
-                                         * they were omitted in the begin_*() method call
-                                         * (in this case default values are assigned).
-                                         */
+                                        uint32_t latch_pin,
                                         PosBit pos_1_bit,
                                         PosBit pos_2_bit,
                                         PosBit pos_3_bit,
@@ -309,11 +307,11 @@ int32_t Drv7Seg2x595Class::begin_helper(int32_t variant,
     }
 
     // Position switch type validity check.
-    if (pos_switch_type != Drv7SegActiveHigh && pos_switch_type != Drv7SegActiveLow) {
+    if (pos_switch_type != Drv7SegActiveLow && pos_switch_type != Drv7SegActiveHigh) {
         return DRV7SEG2X595_STATUS_ERR_INVALID_POS_SWITCH_TYPE;
     }
 
-    // Position bits validity check.
+    // Position bits validity check and getting the active positions count.
     PosBit pos_bit_arr[DRV7SEG2X595_POS_MAX] = {pos_1_bit, pos_2_bit, pos_3_bit, pos_4_bit};
     for (uint32_t i = 0; i < DRV7SEG2X595_POS_MAX; ++i) {
 
@@ -322,7 +320,7 @@ int32_t Drv7Seg2x595Class::begin_helper(int32_t variant,
             if (pos_bit_arr[i] < Drv7SegPosBit0 || pos_bit_arr[i] > Drv7SegPosBit7) {
                 return DRV7SEG2X595_STATUS_ERR_INVALID_POS_BIT;
             } else {
-                ++_active_positions;  // Active positions are counted for anti-ghosting purposes.
+                ++_active_positions;  // Active positions count is used within the anti-ghosting logic.
             }
         }
 
@@ -331,7 +329,7 @@ int32_t Drv7Seg2x595Class::begin_helper(int32_t variant,
             if (pos_bit_arr[i] < Drv7SegPosBitInitial || pos_bit_arr[i] > Drv7SegPosBit7) {
                 return DRV7SEG2X595_STATUS_ERR_INVALID_POS_BIT;
             } else if (pos_bit_arr[i] > Drv7SegPosBitInitial) {
-                ++_active_positions;  // Active positions are counted for anti-ghosting purposes.
+                ++_active_positions;  // Active positions count is used within the anti-ghosting logic.
             }
         }
     }
@@ -353,8 +351,8 @@ int32_t Drv7Seg2x595Class::begin_helper(int32_t variant,
 bool Drv7Seg2x595Class::anti_ghosting_timer(uint32_t anti_ghosting_retention_duration_us)
 {
     if (anti_ghosting_retention_duration_us == 0) {
-        return true;  /* If the retention duration is zero, the timer lapses
-                       * without further calculations and returns early.
+        return true;  /* If the passed retention duration is zero, the timer elapses
+                       * without further calculations and the function returns early.
                        */
     }
 
@@ -367,9 +365,9 @@ bool Drv7Seg2x595Class::anti_ghosting_timer(uint32_t anti_ghosting_retention_dur
 
     if (current_micros - _anti_ghosting_timer_previous_micros >= anti_ghosting_retention_duration_us) {
         _anti_ghosting_timer_new_lap = true;
-        return true;   // The timer has lapsed.
+        return true;   // The timer has elapsed.
     } else {
-        return false;  // The timer hasn't lapsed yet.
+        return false;  // The timer hasn't elapsed yet.
     }
 }
 
@@ -377,12 +375,12 @@ Drv7Seg2x595Class::Pos Drv7Seg2x595Class::anti_ghosting_next_pos_to_output()
 {
     uint32_t retained_pos_as_int = static_cast<uint32_t>(_anti_ghosting_retained_pos);
 
-    /* If a currently retained position is the last one in the list of active positions,
-     * the next position to light up is the first one (the queue wraps around the edge).
+    /* If the currently retained position is the last one in the list of active positions,
+     * the next position to be light up is the first one (the queue wraps around the edge).
      */
     if (retained_pos_as_int >= _active_positions) {
         return Drv7SegPos1;
-    } else {  // Otherwise the next position to light up = currently retained position number + 1.
+    } else {  // Otherwise the next position to be light up = currently retained position number + 1.
         return static_cast<Pos>(retained_pos_as_int + 1);
     }
 }

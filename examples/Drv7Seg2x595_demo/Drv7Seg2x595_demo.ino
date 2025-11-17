@@ -6,7 +6,7 @@
  * Purpose:  An example sketch demonstrating basic usage of the Drv7Seg2x595
  *           library.
  *
- *           Works as a simple electronic clock: counts seconds and minutes
+ *           Runs a simple electronic clock: counts seconds and minutes
  *           and outputs current values on a 7-segment 4-digit display.
  *           Additionally, prints the values and diagnostic information 
  *           via UART.
@@ -27,8 +27,8 @@
 #include <Drv7Seg2x595.h>
 
 /* Helper library.
- * Provides the user-friendly API for mapping the parallel outputs of the 74HC595 shift register IC
- * (the one that corresponds to seg_byte) to the segment control pins of your 7-segment display.
+ * Provides a user-friendly API for mapping the parallel outputs of the 74HC595 shift register IC
+ * (the one that corresponds to seg_byte) to the segment control pins of the 7-segment display.
  */
 #include <SegMap595.h>
 
@@ -37,12 +37,15 @@
 
 /* Specify the data transfer approach. Use one variant, comment out or delete the others.
  *
- * SPI is available for the Arduino cores that provide SPI.h
- * (almost every core does, but it's not guaranteed).
+ * Bit-banging uses regular digital outputs.
  *
- * SPI with custom pins is only available for the Arduino cores
- * that provide a suitable SPI.h version (as of the last library
- * update those are ESP32 and STM32 cores).
+ * SPI variant assumes an SPI.h implementation is provided for your board (device).
+ * All major Arduino cores have it, although it's not guaranteed that every single
+ * Arduino core in the world will have it as well.
+ *
+ * SPI variant with custom-assigned pins is only available for those hardware platforms
+ * that support custom SPI pins assignment and have an SPI.h implementation that reflects
+ * such support (as of the last library update those are ESP32 and STM32).
  */
 #define USE_BIT_BANGING
 //#define USE_SPI_DEFAULT_PINS
@@ -57,8 +60,8 @@ Drv7Seg2x595Class::ByteOrder byte_order = Drv7SegPosByteFirst;
 /* Specify the signal level that turns on the character positions of your display.
  * Use one variant, comment out or delete the other.
  */
-Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7SegActiveHigh;
 //Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7SegActiveLow;
+Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7SegActiveHigh;
 
 // Specify appropriately based on your wiring. Variant for bit-banging.
 #ifdef USE_BIT_BANGING
@@ -74,23 +77,24 @@ Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7SegActiveHigh;
 
 // Specify appropriately based on your wiring. Variant for SPI with custom-assigned pins.
 #ifdef USE_SPI_CUSTOM_PINS
-    #define MOSI_PIN  23
+    #define MOSI_PIN  19
     #define LATCH_PIN 17
     #define SCK_PIN   18
 #endif
 
-/* Specify appropriately based on which pos_byte bits
- * control the character positions of your 7-segment display.
- *
- * Valid value syntax is as follows: Drv7SegPosBitX, where X must be from 0 to 7.
+/* Specify appropriately based on which pos_byte bits control
+ * the character positions of your 7-segment display.
  *
  * POS_1_BIT means the leftmost character position (often referred to as 'D1' in 7-segment display pinout diagrams).
  * POS_4_BIT means the rightmost character position (often referred to as 'D4' in 7-segment display pinout diagrams).
+ *
+ * Valid value syntax is as follows: Drv7SegPosBitX, where X must be
+ * from 0 (LSB, 'Q0' parallel output pin) to 7 (MSB, 'Q7' parallel output pin).
  */
-#define POS_1_BIT Drv7SegPosBit7
-#define POS_2_BIT Drv7SegPosBit5
-#define POS_3_BIT Drv7SegPosBit3
-#define POS_4_BIT Drv7SegPosBit1
+#define POS_1_BIT Drv7SegPosBit7  // Assumes that D1 is connected to Q7.
+#define POS_2_BIT Drv7SegPosBit5  // Assumes that D2 is connected to Q5.
+#define POS_3_BIT Drv7SegPosBit3  // Assumes that D3 is connected to Q3.
+#define POS_4_BIT Drv7SegPosBit1  // Assumes that D4 is connected to Q1.
 
 
 /*--- SegMap595 library API parameters ---*/
@@ -244,7 +248,7 @@ void loop()
         }
 
         #ifdef SERIAL_OUTPUT_VALUES
-            Serial.print("Current values are: ");
+            Serial.print("Time since startup: ");
             Serial.print(counter_minutes / 10);
             Serial.print(counter_minutes % 10);
             Serial.print(":");
