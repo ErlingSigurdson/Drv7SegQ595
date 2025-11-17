@@ -215,7 +215,7 @@ class Drv7Seg2x595Class {
                              PosSwitchType pos_switch_type,
 
                              // Latch pin is used in all variants.
-                             int32_t latch_pin,
+                             uint32_t latch_pin,
 
                              /* These parameters always have values, even if they were omitted
                               * in the begin_*() method call (in this case default values are assigned).
