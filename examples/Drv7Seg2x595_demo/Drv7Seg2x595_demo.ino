@@ -89,7 +89,7 @@ Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7SegActiveHigh;
  * POS_4_BIT means the rightmost character position (often referred to as 'D4' in 7-segment display pinout diagrams).
  *
  * Valid value syntax is as follows: Drv7SegPosBitX, where X must be
- * from 0 (LSB, 'Q0' parallel output pin) to 7 (MSB, 'Q7' parallel output pin).
+ * from 0 (LSB, 'Q0' output pin) to 7 (MSB, 'Q7' output pin).
  */
 #define POS_1_BIT Drv7SegPosBit7  // Assumes that D1 is connected to Q7.
 #define POS_2_BIT Drv7SegPosBit5  // Assumes that D2 is connected to Q5.
