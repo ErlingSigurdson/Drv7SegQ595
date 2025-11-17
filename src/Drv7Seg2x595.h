@@ -189,13 +189,13 @@ class Drv7Seg2x595Class {
          * data_pin is replaced with mosi_pin and clock_pin is replaced with sck_pin.
          *
          * This method is only available (via conditional compilation) for those hardware platforms that
-         * support custom SPI pins assignment and have an SPI.h implementation that reflects such support 
+         * support custom SPI pins assignment and have an SPI.h implementation that reflects such support
          * (as of the last library update those are ESP32 and STM32).
          *
          * Safety of multiple calls to this method depends on the SPI.h implementation.
          */
         #ifdef DRV7SEG2X595_SPI_PROVIDED_CUSTOM_PINS
-        int32_t begin_spi_custom_pins(ByteOrder byte_order, 
+        int32_t begin_spi_custom_pins(ByteOrder byte_order,
                                       PosSwitchType pos_switch_type,
                                       uint32_t mosi_pin,
                                       uint32_t latch_pin,
@@ -236,7 +236,7 @@ class Drv7Seg2x595Class {
         PosSwitchType _pos_switch_type;
 
         int32_t _latch_pin = -1;
-        
+
         int32_t _data_pin  = -1;
         int32_t _clock_pin = -1;
 

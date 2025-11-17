@@ -66,7 +66,7 @@ int32_t Drv7Seg2x595Class::begin_bb(ByteOrder byte_order,
     if (_status < 0) {
         return _status;
     }
-    
+
     _data_pin  = data_pin;
     _clock_pin = clock_pin;
     pinMode(_data_pin,  OUTPUT);
@@ -98,7 +98,7 @@ int32_t Drv7Seg2x595Class::begin_spi(ByteOrder byte_order,
     if (_status < 0) {
         return _status;
     }
-    
+
     SPI.begin();
 
     return _status;
@@ -130,11 +130,11 @@ int32_t Drv7Seg2x595Class::begin_spi_custom_pins(ByteOrder byte_order,
     if (_status < 0) {
         return _status;
     }
-    
+
     _mosi_pin = mosi_pin;
     _sck_pin  = sck_pin;
     SPI.begin(_sck_pin, -1, _mosi_pin, -1);
-    
+
     return _status;
 }
 #endif
@@ -178,7 +178,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
             if (_pos_1_bit == Drv7SegPosBitInitial) {
                 return DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
             } else {
-                pos_byte |= 1u << static_cast<uint8_t>(_pos_1_bit);   
+                pos_byte |= 1u << static_cast<uint8_t>(_pos_1_bit);
             }
             break;
 
@@ -186,7 +186,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
             if (_pos_2_bit == Drv7SegPosBitInitial) {
                 return DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
             } else {
-                pos_byte |= 1u << static_cast<uint8_t>(_pos_2_bit);   
+                pos_byte |= 1u << static_cast<uint8_t>(_pos_2_bit);
             }
             break;
 
@@ -194,7 +194,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
             if (_pos_3_bit == Drv7SegPosBitInitial) {
                 return DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
             } else {
-                pos_byte |= 1u << static_cast<uint8_t>(_pos_3_bit);   
+                pos_byte |= 1u << static_cast<uint8_t>(_pos_3_bit);
             }
             break;
 
@@ -202,12 +202,12 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
             if (_pos_4_bit == Drv7SegPosBitInitial) {
                 return DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
             } else {
-                pos_byte |= 1u << static_cast<uint8_t>(_pos_4_bit);   
+                pos_byte |= 1u << static_cast<uint8_t>(_pos_4_bit);
             }
             break;
 
         default:
-            // Protection from unexpected casts. 
+            // Protection from unexpected casts.
             return DRV7SEG2X595_OUTPUT_ERR_INVALID_POS;
     }
 
@@ -220,10 +220,10 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
 
 
     /*--- Account for a byte order ---*/
-    
+
     uint8_t upper_byte;
     uint8_t lower_byte;
-    
+
     if (_byte_order == Drv7SegPosByteFirst) {
         upper_byte = pos_byte;
         lower_byte = seg_byte;
@@ -234,7 +234,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
 
 
     /*--- Shift data ---*/
-    
+
     switch (_variant) {
         case DRV7SEG2X595_VARIANT_BIT_BANGING:
             digitalWrite(_latch_pin, LOW);
