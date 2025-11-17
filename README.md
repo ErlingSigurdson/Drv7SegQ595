@@ -8,7 +8,7 @@ using two daisy-chained 74HC595 shift register ICs.
 Typically, 7-segment displays come in models with 1 to 4 character positions (digits). Number of input pins for
 any given model equals 8 + number of digits, thus 12 pins is the maximum. Driving a display requires a number o
 individual signals equal to the number of input pins:
-* 8 signals to turn ON and OFF individual segments (including a dot segment, also known as a decimal point or DP).
+* 8 signals to turn ON and OFF individual segments (including a dot segment, also known as a decimal point or 'DP').
 * 1 to 4 signals to turn ON and OFF whole digits.
 
 Due to significant number of output signals required for driving a 7-segment display, output-extending devices,
