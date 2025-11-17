@@ -11,7 +11,7 @@
  *           Additionally, prints the values and diagnostic information 
  *           via UART.
  *
- *           The dot (decimal-point, DP) segment of the second character
+ *           The dot segment (decimal point, DP) of the second character
  *           position (second digit, where the minutes' ones are output)
  *           blinks (toggles ON or OFF) once per second (at 0.5 Hz).
  * ----------------------------------------------------------------------------|---------------------------------------|
