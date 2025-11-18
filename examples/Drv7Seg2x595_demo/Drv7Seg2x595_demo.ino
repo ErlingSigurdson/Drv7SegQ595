@@ -104,15 +104,16 @@ Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7SegActiveHigh;
  * This string must reflect the actual (physical) order of connections made between
  * the parallel outputs of your 74HC595 and the segment control pins of your 7-segment display.
  *
- * The map string must consist of exactly 8 ASCII characters: '@', 'A', 'B', 'C', 'D', 'E', 'F' and 'G'.
- * Every character corresponds to a single segment ('@' stands for a dot, also known as a decimal point or 'DP').
+ * The map string must consist of exactly 8 ASCII characters: @, A, B, C, D, E, F and G.
+ * Every character corresponds to a single segment (@ stands for a dot, also known as a decimal point or DP).
  *
- * The first (leftmost) character in the map string corresponds to the 7th (most significant)
- * bit of the IC's parallel outputs ('Q7' output), the last (rightmost) character corresponds to
- * the 0th (least significant) bit ('Q0' output).
+ * The first (leftmost) character in the map string corresponds to the 7th bit (most significant bit, MSB) of a byte
+ * stored in the shift register, connected to the Q7 parallel output.
+ * The last (rightmost) character in the map string corresponds to the 0th bit (least significant bit, LSB) of a byte
+ * stored in the shift register, connected to the Q0 parallel output.
  *
- * Uppercase characters may be replaced with their lowercase counterparts. Any other characters
- * are invalid. Duplicating characters is invalid as well.
+ * Uppercase characters may be replaced with their lowercase counterparts. Any other characters are invalid.
+ * Duplicating characters is invalid as well.
  */
 #define MAP_STR "ED@CGAFB"
 
@@ -127,6 +128,9 @@ SegMap595Class::GlyphSetId glyph_set_id = SegMap595GlyphSet1;
 
 /*--- Misc ---*/
 
+// Comment out or delete to suppress the UART output.
+#define SERIAL_OUTPUT_TIMER_VALUES
+
 // Set appropriately based on the baud rate you use.
 #define BAUD_RATE 115200
 
@@ -135,8 +139,6 @@ SegMap595Class::GlyphSetId glyph_set_id = SegMap595GlyphSet1;
 
 #define MAX_COUNT_MINUTES 60
 #define MAX_COUNT_SECONDS 60
-
-#define SERIAL_OUTPUT_VALUES
 
 
 /******************* FUNCTIONS ******************/
@@ -204,6 +206,7 @@ void loop()
 {
     /*--- Counter and value update trigger ---*/
 
+    // Counter.
     uint32_t current_millis = millis();
     static uint32_t previous_millis = current_millis;
 
@@ -247,8 +250,8 @@ void loop()
             seg_byte_minutes_ones ^= mask;
         }
 
-        #ifdef SERIAL_OUTPUT_VALUES
-            Serial.print("Timer (minutes and seconds): ");
+        #ifdef SERIAL_OUTPUT_TIMER_VALUES
+            Serial.print("Timer values (minutes and seconds): ");
             Serial.print(counter_minutes / 10);
             Serial.print(counter_minutes % 10);
             Serial.print(":");
