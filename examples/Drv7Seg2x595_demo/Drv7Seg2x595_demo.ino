@@ -77,7 +77,7 @@ Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7SegActiveHigh;
 
 // Specify appropriately based on your wiring. Variant for SPI with custom-assigned pins.
 #ifdef USE_SPI_CUSTOM_PINS
-    #define MOSI_PIN  19
+    #define MOSI_PIN  16
     #define LATCH_PIN 17
     #define SCK_PIN   18
 #endif
