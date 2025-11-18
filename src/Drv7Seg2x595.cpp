@@ -155,7 +155,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
 
     if (anti_ghosting_retention_duration_us > 0 && _anti_ghosting_first_output_call == false) {
         /* If this method has been called not for the character position
-         * that must be light up next, return and continue the retention.
+         * that must be turned on next, return and continue the retention.
          */
         if (pos != anti_ghosting_next_pos_to_output()) {
             return DRV7SEG2X595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING;
@@ -376,11 +376,11 @@ Drv7Seg2x595Class::Pos Drv7Seg2x595Class::anti_ghosting_next_pos_to_output()
     uint32_t retained_pos_as_int = static_cast<uint32_t>(_anti_ghosting_retained_pos);
 
     /* If the currently retained position is the last one in the list of active positions,
-     * the next position to be light up is the first one (the queue wraps around the edge).
+     * the next position to be turned on is the first one (the queue wraps around the edge).
      */
     if (retained_pos_as_int >= _active_positions) {
         return Drv7SegPos1;
-    } else {  // Otherwise the next position to be light up = currently retained position number + 1.
+    } else {  // Otherwise the next position to be turned on = currently retained position number + 1.
         return static_cast<Pos>(retained_pos_as_int + 1);
     }
 }

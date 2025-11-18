@@ -139,7 +139,7 @@ class Drv7Seg2x595Class {
          * - byte_order                     - within a 16-bit register formed by two ICs either
          *                                    pos_byte is an upper byte and seg_byte is a lower byte or
          *                                    seg_byte is an upper byte and pos_byte is a lower byte.
-         * - pos_switch_type                - character positions are light up either
+         * - pos_switch_type                - character positions are turned on either
          *                                    by set (active-high) or cleared (active-low) pos_byte bits.
          * - data_pin, latch_pin, clock_pin - pins used for bit-banging and latching.
          * - pos_N_bit                      - pos_byte bits that control character positions.
@@ -287,7 +287,7 @@ class Drv7Seg2x595Class {
                              PosBit pos_4_bit
                             );
 
-        // Find out which character position (digit) must be light up next after the current retention period is over.
+        // Find out which character position (digit) must be turned on next after the current retention period is over.
         Pos  anti_ghosting_next_pos_to_output();
 
         // Find out if the last retention period has elapsed.
