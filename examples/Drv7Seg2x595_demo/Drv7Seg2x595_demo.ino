@@ -16,7 +16,7 @@
  *           blinks (toggles ON or OFF) once per second (at 0.5 Hz).
  * ----------------------------------------------------------------------------|---------------------------------------|
  * Notes:    Refer to the README for a general library overview.
- *           Refer to Drv7Seg2x595.h for a detailed API description.
+ *           Refer to Drv7Seg2x595.h for more API details.
  */
 
 
@@ -248,7 +248,7 @@ void loop()
         }
 
         #ifdef SERIAL_OUTPUT_VALUES
-            Serial.print("Time since startup: ");
+            Serial.print("Timer (minutes and seconds): ");
             Serial.print(counter_minutes / 10);
             Serial.print(counter_minutes % 10);
             Serial.print(":");
