@@ -170,3 +170,5 @@ In Drv7Seg2x595 README: You still **can** drive a single-digit display using two
 PCB (all KiCAD stuff) license note
 
 MCU explaining meaning early in the README text
+
+TODO: only one begin_*() method to choose

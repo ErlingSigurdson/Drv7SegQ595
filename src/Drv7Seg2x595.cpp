@@ -278,7 +278,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
 
     _anti_ghosting_retained_pos = pos;
 
-    return DRV7SEG2X595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING;
+    return DRV7SEG2X595_OUTPUT_NEXT;
 }
 
 

@@ -59,7 +59,8 @@
 // output() method additional return codes.
 #define DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS -6
 #define DRV7SEG2X595_OUTPUT_ERR_INVALID_POS                   -7
-#define DRV7SEG2X595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING    0
+#define DRV7SEG2X595_OUTPUT_NEXT                               0
+#define DRV7SEG2X595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING    1
 
 #if defined(DRV7SEG2X595_SPI_PROVIDED_ASSUMED) || \
     defined(ARDUINO_ARCH_AVR)                  || \
@@ -136,10 +137,11 @@ class Drv7Seg2x595Class {
          *
          * Parameters:
          * - byte_order                     - within a 16-bit register formed by two ICs either
-         *                                    pos_byte is an upper byte and seg_byte is a lower byte,
-         *                                    or vice versa.
-         * - pos_switch_type                - are character positions turned on by set or cleared pos_byte bits.
-         * - data_pin, latch_pin, clock_pin - pins used for bit-banging.
+         *                                    pos_byte is an upper byte and seg_byte is a lower byte or
+         *                                    seg_byte is an upper byte and pos_byte is a lower byte.
+         * - pos_switch_type                - character positions are light up either
+         *                                    by set (active-high) or cleared (active-low) pos_byte bits.
+         * - data_pin, latch_pin, clock_pin - pins used for bit-banging and latching.
          * - pos_N_bit                      - pos_byte bits that control character positions.
          *                                    pos_1_bit must be specified, other bits are optional
          *                                    (respective parameters can be omitted).
@@ -209,12 +211,16 @@ class Drv7Seg2x595Class {
 
         /* Shift two bytes into two daisy-chained ICs and then latch the data into the output register.
          *
-         * Returns: zero if the driver configuration was successful and all passed parameters are valid,
-         * a negative integer otherwise (see the preprocessor macros list for possible values).
+         * Returns:
+         * - a negative integer if the driver configuration failed or not all passed parameters are valid
+         *   (see the preprocessor macros list for possible values).
+         * - zero if the output of the next glyph has been commenced.
+         * - a positive integer if an anti-ghosting retention is running.
          *
          * Parameters:
          * - seg_byte                            - a byte that corresponds to a glyph to be output.
-         * - pos                                 - a number of character position (digit) the glyph must be output on.
+         * - pos                                 - a number of the character position (digit) the next glyph
+         *                                         must be output on.
          * - anti_ghosting_retention_duration_us - duration (in microseconds) of a short period during which
          *                                         a currently output glyph is retained on a respective
          *                                         character position. This parameter is optional, if
