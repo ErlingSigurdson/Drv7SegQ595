@@ -153,7 +153,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
 
     /*--- Anti-ghosting retention ---*/
 
-    if (_anti_ghosting_first_output_call == false) {
+    if (anti_ghosting_retention_duration_us > 0 && _anti_ghosting_first_output_call == false) {
         /* If this method has been called not for the character position
          * that must be light up next, return and continue the retention.
          */
