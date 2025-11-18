@@ -214,7 +214,7 @@ class Drv7Seg2x595Class {
          * Returns:
          * - a negative integer if the driver configuration failed or not all passed parameters are valid
          *   (see the preprocessor macros list for possible values).
-         * - zero if the output of the next glyph has been commenced.
+         * - zero if the program execution has reached the next glyph output code sequence.
          * - a positive integer if an anti-ghosting retention is running.
          *
          * Parameters:
