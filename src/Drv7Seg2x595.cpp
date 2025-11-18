@@ -332,6 +332,13 @@ int32_t Drv7Seg2x595Class::begin_helper(int32_t variant,
                 ++_active_positions;  // Active positions count is used within the anti-ghosting logic.
             }
         }
+
+        // Position bits duplication check.
+        for (uint32_t j = i + 1; j < DRV7SEG2X595_POS_MAX; ++j) {
+            if pos_bit_arr[i] == pos_bit_arr[j] {
+                return DRV7SEG2X595_STATUS_ERR_POS_BIT_DUPLICATION;
+            }
+        }
     }
 
     _variant         = variant;
