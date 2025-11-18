@@ -246,7 +246,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
              * However, in practice it can lead to artifacts due to imperfectness of
              * shift register ICs and switching devices. Therefore two bytes are shifted.
              *
-             * The same is relevant to the SPI variant.
+             * The same is applicable to the SPI variant.
              */
             shiftOut(_data_pin, _clock_pin, MSBFIRST, DRV7SEG2X595_ALL_BITS_CLEARED_MASK);
             shiftOut(_data_pin, _clock_pin, MSBFIRST, DRV7SEG2X595_ALL_BITS_CLEARED_MASK);
@@ -380,7 +380,10 @@ Drv7Seg2x595Class::Pos Drv7Seg2x595Class::anti_ghosting_next_pos_to_output()
      */
     if (retained_pos_as_int >= _active_positions) {
         return Drv7SegPos1;
-    } else {  // Otherwise the next position to be turned on = currently retained position number + 1.
+    /* Otherwise the number of the next position to be turned on
+     * equals (current retained position number) + 1.
+     */
+    } else {
         return static_cast<Pos>(retained_pos_as_int + 1);
     }
 }
