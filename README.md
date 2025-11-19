@@ -174,6 +174,7 @@ MCU explaining meaning early in the README text
 TODO: only one begin_*() method to choose
 
 TODO re how to use output() method:
-     * Call output() method in quick successfion for all character positions
-     * that were assigned a position bit at begin_*() method call.
+     * Call output() method in quick succession for all character positions
+     * controlled by pos_byte (for every position to which a position bit was
+     * assigned at begin_*() method call).
      */
