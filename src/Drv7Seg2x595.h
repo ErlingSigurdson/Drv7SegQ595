@@ -263,7 +263,6 @@ class Drv7Seg2x595Class {
         uint32_t _active_positions = 0;
         bool     _anti_ghosting_first_output_call = true;
         Pos      _anti_ghosting_retained_pos;
-        bool     _anti_ghosting_timer_new_lap = true;
         uint32_t _anti_ghosting_timer_previous_micros;
 
 

@@ -276,7 +276,9 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
             break;  // Do nothing and hail MISRA.
     }
 
+    // Update the values related to the anti-ghosting logic.
     _anti_ghosting_retained_pos = pos;
+    _anti_ghosting_timer_previous_micros = micros();
 
     return DRV7SEG2X595_OUTPUT_NEXT;
 }
@@ -367,13 +369,7 @@ bool Drv7Seg2x595Class::anti_ghosting_timer(uint32_t anti_ghosting_retention_dur
 
     uint32_t current_micros = micros();
 
-    if (_anti_ghosting_timer_new_lap == true) {
-        _anti_ghosting_timer_previous_micros = current_micros;
-        _anti_ghosting_timer_new_lap = false;
-    }
-
     if (current_micros - _anti_ghosting_timer_previous_micros >= anti_ghosting_retention_duration_us) {
-        _anti_ghosting_timer_new_lap = true;
         return true;   // The timer has elapsed.
     } else {
         return false;  // The timer hasn't elapsed yet.
