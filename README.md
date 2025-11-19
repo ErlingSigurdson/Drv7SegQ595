@@ -35,7 +35,7 @@ via a switching device (most commonly a transistor), since 595's ability to sour
 a whole set of 7 LEDs gets close to exceeds its electrical limitations.
 
 Here's a typical circuit diagram for the described arrangement (assumes a common cathode display):
-![Circuit diagram (schematic)](assets/circuit_diagram_(schematic).png)
+![Circuit diagram (schematic)](assets/images/circuit_diagram_(schematic).png)
 
 Wiring for a common-anode display is almost identical, the only difference being that the transistors' emitters
 should connect to the display's common pins and their collectors should connect to the circuit's positive rail (VCC).
