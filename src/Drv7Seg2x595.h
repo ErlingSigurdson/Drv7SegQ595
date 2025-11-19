@@ -6,7 +6,10 @@
  * Purpose:  A class for driving a multiplexed 7-segment display using
  *           two daisy-chained 74HC595 shift register ICs.
  * ----------------------------------------------------------------------------|---------------------------------------|
- * Notes:    Intended for displays with 1 to 4 character positions (digits).
+ * Notes:    Refer to the README for a general library overview and
+ *           a basic API usage description.
+ *
+ *           Intended for displays with 1 to 4 character positions (digits).
  *
  *           seg_byte means a byte that turns ON and OFF individual segments.
  *

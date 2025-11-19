@@ -15,7 +15,9 @@
  *           position (second digit, where the minutes' ones are output)
  *           blinks (toggles ON or OFF) once per second (at 0.5 Hz).
  * ----------------------------------------------------------------------------|---------------------------------------|
- * Notes:    Refer to the README for a general library overview.
+ * Notes:    Refer to the README for a general library overview and
+ *           a basic API usage description.
+ *
  *           Refer to Drv7Seg2x595.h for more API details.
  */
 

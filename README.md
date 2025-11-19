@@ -178,3 +178,5 @@ TODO re how to use output() method:
      * controlled by pos_byte (for every position to which a position bit was
      * assigned at begin_*() method call).
      */
+
+Refer to `Drv7Seg2x595.h` for more API details.
