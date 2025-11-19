@@ -11,7 +11,7 @@
  *           Additionally, prints the values and diagnostic information 
  *           via UART.
  *
- *           The dot segment (decimal point, 'DP') of the second character
+ *           The dot segment (decimal point, DP) of the second character
  *           position (second digit, where the minutes' ones are output)
  *           blinks (toggles ON or OFF) once per second (at 0.5 Hz).
  * ----------------------------------------------------------------------------|---------------------------------------|
@@ -54,14 +54,14 @@
 /* Specify the order in which seg_byte and pos_byte are placed within
  * the shift register. Use one variant, comment out or delete the other.
  */
-Drv7Seg2x595Class::ByteOrder byte_order = Drv7SegPosByteFirst;
-//Drv7Seg2x595Class::ByteOrder byte_order = Drv7SegSegByteFirst;
+#define BYTE_SHIFT_ORDER Drv7SegPosByteFirst
+//#define BYTE_SHIFT_ORDER Drv7SegSegByteFirst
 
 /* Specify the signal level that turns on the character positions of your display.
  * Use one variant, comment out or delete the other.
  */
-//Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7SegActiveLow;
-Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7SegActiveHigh;
+//#define POS_SWITCH_TYPE Drv7SegActiveLow
+#define POS_SWITCH_TYPE Drv7SegActiveHigh
 
 // Specify appropriately based on your wiring. Variant for bit-banging.
 #ifdef USE_BIT_BANGING
@@ -85,11 +85,11 @@ Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7SegActiveHigh;
 /* Specify appropriately based on which pos_byte bits control
  * the character positions of your 7-segment display.
  *
- * POS_1_BIT means the leftmost character position (often referred to as 'D1' in 7-segment display pinout diagrams).
- * POS_4_BIT means the rightmost character position (often referred to as 'D4' in 7-segment display pinout diagrams).
+ * POS_1_BIT means the leftmost character position (often referred to as D1 in 7-segment display pinout diagrams).
+ * POS_4_BIT means the rightmost character position (often referred to as D4 in 7-segment display pinout diagrams).
  *
  * Valid value syntax is as follows: Drv7SegPosBitX, where X must be
- * from 0 (LSB, 'Q0' output pin) to 7 (MSB, 'Q7' output pin).
+ * from 0 (LSB, Q0 output pin) to 7 (MSB, Q7 output pin).
  */
 #define POS_1_BIT Drv7SegPosBit7  // Assumes that D1 is connected to Q7.
 #define POS_2_BIT Drv7SegPosBit5  // Assumes that D2 is connected to Q5.
@@ -118,12 +118,12 @@ Drv7Seg2x595Class::PosSwitchType pos_switch_type = Drv7SegActiveHigh;
 #define MAP_STR "ED@CGAFB"
 
 // Specify your display type based on its common pin. Use one variant, comment out or delete the other.
-SegMap595Class::DisplayType display_common_pin = SegMap595CommonCathode;
-//SegMap595Class::DisplayType display_common_pin = SegMap595CommonAnode;
+#define DISPLAY_COMMON_PIN SegMap595CommonCathode
+//#define DISPLAY_COMMON_PIN SegMap595CommonAnode
 
 // Select a glyph set. Use one variant, comment out or delete the other.
-SegMap595Class::GlyphSetId glyph_set_id = SegMap595GlyphSet1;
-//SegMap595Class::GlyphSetId glyph_set_id = SegMap595GlyphSet2;
+#define GLYPH_SET_ID SegMap595GlyphSet1
+//#define GLYPH_SET_ID SegMap595GlyphSet2
 
 
 /*--- Misc ---*/
@@ -150,7 +150,7 @@ void setup()
 
     /*--- Byte mapping ---*/
 
-    SegMap595.init(MAP_STR, display_common_pin, glyph_set_id);
+    SegMap595.init(MAP_STR, DISPLAY_COMMON_PIN, GLYPH_SET_ID);
 
     /* Mapping status check.
      * You can also check the value returned by init() instead of calling get_status().
@@ -172,21 +172,21 @@ void setup()
     int32_t drv_config_status = -1;  // Initial value equals an idiomatic error indicator.
 
     #ifdef USE_BIT_BANGING
-    drv_config_status = Drv7Seg.begin_bb(byte_order, pos_switch_type,
+    drv_config_status = Drv7Seg.begin_bb(BYTE_SHIFT_ORDER, POS_SWITCH_TYPE,
                                          DATA_PIN, LATCH_PIN, CLOCK_PIN,
                                          POS_1_BIT, POS_2_BIT, POS_3_BIT, POS_4_BIT
                                         );
     #endif
 
     #ifdef USE_SPI_DEFAULT_PINS
-    drv_config_status = Drv7Seg.begin_spi(byte_order, pos_switch_type,
+    drv_config_status = Drv7Seg.begin_spi(BYTE_SHIFT_ORDER, POS_SWITCH_TYPE,
                                           LATCH_PIN,
                                           POS_1_BIT, POS_2_BIT, POS_3_BIT, POS_4_BIT
                                          );
     #endif
 
     #ifdef USE_SPI_CUSTOM_PINS
-    drv_config_status = Drv7Seg.begin_spi_custom_pins(byte_order, pos_switch_type,
+    drv_config_status = Drv7Seg.begin_spi_custom_pins(BYTE_SHIFT_ORDER, POS_SWITCH_TYPE,
                                                       MOSI_PIN, LATCH_PIN, SCK_PIN,
                                                       POS_1_BIT, POS_2_BIT, POS_3_BIT, POS_4_BIT
                                                      );
