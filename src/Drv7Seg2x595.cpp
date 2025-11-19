@@ -304,6 +304,7 @@ int32_t Drv7Seg2x595Class::begin_helper(int32_t variant,
     }
 
     // Byte order validity check.
+    _active_positions = 0;
     if (byte_order != Drv7SegPosByteFirst && byte_order != Drv7SegSegByteFirst) {
         return DRV7SEG2X595_STATUS_ERR_INVALID_BYTE_ORDER;
     }
