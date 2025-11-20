@@ -382,17 +382,40 @@ bool Drv7Seg2x595Class::anti_ghosting_timer(uint32_t anti_ghosting_retention_dur
 
 Drv7Seg2x595Class::Pos Drv7Seg2x595Class::anti_ghosting_next_pos_to_output()
 {
-    uint32_t retained_pos_as_int = static_cast<uint32_t>(_anti_ghosting_retained_pos);
-
-    /* If the currently retained position is the last one in the list of active positions,
-     * the next position to be turned on is the first one (the queue wraps around the edge).
-     */
-    if (retained_pos_as_int >= _active_positions) {
+    if (_active_positions == 1) {
         return Drv7SegPos1;
-    /* Otherwise the number of the next position to be turned on
-     * equals (current retained position number) + 1.
+    }
+
+    /* goto is used here intentionally, because many Arduino core still rely
+     * on C++11 which lacks a standardized way to mark the fall-through
+     * as intentional and thus supress the related warnings.
      */
-    } else {
-        return static_cast<Pos>(retained_pos_as_int + 1);
+    switch (_anti_ghosting_retained_pos) {
+        case Drv7SegPos1:
+            if (_pos_2_bit != Drv7SegPosBitInitial) {
+                return Drv7SegPos2;
+            } else {
+                goto case_2;
+            }
+
+        case Drv7SegPos2:
+        case_2:
+            if (_pos_3_bit != Drv7SegPosBitInitial) {
+                return Drv7SegPos3;
+            } else {
+                goto case_3;
+            }
+
+        case Drv7SegPos3:
+        case_3:
+            if (_pos_4_bit != Drv7SegPosBitInitial) {
+                return Drv7SegPos4;
+            } else {
+                goto case_default;
+            }
+
+        default:  // Will be also triggered if _anti_ghosting_retained_pos == Drv7SegPos4.
+        case_default:
+            return Drv7SegPos1;  // Character position 1 is guaranteed to be active.
     }
 }
