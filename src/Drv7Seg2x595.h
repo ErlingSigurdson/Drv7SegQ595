@@ -124,10 +124,10 @@ class Drv7Seg2x595Class {
         };
 
         enum class Pos {
-            Pos1 = DRV7SEG2X595_POS_MIN,  // 1
-            Pos2 = 2,
-            Pos3 = 3,
-            Pos4 = DRV7SEG2X595_POS_MAX   // 4
+            Pos1 =  DRV7SEG2X595_POS_MIN,  // 1
+            Pos2 =  2,
+            Pos3 =  3,
+            Pos4 =  DRV7SEG2X595_POS_MAX   // 4
         };
 
 
@@ -257,13 +257,9 @@ class Drv7Seg2x595Class {
         int32_t _sck_pin   = -1;
         #endif
 
-        PosBit _pos_1_bit;
-        PosBit _pos_2_bit;
-        PosBit _pos_3_bit;
-        PosBit _pos_4_bit;
+        PosBit _pos_bits[DRV7SEG2X595_POS_MAX] = {PosBit::PosBitInitial};
 
         // Variables related to the anti-ghosting logic.
-        uint32_t _active_positions = 0;
         bool     _anti_ghosting_first_output_call = true;
         Pos      _anti_ghosting_retained_pos;
         uint32_t _anti_ghosting_timer_previous_micros;
@@ -292,10 +288,19 @@ class Drv7Seg2x595Class {
                              PosBit pos_4_bit
                             );
 
-        // Find out which character position (digit) must be turned on next after the current retention period is over.
+        /* Find out which character position (digit) must be turned on
+         * next after the current retention period is over.
+         *
+         * Returns: TODO
+         *
+         */
         Pos  anti_ghosting_next_pos_to_output();
 
-        // Find out if the last retention period has elapsed.
+        /* Find out if the last retention period has elapsed.
+         *
+         * Returns: TODO
+         *
+         */
         bool anti_ghosting_timer(uint32_t anti_ghosting_retention_duration_us);
 };
 

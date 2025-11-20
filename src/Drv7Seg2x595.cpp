@@ -154,6 +154,13 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
     }
 
 
+    /*--- Protection from unexpected casts ---*/
+
+    if (pos < Drv7SegPos1 || pos > Drv7SegPos4) {
+        return DRV7SEG2X595_OUTPUT_ERR_INVALID_POS;
+    }
+
+
     /*--- Anti-ghosting retention ---*/
 
     if (anti_ghosting_retention_duration_us > 0 && _anti_ghosting_first_output_call == false) {
@@ -175,43 +182,12 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
 
     /*--- Composing pos_byte ---*/
 
-    uint8_t pos_byte = DRV7SEG2X595_ALL_BITS_CLEARED_MASK;
-    switch (pos) {
-        case Drv7SegPos1:
-            if (_pos_1_bit == Drv7SegPosBitInitial) {
-                return DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
-            } else {
-                pos_byte |= 1u << static_cast<uint8_t>(_pos_1_bit);
-            }
-            break;
-
-        case Drv7SegPos2:
-            if (_pos_2_bit == Drv7SegPosBitInitial) {
-                return DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
-            } else {
-                pos_byte |= 1u << static_cast<uint8_t>(_pos_2_bit);
-            }
-            break;
-
-        case Drv7SegPos3:
-            if (_pos_3_bit == Drv7SegPosBitInitial) {
-                return DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
-            } else {
-                pos_byte |= 1u << static_cast<uint8_t>(_pos_3_bit);
-            }
-            break;
-
-        case Drv7SegPos4:
-            if (_pos_4_bit == Drv7SegPosBitInitial) {
-                return DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
-            } else {
-                pos_byte |= 1u << static_cast<uint8_t>(_pos_4_bit);
-            }
-            break;
-
-        default:
-            // Protection from unexpected casts.
-            return DRV7SEG2X595_OUTPUT_ERR_INVALID_POS;
+    uint8_t  pos_byte = DRV7SEG2X595_ALL_BITS_CLEARED_MASK;
+    uint32_t pos_as_index = static_cast<uint32_t>(pos) - 1;
+    if (_pos_bits[pos_as_index] == Drv7SegPosBitInitial) {
+        return DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
+    } else {
+        pos_byte |= 1u << static_cast<uint8_t>(_pos_bits[pos_as_index]);
     }
 
 
@@ -307,7 +283,6 @@ int32_t Drv7Seg2x595Class::begin_helper(int32_t variant,
     }
 
     // Byte order validity check.
-    _active_positions = 0;
     if (byte_order != Drv7SegPosByteFirst && byte_order != Drv7SegSegByteFirst) {
         return DRV7SEG2X595_STATUS_ERR_INVALID_BYTE_ORDER;
     }
@@ -317,33 +292,29 @@ int32_t Drv7Seg2x595Class::begin_helper(int32_t variant,
         return DRV7SEG2X595_STATUS_ERR_INVALID_POS_SWITCH_TYPE;
     }
 
-    // Position bits validity check and getting the active positions count.
-    PosBit pos_bit_arr[DRV7SEG2X595_POS_MAX] = {pos_1_bit, pos_2_bit, pos_3_bit, pos_4_bit};
+    // Position bits validity check.
+    PosBit pos_bits[DRV7SEG2X595_POS_MAX] = {pos_1_bit, pos_2_bit, pos_3_bit, pos_4_bit};
     for (uint32_t i = 0; i < DRV7SEG2X595_POS_MAX; ++i) {
 
         // First position bit (array index zero) must belong to the 0..7 range (from LSB to MSB).
         if (i == 0) {
-            if (pos_bit_arr[i] < Drv7SegPosBit0 || pos_bit_arr[i] > Drv7SegPosBit7) {
+            if (pos_bits[i] < Drv7SegPosBit0 || pos_bits[i] > Drv7SegPosBit7) {
                 return DRV7SEG2X595_STATUS_ERR_INVALID_POS_BIT;
-            } else {
-                ++_active_positions;  // Active positions count is used within the anti-ghosting logic.
             }
         }
 
         // Other position bits must belong to the -1..7 range (from the initial value to MSB).
         if (i > 0) {
-            if (pos_bit_arr[i] < Drv7SegPosBitInitial || pos_bit_arr[i] > Drv7SegPosBit7) {
+            if (pos_bits[i] < Drv7SegPosBitInitial || pos_bits[i] > Drv7SegPosBit7) {
                 return DRV7SEG2X595_STATUS_ERR_INVALID_POS_BIT;
-            } else if (pos_bit_arr[i] > Drv7SegPosBitInitial) {
-                ++_active_positions;  // Active positions count is used within the anti-ghosting logic.
             }
         }
 
         // Position bits duplication check.
         for (uint32_t j = i + 1; j < DRV7SEG2X595_POS_MAX; ++j) {
-            if (pos_bit_arr[i] != Drv7SegPosBitInitial &&
-                pos_bit_arr[j] != Drv7SegPosBitInitial &&
-                pos_bit_arr[i] == pos_bit_arr[j]) {
+            if (pos_bits[i] != Drv7SegPosBitInitial &&
+                pos_bits[j] != Drv7SegPosBitInitial &&
+                pos_bits[i] == pos_bits[j]) {
                 return DRV7SEG2X595_STATUS_ERR_POS_BIT_DUPLICATION;
             }
         }
@@ -353,10 +324,10 @@ int32_t Drv7Seg2x595Class::begin_helper(int32_t variant,
     _byte_order      = byte_order;
     _pos_switch_type = pos_switch_type;
     _latch_pin       = latch_pin;
-    _pos_1_bit       = pos_1_bit;
-    _pos_2_bit       = pos_2_bit;
-    _pos_3_bit       = pos_3_bit;
-    _pos_4_bit       = pos_4_bit;
+    _pos_bits[0]     = pos_1_bit;
+    _pos_bits[1]     = pos_2_bit;
+    _pos_bits[2]     = pos_3_bit;
+    _pos_bits[3]     = pos_4_bit;
 
     pinMode(_latch_pin, OUTPUT);
 
@@ -382,40 +353,15 @@ bool Drv7Seg2x595Class::anti_ghosting_timer(uint32_t anti_ghosting_retention_dur
 
 Drv7Seg2x595Class::Pos Drv7Seg2x595Class::anti_ghosting_next_pos_to_output()
 {
-    if (_active_positions == 1) {
-        return Drv7SegPos1;
+    uint32_t pos_as_index = static_cast<uint32_t>(_anti_ghosting_retained_pos) - 1;
+    for (uint32_t i = pos_as_index + 1; i < DRV7SEG2X595_POS_MAX; ++i) {
+        if (_pos_bits[i] != Drv7SegPosBitInitial) {
+            return static_cast<Pos>(i + 1);
+        }
     }
 
-    /* goto is used here intentionally, because many Arduino core still rely
-     * on C++11 which lacks a standardized way to mark the fall-through
-     * as intentional and thus supress the related warnings.
+    /* Character position 1 is guaranteed to be active
+     * (its position bit belongs to the 0..7 range).
      */
-    switch (_anti_ghosting_retained_pos) {
-        case Drv7SegPos1:
-            if (_pos_2_bit != Drv7SegPosBitInitial) {
-                return Drv7SegPos2;
-            } else {
-                goto case_2;
-            }
-
-        case Drv7SegPos2:
-        case_2:
-            if (_pos_3_bit != Drv7SegPosBitInitial) {
-                return Drv7SegPos3;
-            } else {
-                goto case_3;
-            }
-
-        case Drv7SegPos3:
-        case_3:
-            if (_pos_4_bit != Drv7SegPosBitInitial) {
-                return Drv7SegPos4;
-            } else {
-                goto case_default;
-            }
-
-        default:  // Will be also triggered if _anti_ghosting_retained_pos == Drv7SegPos4.
-        case_default:
-            return Drv7SegPos1;  // Character position 1 is guaranteed to be active.
-    }
+    return Drv7SegPos1;
 }
