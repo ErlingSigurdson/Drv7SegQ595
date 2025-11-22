@@ -331,6 +331,13 @@ int32_t Drv7Seg2x595Class::begin_helper(int32_t variant,
 
     pinMode(_latch_pin, OUTPUT);
 
+    /* Reset the variables related to the anti-ghosting logic
+     * (useful if the driver gets reconfigured mid-use).
+     */
+    _anti_ghosting_first_output_call     = true;
+    _anti_ghosting_retained_pos          = Drv7SegPos1;   // safe because Pos1 is enforced valid
+    _anti_ghosting_timer_previous_micros = 0;           // or micros(), either is fine
+
     return DRV7SEG2X595_STATUS_OK;
 }
 
