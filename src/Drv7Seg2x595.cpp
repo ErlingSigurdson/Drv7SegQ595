@@ -182,8 +182,8 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
 
     /*--- Composing pos_byte ---*/
 
-    uint8_t  pos_byte = DRV7SEG2X595_ALL_BITS_CLEARED_MASK;
-    uint32_t pos_as_index = static_cast<uint32_t>(pos) - 1;
+    uint8_t pos_byte = DRV7SEG2X595_ALL_BITS_CLEARED_MASK;
+    size_t  pos_as_index = static_cast<size_t>(pos) - 1;
     if (_pos_bits[pos_as_index] == Drv7SegPosBitInitial) {
         return DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
     } else {
@@ -361,10 +361,10 @@ bool Drv7Seg2x595Class::anti_ghosting_timer(uint32_t anti_ghosting_retention_dur
 Drv7Seg2x595Class::Pos Drv7Seg2x595Class::anti_ghosting_next_pos_to_output()
 {
     // Subtract 1 because positions are 1-indexed while array members are 0-indexed.
-    uint32_t pos_as_index = static_cast<uint32_t>(_anti_ghosting_retained_pos) - 1;
+    size_t pos_as_index = static_cast<size_t>(_anti_ghosting_retained_pos) - 1;
 
     // Add 1 because we're checking the next position, not the current one.
-    for (uint32_t i = pos_as_index + 1; i < DRV7SEG2X595_POS_MAX; ++i) {
+    for (size_t i = pos_as_index + 1; i < DRV7SEG2X595_POS_MAX; ++i) {
         /* Search for an available position for output. "Available" means
          * "it was assigned a position bit that belongs to the 0..7 range".
          */
