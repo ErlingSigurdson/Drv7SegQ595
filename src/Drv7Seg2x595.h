@@ -215,6 +215,13 @@ class Drv7Seg2x595Class {
                                      );
         #endif
 
+        /* Get the last driver configuration status.
+         *
+         * Returns: zero if driver configuration was successful, a negative integer otherwise
+         * (see the preprocessor macros list for possible values).
+         */
+        int32_t get_status();
+
         /* Shift two bytes into two daisy-chained ICs and then latch the data into the output register.
          *
          * Returns:

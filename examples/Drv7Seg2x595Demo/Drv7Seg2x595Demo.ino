@@ -171,28 +171,31 @@ void setup()
 
     /*--- Driver object configuration ---*/
 
-    int32_t drv_config_status = -1;  // Initial value equals an idiomatic error indicator.
-
     #ifdef USE_BIT_BANGING
-    drv_config_status = Drv7Seg.begin_bb(BYTE_SHIFT_ORDER, POS_SWITCH_TYPE,
-                                         DATA_PIN, LATCH_PIN, CLOCK_PIN,
-                                         POS_1_BIT, POS_2_BIT, POS_3_BIT, POS_4_BIT
-                                        );
+    Drv7Seg.begin_bb(BYTE_SHIFT_ORDER, POS_SWITCH_TYPE,
+                     DATA_PIN, LATCH_PIN, CLOCK_PIN,
+                     POS_1_BIT, POS_2_BIT, POS_3_BIT, POS_4_BIT
+                    );
     #endif
 
     #ifdef USE_SPI_DEFAULT_PINS
-    drv_config_status = Drv7Seg.begin_spi(BYTE_SHIFT_ORDER, POS_SWITCH_TYPE,
-                                          LATCH_PIN,
-                                          POS_1_BIT, POS_2_BIT, POS_3_BIT, POS_4_BIT
-                                         );
+    Drv7Seg.begin_spi(BYTE_SHIFT_ORDER, POS_SWITCH_TYPE,
+                      LATCH_PIN,
+                      POS_1_BIT, POS_2_BIT, POS_3_BIT, POS_4_BIT
+                     );
     #endif
 
     #ifdef USE_SPI_CUSTOM_PINS
-    drv_config_status = Drv7Seg.begin_spi_custom_pins(BYTE_SHIFT_ORDER, POS_SWITCH_TYPE,
-                                                      MOSI_PIN, LATCH_PIN, SCK_PIN,
-                                                      POS_1_BIT, POS_2_BIT, POS_3_BIT, POS_4_BIT
-                                                     );
+    Drv7Seg.begin_spi_custom_pins(BYTE_SHIFT_ORDER, POS_SWITCH_TYPE,
+                                  MOSI_PIN, LATCH_PIN, SCK_PIN,
+                                  POS_1_BIT, POS_2_BIT, POS_3_BIT, POS_4_BIT
+                                 );
     #endif
+
+    /* Driver configuration status check.
+     * You can also check the value returned by begin_*() instead of calling get_status().
+     */
+    int32_t drv_config_status = Drv7Seg.get_status();
 
     // Loop the error output if the driver configuration was unsuccessful.
     if (drv_config_status < 0) {  // If an error is detected.

@@ -142,6 +142,11 @@ int32_t Drv7Seg2x595Class::begin_spi_custom_pins(ByteOrder byte_order,
 }
 #endif
 
+int32_t Drv7Seg2x595Class::get_status()
+{
+    return _status;
+}
+
 int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
                                   Pos pos,
                                   uint32_t anti_ghosting_retention_duration_us
