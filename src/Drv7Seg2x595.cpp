@@ -370,9 +370,7 @@ Drv7Seg2x595Class::Pos Drv7Seg2x595Class::anti_ghosting_next_pos_to_output()
 
     // Add 1 because we're checking the next position, not the current one.
     for (size_t i = pos_as_index + 1; i < DRV7SEG2X595_POS_MAX; ++i) {
-        /* Search for an available position for output. "Available" means
-         * "it was assigned a position bit that belongs to the 0..7 range".
-         */
+        // Search for a position that was assigned a position bit that belongs to the 0..7 range.
         if (_pos_bits[i] != Drv7SegPosBitInitial) {
             // Add 1 because we're hopping back from 0-indexed to 1-indexed.
             return static_cast<Pos>(i + 1);
