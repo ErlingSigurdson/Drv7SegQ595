@@ -302,7 +302,7 @@ class Drv7Seg2x595Class {
          */
         Pos  anti_ghosting_next_pos_to_output();
 
-        /* Find out if the last retention period has elapsed.
+        /* Find out if the anti-ghosting retention timer has elapsed.
          *
          * Returns: true if the timer has elapsed, false otherwise.
          */
