@@ -298,15 +298,13 @@ class Drv7Seg2x595Class {
         /* Find out which character position (digit) must be turned on
          * next after the current retention period is over.
          *
-         * Returns: TODO
-         *
+         * Returns: a positive zero-indexed integer of the respective enum class type in the 1..4 range.
          */
         Pos  anti_ghosting_next_pos_to_output();
 
         /* Find out if the last retention period has elapsed.
          *
-         * Returns: TODO
-         *
+         * Returns: true if the timer has elapsed, false otherwise.
          */
         bool anti_ghosting_timer(uint32_t anti_ghosting_retention_duration_us);
 };
