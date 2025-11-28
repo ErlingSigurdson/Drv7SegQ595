@@ -274,8 +274,8 @@ class Drv7Seg2x595Class {
 
         /*--- Methods ---*/
 
-        /* Helper method that does most of the begin_*() methods' job
-         * by handling checks and assignments common for all of them.
+        /* Helper method that does most of the begin_*() methods' job by
+         * handling checks and assignments common for all of them.
          *
          * Returns: zero if the respective configuration stage was successful (if all passed parameters
          * are valid), a negative integer otherwise (see the preprocessor macros list for possible values).
