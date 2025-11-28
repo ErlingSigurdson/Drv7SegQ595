@@ -1,7 +1,7 @@
 /*************** FILE DESCRIPTION ***************/
 
 /**
- * Filename: Drv7Seg2x595Demo.ino
+ * Filename: Drv7Seg2x595_demo.ino
  * ----------------------------------------------------------------------------|---------------------------------------|
  * Purpose:  An example sketch demonstrating basic usage of the Drv7Seg2x595
  *           library.
