@@ -130,7 +130,7 @@
 
 /*--- Misc ---*/
 
-// Comment out or delete to suppress the UART output.
+// Comment out or delete to suppress the output of current timer values via UART.
 #define SERIAL_OUTPUT_TIMER_VALUES
 
 // Set appropriately based on the baud rate you use.
@@ -172,7 +172,7 @@ void setup()
     /*--- Driver object configuration ---*/
 
     /* If you're driving a display with less than 4 character positions (digits),
-     * pass less position bits (omit up to three parameters starting from the end).
+     * pass less position bits (omit up to 3 parameters counting from the end).
      */
 
     #ifdef USE_BIT_BANGING
@@ -271,7 +271,10 @@ void loop()
         update_due = false;
     }
 
-    // Display output.
+    /* Display output.
+     * If you're driving a display with less than 4 character positions (digits),
+     * comment out or delete up to 3 calls counting from the lowermost.
+     */
     Drv7Seg.output(seg_byte_minutes_tens, Drv7SegPos1);
     Drv7Seg.output(seg_byte_minutes_ones, Drv7SegPos2);
     Drv7Seg.output(seg_byte_seconds_tens, Drv7SegPos3);
