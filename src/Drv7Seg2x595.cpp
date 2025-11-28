@@ -281,7 +281,7 @@ int32_t Drv7Seg2x595Class::begin_helper(int32_t variant,
                                        )
 {
     /* Highly unlikely to occur without messing with the code,
-     * but still preserved as a redundant safety measure.
+     * but preserved as a redundant safety measure.
      */
     if (variant < 0) {
         return DRV7SEG2X595_STATUS_ERR_VARIANT_NOT_SPECIFIED;
@@ -340,8 +340,14 @@ int32_t Drv7Seg2x595Class::begin_helper(int32_t variant,
      * (useful if the driver gets reconfigured mid-use).
      */
     _anti_ghosting_first_output_call     = true;
-    _anti_ghosting_retained_pos          = Drv7SegPos1;   // safe because Pos1 is enforced valid
-    _anti_ghosting_timer_previous_micros = 0;           // or micros(), either is fine
+    _anti_ghosting_retained_pos          = Drv7SegPos1;  /* Safe because position 1 is guaranteed to be valid
+                                                          * for output. Not strictly necessary, but preserved
+                                                          * as a redundant safety measure.
+                                                          */
+    _anti_ghosting_timer_previous_micros = 0;            /* Could call micros() instead, either is fine.
+                                                          * Not strictly necessary, but preserved
+                                                          * as a redundant safety measure.
+                                                          */
 
     return DRV7SEG2X595_STATUS_OK;
 }
