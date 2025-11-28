@@ -171,7 +171,6 @@ void setup()
 
     /*--- Driver object configuration ---*/
 
-
     /* If you're driving a display with less than 4 character positions (digits),
      * pass less position bits (omit up to three parameters starting from the end).
      */
