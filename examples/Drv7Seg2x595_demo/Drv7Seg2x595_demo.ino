@@ -171,6 +171,11 @@ void setup()
 
     /*--- Driver object configuration ---*/
 
+
+    /* If you're driving a display with less than 4 character positions (digits),
+     * pass less position bits (omit up to three parameters starting from the end).
+     */
+
     #ifdef USE_BIT_BANGING
     Drv7Seg.begin_bb(BYTE_SHIFT_ORDER, POS_SWITCH_TYPE,
                      DATA_PIN, LATCH_PIN, CLOCK_PIN,
