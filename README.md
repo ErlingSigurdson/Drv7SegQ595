@@ -69,76 +69,72 @@ For convenience, the example sketch default constant values corresponds to the c
 The wiring in your circuit **may** differ from the provided schematic to some degree, and the library will still be
 applicable as long as your circuit complies with the premise of the `seg_byte` and `pos_byte` distinct roles.
 
-## Single-digit displays
-
-TODO: rename "Edge cases", move below
-
-With a single-digit display there's usually no purpose in a switchable signal that turns the only digit ON and OFF
-wholly. Instead, the common pin would go directly to GND (for common cathode) or VCC (for common anode). With such
-configuration using daisy-chained 595s would be commonly regarded as redundant. However, the library still supports
-driving a single-digit display. This assumes that one of `pos_byte` bits controls the only available digit.
-
-
-for a switchable signal and its common pin is typically connected to GND or VCC directly)
-
-
-In this configuration first IC (first 8 bits) can be used to
-turn display segments ON and OFF, thus causing various glyphs to be output. This byte is called "glyph byte",
-or `gbyte`. 
-
-for common anode inverted (in a sense that `cpbyte` outputs must connect common pins to the positive rail, not to the ground).
-
-
-(`cpbyte`) (`gbyte`)
-
-
-
-
-
 ## API usage
 
+Include the library:
 ```cpp
-#define DATA_PIN  16
-#define LATCH_PIN 17
-#define CLOCK_PIN 18
-
-#define POS_1_BIT 7
-#define POS_2_BIT 5
-#define POS_3_BIT 3
-#define POS_4_BIT 1
-
-drv_7seg_2x595.init_bb(DRV7SEG2X595_POS_BYTE_FIRST, // Other option is DRV7SEG2X595_SEG_BYTE_FIRST. 
-                       DRV7SEG2X595_COMMON_CATHODE, // Other option is DRV7SEG2X595_COMMON_ANODE.
-                       DRV7SEG2X595_POLARITY_N,     // Other option is DRV7SEG2X595_POLARITY_P.
-
-                       // Signed integers, must be >= 0.
-                       DATA_PIN,   // Signed integer, must be >= 0.
-                       LATCH_PIN,  // Signed integer, must be >= 0.
-                       CLOCK_PIN,  // Signed integer, must be >= 0.
-
-                       /* Signed integers, may be omitted (default to a negative integer).
-                        * If not omitted, must be >= 0.
-                        */
-                       POS_1_BIT,  // Signed integer, must be >= 0.
-                       POS_2_BIT,  // Signed integer, must be >= 0, may be omitted (defaults to a negative integer).
-                       POS_3_BIT,  // Signed integer, must be >= 0, may be omitted (defaults to a negative integer).
-                       POS_4_BIT,  // Signed integer, must be >= 0, may be omitted (defaults to a negative integer).
-                      );
-}
+#include <Drv7Seg2x595.h>    // Arduino style.
+//#include "Drv7Seg2x595.h"  // Generic embedded programming style.
 ```
+
+Configure the software driver object. Choose one variant:
+```cpp
+
+// Bit-banging variant.
+int32_t begin_bb(Drv7SegPosByteFirst,  // Other option is Drv7SegSegByteFirst.
+                 Drv7SegActiveHigh,    // Other option is Drv7SegActiveLow.
+
+                 // Arguments must be unsigned integers and correspond to the Arduino pin numbering.
+                 DATA_PIN,
+                 LATCH_PIN,
+                 CLOCK_PIN,
+
+                 /* Valid arguments are PosBitN, where N is in the 0..7 range (MSB to LSB of pos_byte).
+                  * Up to three parameters (1st, 2nd and 3rd from the end) can be omitted. The driver will control
+                  * the number of character positions equal to the count of parameters that weren't omitted.
+                  */
+                 PosBit7,
+                 PosBit5,
+                 PosBit3,
+                 PosBit1
+                );
+
+/* SPI with default pins variant.
+ * Mostly identical to the bit-banging variant, but only LATCH_PIN needs to be specified
+ * (default MOSI pin must be used for data transfer and default SCK pin must be used as a clock source).
+ */
+int32_t begin_spi(...
+                  LATCH_PIN,
+                  ...
+                 );
+
+/* SPI with custom pins variant.
+ * Mostly identical to the bit-banging variant, but data transfer pin role goes
+ * to the specified MOSI pin and clock pin role goes to the specified SCK pin.
+ */
+int32_t begin_spi_custom_pins(...
+                              MOSI_PIN,
+                              LATCH_PIN,
+                              SCK_PIN
+                              ...
+                             );
+```
+
+Commence the actual output:
 
 ## Glyphs and byte mapping
 
-Typically, outputting a glyph (a character representation) to a 7-segment display involves custom-forming a byte
+Typically, outputting a glyph (a character representation) on a 7-segment display involves composing a byte
 whose combination of bit states (set or cleared) corresponds to a pattern in which the segments must be turned
 ON and OFF to form a recognizable symbol. Finding the proper correspondence between the bit states and the segment
 pattern is called **mapping**.
 
-The **mapped bytes** (sometimes called **bit masks**) can be formed in advance and hard-coded into a program.
-Although it may be perfectly acceptable, it may become troublesome if the program needs to be adapted to a circuit
-with a different wiring order between the device's outputs and the display's control pins. To simplify and automate
-the task, you may want to try [SegMap595](https://github.com/ErlingSigurdson/SegMap595) library that provides
-a simple API for byte mapping and retrieving the necessary bytes.
+**Mapped bytes** (sometimes called **bit masks**) can be precomputed and hard-coded into a program
+run by a microcontroller unit (MCU) or a similar device that drives a display. Although it may be perfectly
+acceptable, it may become troublesome if the program needs to be adapted to a circuit with a different wiring
+order between the device's outputs and the display's control pins. To simplify and automate the task, you may want to
+try [SegMap595](https://github.com/ErlingSigurdson/SegMap595) library that provides a simple API for byte mapping and
+retrieving the necessary bytes.
 
 ## Compatibility
 
@@ -146,17 +142,21 @@ The library works with any Arduino-compatible MCU capable of bit-banging or SPI 
 
 ## Dependencies
 
-* `SPI.h` library implementation for the Arduino core you're using.
+* `SPI.h` library implementation for the Arduino core you're using. It is commonly available for all Arduino cores,
+although it's not guaranteed. In an unlikely case where it is not implemented for your core, you can still use
+**Drv7Seg2x595** in a bit-banging mode, but in order to avoid compilation errors you'll have to manually uncomment
+the `#define DRV7SEG2X595_SPI_PROVIDED_ASSUMED` preprocessor directive in `Drv7Seg2x595.h`.
 
-`SPI.h` is commonly available for all Arduino cores, although it's not guaranteed.
-In an unlikely case where it is not implemented for your core you can still use **Drv7Seg2x595**
-in bit-banging mode, but in order to avoid compilation errors you'll have to manually uncomment
-the `#define DRV7SEG2X595_SPI_NOT_IMPLEMENTED` preprocessor directive in `Drv7Seg2x595.h`.
+TODO: note on custom pins
 
 * **SegMap595** C++ library (see links below) is used in the example sketch to
 simplify proper glyph output, but otherwise isn't necessary at all. 
 
 TODO: micros provided
+
+## Miscellaneous
+
+No blocking, `delay()`-based timers are used. Instead, the library relies on non-blocking, `micros()`-based timers.
 
 ## Links
 
@@ -164,7 +164,7 @@ TODO: micros provided
 * [Primary repository on GitHub](https://github.com/ErlingSigurdson/Drv7Seg2x595)
 * [Backup repository on GitFlic](https://gitflic.ru/project/efimov-d-v/drv7seg2x595)
 
-### Related library — **SegMap595**
+### A library used in the example sketch — **SegMap595**
 * [Primary repository on GitHub](https://github.com/ErlingSigurdson/SegMap595)
 * [Backup repository on GitFlic](https://gitflic.ru/project/efimov-d-v/segmap595)
 
@@ -191,8 +191,6 @@ In Drv7Seg2x595 README: You still **can** drive a single-digit display using two
 
 PCB (all KiCAD stuff) license note
 
-MCU explaining meaning early in the README text
-
 TODO: only one begin_*() method to choose
 
 TODO re how to use output() method:
@@ -208,3 +206,17 @@ TODO: single-position displays
 TODO: single-IC arrangements
 
 TODO: ghosting definition and explanation
+
+TODO: position switch type (N-type, P-type)
+
+
+## Single-digit displays
+
+TODO: rename "Edge cases", move below
+
+With a single-digit display there's usually no purpose in a switchable signal that turns the only digit ON and OFF
+wholly. Instead, the common pin would go directly to GND (for common cathode) or VCC (for common anode). With such
+configuration using daisy-chained 595s would be commonly regarded as redundant. However, the library still supports
+driving a single-digit display. This assumes that one of `pos_byte` bits controls the only available digit.
+
+for a switchable signal and its common pin is typically connected to GND or VCC directly)
