@@ -1,40 +1,51 @@
 # Overview
 
-**Drv7Seg2x595** is a single-class Arduino library for driving a multiplexed 7-segment display
-using two daisy-chained 74HC595 shift register ICs.
+**Drv7Seg2x595** is a single-class Arduino library for driving a multiplexed 7-segment display using
+two daisy-chained 74HC595 shift register ICs.
 
 ## Concept
 
-Typically, 7-segment displays come in models with 1 to 4 character positions (digits). Number of input pins for
-any given model equals 8 + number of digits, thus 12 pins is the maximum. Driving a display requires a number o
-individual signals equal to the number of input pins:
-* 8 signals to turn ON and OFF individual segments (including a dot segment, also known as a decimal point or 'DP').
-* 1 to 4 signals to turn ON and OFF whole digits.
+Typically, outputting a glyph (a character representation) on a 7-segment display involves composing a byte
+whose combination of bit states (set or cleared) corresponds to a pattern in which the segments must be turned
+ON and OFF to form a recognizable symbol. Finding the proper correspondence between the bit states and the segment
+pattern is called **mapping**.
 
-Due to significant number of output signals required for driving a 7-segment display, output-extending devices,
-such as output shift registers, are commonly used.
+Typically, 7-segment displays come in models with 1 to 4 character positions (digits). Number of input pins for
+any given model equals 8 + number of positions, thus 9 is the minimum and 12 is the maximum (duplicated pins count
+as one).
+
+Driving a display requires a number of individual signals equal to the number of input pins:
+* 8 signals to turn ON and OFF individual segments (including a dot segment, also known as a decimal point or DP).
+* 1 to 4 signals to turn ON and OFF whole positions.
+Due to significant number of required signals, output-extending devices, such as output shift registers, are commonly
+used.
 
 **74HC595**, sometimes simply called **595**, is a widely used 8-bit serial-in, parallel-out (SIPO) shift register
 integrated circuit (IC) commonly employed to drive 7-segment displays. Despite being a SIPO register primarily, it
 also features an auxiliary serial output that allows for **daisy-chaining**: connecting multiple 595s in such a way
 that the serial output of a previous IC goes to the serial input of the next one and all ICs in the chain share
-the same **clock/SCK** and **latch** signals. Two daisy-chained 595s form a 16-bit shift register, which is sufficient
-for controlling any typical 7-segment display.
+the same **clock** / **SCK** and **latch** signals. Two daisy-chained 595s form a 16-bit shift register, which is
+sufficient for controlling any typical 7-segment display.
+
+## Control bytes
 
 This library assumes that the 16-bit register consists of two bytes with distinct roles:
-* **segment byte**, or **`seg_byte`**, controls individual display segments and makes it possible to output readable glyphs;
-* **position byte**, or **`pos_byte`**, determines character positions the glyph will be output to. 1 to 4 bits out of 8 are used
-the rest are NC (not connected).
+* **segment byte**, or **`seg_byte`**, controls individual display segments and makes it possible to
+output readable glyphs;
+* **position byte**, or **`pos_byte`**, determines the character position the glyph will be output to.
+1 to 4 bits out of 8 are used, the rest are NC (not connected).
 
 The library API allows for any order of `seg_byte` and `pos_byte` placement within the register, that is, 
-any of these bytes may be either upper or lower byte. 
+any of these bytes may be either upper or lower byte.
 
 `pos_byte` bits switch digits by electrically connecting and disconnecting the display's common pin to
-a ground (GND, for a common cathode) or to a positive rail (VCC, for a common anode). Usually it is done
-via a switching device (most commonly a transistor), since 595's ability to source/sink current itself for
-a whole set of 7 LEDs gets close to exceeds its electrical limitations.
+the ground (GND, for a common-cathode display) or to the positive rail (VCC, for a common-anode display).
+Usually it is done via a switching device (most commonly a transistor), since 595's ability to source/sink
+current by itself for a whole set of 7 LEDs gets close to exceeds its electrical limitations.
 
-Here's a typical circuit diagram for the described arrangement (assumes a common cathode display):
+## Reference wiring
+
+Here's a typical circuit diagram for the described arrangement (assumes a common-cathode display):
 ![Circuit diagram (schematic)](assets/images/circuit_diagram_(schematic).png)
 
 Wiring for a common-anode display is almost identical, the only difference being that the transistors' emitters
@@ -180,3 +191,7 @@ TODO re how to use output() method:
      */
 
 Refer to `Drv7Seg2x595.h` for more API details.
+
+TODO: single-position displays
+
+TODO: single-IC arrangements
