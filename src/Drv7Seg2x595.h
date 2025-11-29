@@ -254,19 +254,27 @@ class Drv7Seg2x595Class {
         ByteOrder     _byte_order;
         PosSwitchType _pos_switch_type;
 
-        int32_t _latch_pin = -1;
+        // Used in all variants.
+        uint32_t _latch_pin;
 
-        int32_t _data_pin  = -1;
-        int32_t _clock_pin = -1;
+        // Used in the bit-banging variant.
+        uint32_t _data_pin;
+        uint32_t _clock_pin;
 
         #ifdef DRV7SEG2X595_SPI_PROVIDED_CUSTOM_PINS
-        int32_t _mosi_pin  = -1;
-        int32_t _sck_pin   = -1;
+        // Used in the custom SPI pins variant.
+        uint32_t _mosi_pin;
+        uint32_t _sck_pin;
         #endif
 
-        PosBit _pos_bits[DRV7SEG2X595_POS_MAX] = {PosBit::PosBitInitial};
+        // pos_byte bits that may correspond to the actual display character positons (digits).
+        PosBit _pos_bits[DRV7SEG2X595_POS_MAX] = {PosBit::PosBitInitial,
+                                                  PosBit::PosBitInitial,
+                                                  PosBit::PosBitInitial,
+                                                  PosBit::PosBitInitial
+                                                 };
 
-        // Variables related to the anti-ghosting logic.
+        // Elements of the anti-ghosting logic.
         bool     _anti_ghosting_first_output_call = true;
         Pos      _anti_ghosting_retained_pos;
         uint32_t _anti_ghosting_timer_previous_micros;
