@@ -20,6 +20,7 @@ Pos	KEYWORD1
 begin_bb	KEYWORD2
 begin_spi	KEYWORD2
 begin_spi_custom_pins	KEYWORD2
+get_status	KEYWORD2
 output	KEYWORD2
 begin_helper	KEYWORD2
 anti_ghosting_next_pos_to_output	KEYWORD2
