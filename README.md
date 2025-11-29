@@ -5,43 +5,56 @@ two daisy-chained 74HC595 shift register ICs.
 
 ## Concept
 
-Typically, outputting a glyph (a character representation) on a 7-segment display involves composing a byte
-whose combination of bit states (set or cleared) corresponds to a pattern in which the segments must be turned
-ON and OFF to form a recognizable symbol. Finding the proper correspondence between the bit states and the segment
-pattern is called **mapping**.
+7-segment displays are simple, cheap and reliable output devices. However, interfacing them with a microcontroller
+unit (MCU) requires an appropriate software and hardware driver.
 
 Typically, 7-segment displays come in models with 1 to 4 character positions (digits). Number of input pins for
 any given model equals 8 + number of positions, thus 9 is the minimum and 12 is the maximum (duplicated pins count
 as one).
 
-Driving a display requires a number of individual signals equal to the number of input pins:
+Driving such a display requires a number of individual signals equal to the number of input pins:
 * 8 signals to turn ON and OFF individual segments (including a dot segment, also known as a decimal point or DP).
 * 1 to 4 signals to turn ON and OFF whole positions.
 Due to significant number of required signals, output-extending devices, such as output shift registers, are commonly
 used.
 
 **74HC595**, sometimes simply called **595**, is a widely used 8-bit serial-in, parallel-out (SIPO) shift register
-integrated circuit (IC) commonly employed to drive 7-segment displays. Despite being a SIPO register primarily, it
-also features an auxiliary serial output that allows for **daisy-chaining**: connecting multiple 595s in such a way
-that the serial output of a previous IC goes to the serial input of the next one and all ICs in the chain share
+integrated circuit (IC) commonly employed to drive 7-segment displays. Despite being a SIPO register primarily,
+it also features an auxiliary serial output that allows for **daisy-chaining**: connecting multiple 595s in such a way
+that the serial output of the previous IC goes to the serial input of the next one and all ICs in the chain share
 the same **clock** / **SCK** and **latch** signals. Two daisy-chained 595s form a 16-bit shift register, which is
 sufficient for controlling any typical 7-segment display.
 
 ## Control bytes
 
 This library assumes that the 16-bit register consists of two bytes with distinct roles:
-* **segment byte**, or **`seg_byte`**, controls individual display segments and makes it possible to
-output readable glyphs;
-* **position byte**, or **`pos_byte`**, determines the character position the glyph will be output to.
-1 to 4 bits out of 8 are used, the rest are NC (not connected).
+* **segment byte** (**`seg_byte`**) controls individual display segments to form recognizable symbols.
+* **position byte** (**`pos_byte`**) controls whole character positions and thus determines the character position
+on which the segment pattern (defined by `seg_byte`) will be output. 1 to 4 bits out of 8 are used, the rest are
+NC (not connected).
 
 The library API allows for any order of `seg_byte` and `pos_byte` placement within the register, that is, 
 any of these bytes may be either upper or lower byte.
 
-`pos_byte` bits switch digits by electrically connecting and disconnecting the display's common pin to
-the ground (GND, for a common-cathode display) or to the positive rail (VCC, for a common-anode display).
-Usually it is done via a switching device (most commonly a transistor), since 595's ability to source/sink
-current by itself for a whole set of 7 LEDs gets close to exceeds its electrical limitations.
+`pos_byte` bits switch character positions by electrically connecting and disconnecting the display's common pin to
+the ground (GND, for a common-cathode display) or to the positive rail (VCC, for a common-anode display). Usually it
+is done via a switching device (most commonly a transistor), since 595's ability to source/sink current by itself for
+a whole set of 7 LEDs gets close to exceeds its electrical limitations.
+
+## Multiplexing and ghosting prevention
+
+This library assumes a hardware driver built for **multiplexing**: a way of driving a multi-digit 7-segment display by
+turning on only one character position at a time in quick succession, in a cycle. This approach greatly simplifies
+the circuit because it doesn't rely on a separate set of segment-control outputs for every character position and
+instead utilizes the single set of segment-control outputs shared by **all** positions (the defined segment pattern
+shows up only on the intended position anyway, because only that position will be turned on at the appropriate moment).
+
+### Ghosting and countermeasures
+
+Because multiplexing cycle run faster than the eye can follow, all digits appear to be lit continuously, even though
+only one is actually turned on at a given moment. However, this comes with an unwanted side effect called **ghosting**:
+segments can seem to have a faint, "ghost-like" glow on positions that are supposed to be off. To avoid this effect,
+the library relies on the anti-ghosting techniques, some of them may be fine-tuned by the library user via the API.
 
 ## Reference wiring
 
@@ -51,16 +64,14 @@ Here's a typical circuit diagram for the described arrangement (assumes a common
 Wiring for a common-anode display is almost identical, the only difference being that the transistors' emitters
 should connect to the display's common pins and their collectors should connect to the circuit's positive rail (VCC).
 
-The wiring in your circuit **may** differ from the schematic provided in this README, and the library will still
-be applicable. The only premise that must be followed is the distinction of `seg_byte` and `pos_byte` roles.
+For convenience, the example sketch default constant values corresponds to the circuit diagram provided here.
 
-TODO: defaults in the examples sketch corresponds to the circuit diagram image.
-
-## Multiplexing
-
-Multiplexing is
+The wiring in your circuit **may** differ from the provided schematic to some degree, and the library will still be
+applicable as long as your circuit complies with the premise of the `seg_byte` and `pos_byte` distinct roles.
 
 ## Single-digit displays
+
+TODO: rename "Edge cases", move below
 
 With a single-digit display there's usually no purpose in a switchable signal that turns the only digit ON and OFF
 wholly. Instead, the common pin would go directly to GND (for common cathode) or VCC (for common anode). With such
