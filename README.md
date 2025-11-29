@@ -195,3 +195,5 @@ Refer to `Drv7Seg2x595.h` for more API details.
 TODO: single-position displays
 
 TODO: single-IC arrangements
+
+TODO: ghosting definition and explanation
