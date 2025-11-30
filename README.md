@@ -15,6 +15,7 @@ as one).
 Driving such a display requires a number of individual signals equal to the number of input pins:
 * 8 signals to turn ON and OFF individual segments (including a dot segment, also known as a decimal point or DP).
 * 1 to 4 signals to turn ON and OFF whole positions.
+
 Due to significant number of required signals, output-extending devices, such as output shift registers, are commonly
 used.
 
@@ -41,7 +42,7 @@ the ground (GND, for a common-cathode display) or to the positive rail (VCC, for
 is done via a switching device (most commonly a transistor), since 595's ability to source/sink current by itself for
 a whole set of 7 LEDs gets close to exceeds its electrical limitations.
 
-## Multiplexing and ghosting prevention
+## Multiplexing
 
 This library assumes a hardware driver built for **multiplexing**: a way of driving a multi-digit 7-segment display by
 turning on only one character position at a time in quick succession, in a cycle. This approach greatly simplifies
@@ -77,7 +78,7 @@ Include the library:
 //#include "Drv7Seg2x595.h"  // Generic embedded programming style.
 ```
 
-Configure the software driver object. Choose one variant.
+Configure the software driver object. Choose **one** variant.
 
 Bit-banging:
 ```cpp
