@@ -78,7 +78,9 @@ Include the library:
 //#include "Drv7Seg2x595.h"  // Generic embedded programming style.
 ```
 
-Configure the software driver object. Choose **one** variant.
+### Driver configuration
+
+Choose **one** variant.
 
 Bit-banging:
 ```cpp
@@ -143,6 +145,11 @@ int32_t begin_spi_custom_pins(...
                               ...
                              );
 ```
+
+### Status check
+
+
+### Output
 
 Commence the actual output:
 
