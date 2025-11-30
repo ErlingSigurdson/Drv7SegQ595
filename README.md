@@ -81,6 +81,20 @@ Configure the software driver object. Choose one variant:
 ```cpp
 
 // Bit-banging variant.
+
+// Prototype.
+int32_t begin_bb(ByteOrder byte_order,           // Whether seg_byte or pos_byte will be an upper byte.
+                 PosSwitchType pos_switch_type,  // Logical level that turns the position on (high or low).
+                 uint32_t data_pin,              // Pin that provides the next bit to be shifted.
+                 uint32_t latch_pin,             // Pin that moves the shifted data to the output register.
+                 uint32_t clock_pin,             // Pin that commands the next bit to be shifted.
+                 PosBit pos_1_bit,               // Number of the pos_byte bit that will control the 1st position.
+                 PosBit pos_2_bit                // Number of the pos_byte bit that will control the 2nd position.
+                 PosBit pos_3_bit                // Number of the pos_byte bit that will control the 3rd position.
+                 PosBit pos_4_bit                // Number of the pos_byte bit that will control the 4th position.
+                );
+
+// Example call.
 int32_t begin_bb(Drv7SegPosByteFirst,  // Other option is Drv7SegSegByteFirst.
                  Drv7SegActiveHigh,    // Other option is Drv7SegActiveLow.
 
@@ -90,28 +104,38 @@ int32_t begin_bb(Drv7SegPosByteFirst,  // Other option is Drv7SegSegByteFirst.
                  CLOCK_PIN,
 
                  /* Valid arguments are PosBitN, where N is in the 0..7 range (MSB to LSB of pos_byte).
-                  * Up to three parameters (1st, 2nd and 3rd from the end) can be omitted. The driver will control
-                  * the number of character positions equal to the count of parameters that weren't omitted.
+                  *
+                  * First of these parameters (bit that controls the 1st position) is required.
+                  * Subsequent parameters are omittable. The driver will be configured to control
+                  * the number of character positions equal to the number of parameters that weren't omitted.
                   */
                  PosBit7,
                  PosBit5,
                  PosBit3,
                  PosBit1
                 );
+```
 
+```cpp
 /* SPI with default pins variant.
  * Mostly identical to the bit-banging variant, but only LATCH_PIN needs to be specified
  * (default MOSI pin must be used for data transfer and default SCK pin must be used as a clock source).
  */
+
+// Example call.
 int32_t begin_spi(...
                   LATCH_PIN,
                   ...
                  );
+```
 
+```cpp
 /* SPI with custom pins variant.
  * Mostly identical to the bit-banging variant, but data transfer pin role goes
  * to the specified MOSI pin and clock pin role goes to the specified SCK pin.
  */
+
+// Example call.
 int32_t begin_spi_custom_pins(...
                               MOSI_PIN,
                               LATCH_PIN,
