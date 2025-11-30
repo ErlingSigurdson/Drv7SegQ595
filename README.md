@@ -77,11 +77,10 @@ Include the library:
 //#include "Drv7Seg2x595.h"  // Generic embedded programming style.
 ```
 
-Configure the software driver object. Choose one variant:
+Configure the software driver object. Choose one variant.
+
+Bit-banging:
 ```cpp
-
-// Bit-banging variant.
-
 // Prototype.
 int32_t begin_bb(ByteOrder byte_order,           // Whether seg_byte or pos_byte will be an upper byte.
                  PosSwitchType pos_switch_type,  // Logical level that turns the position on (high or low).
@@ -116,10 +115,10 @@ int32_t begin_bb(Drv7SegPosByteFirst,  // Other option is Drv7SegSegByteFirst.
                 );
 ```
 
+SPI with default pins:
 ```cpp
-/* SPI with default pins variant.
- * Mostly identical to the bit-banging variant, but only LATCH_PIN needs to be specified
- * (default MOSI pin must be used for data transfer and default SCK pin must be used as a clock source).
+/* Mostly identical to the bit-banging variant, but only the latch pin needs to be specified
+ * (default MOSI pin must be used as a data pin and default SCK pin must be used as a clock pin).
  */
 
 // Example call.
@@ -129,10 +128,10 @@ int32_t begin_spi(...
                  );
 ```
 
+SPI with custom pins:
 ```cpp
-/* SPI with custom pins variant.
- * Mostly identical to the bit-banging variant, but data transfer pin role goes
- * to the specified MOSI pin and clock pin role goes to the specified SCK pin.
+/* Mostly identical to the bit-banging variant, but the data pin role goes to
+ * the specified MOSI pin and the clock pin role goes to the specified SCK pin.
  */
 
 // Example call.
