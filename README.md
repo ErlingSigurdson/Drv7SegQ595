@@ -244,6 +244,13 @@ The library works with any Arduino-compatible MCU capable of bit-banging or SPI 
 Availability of the variant with a custom SPI pins assignment depends on MCU capabilites and
 a corresponding `SPI.h` implementation.
 
+### PCB design and rich circuit diagram
+
+You may opt to use ![KiCAD](https://www.kicad.org/) ![files](extras/kicad/) provided with this library to build a DIY
+hardware driver compliant with the library's premises and reference wiring. All hardware-related assets are licensed
+under **CERN-OHL-P v2** permissive open license. This is totally **optional**: this library is built with flexibility
+in mind and does **NOT** depend on a single particular wiring.
+
 ## Links
 
 ### This library
@@ -262,16 +269,3 @@ a corresponding `SPI.h` implementation.
 * Telegram: @erlingsigurdson
 
 Your feedback and pull requests are welcome.
-
-
-
-
-
-TODO dependencies (SPI.h).
-
-
-"Using two 74HC595 for driving a 7-segment display may seem crude since there are specialized solutions available, but I think it bears a certain appeal: it's very transparent, which suits DIY approach perfectly. Basically you control a register, and low-level register control is a big thing in microcontroller world."
-
-In Drv7Seg2x595 README: You still **can** drive a single-digit display using two 595s and this library. If your display is powered via a switch controlled by a pos_byte bit, just make sure that respective bit will always be ON. If your display is powered independently, use only seg_byte (pos_byte still must be shifted to the register, but its value is irrelevant).
-
-PCB (all KiCAD stuff) license note
