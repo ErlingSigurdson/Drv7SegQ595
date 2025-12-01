@@ -1,0 +1,1 @@
+I'd rather name this directory `assets` than `extras`, because it takes a bit longer to make disctinction between `extras` and `examples` during CLI autocompletion. Still, I follow the Arduino library specification.
