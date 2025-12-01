@@ -5,41 +5,50 @@ two daisy-chained 74HC595 shift register ICs.
 
 ## Concept
 
-7-segment displays are simple, cheap and reliable data output devices. However, interfacing them with a microcontroller
-unit (MCU) requires an appropriate software and hardware driver.
+7-segment displays are simple, cheap and reliable data output devices. However, interfacing them with
+a microcontroller (MC) requires an appropriate software and, most commonly, an additional hardware.
 
 Typically, 7-segment displays come in models with 1 to 4 character positions (digits). Number of input pins for
 any given model equals 8 + number of positions, thus 9 is the minimum and 12 is the maximum (duplicated pins count
-as one).
-
-Driving such a display requires a number of individual signals equal to the number of input pins:
+as one). Driving such a display requires a number of individual signals equal to the number of the input pins:
 * 8 signals to turn ON and OFF individual segments (including a dot segment, also known as a decimal point or DP).
 * 1 to 4 signals to turn ON and OFF whole positions.
 
 Due to significant number of required signals, output-extending devices, such as output shift registers, are commonly
-used.
-
-**74HC595**, sometimes simply called **595**, is a widely used 8-bit serial-in, parallel-out (SIPO) shift register
-integrated circuit (IC) commonly employed to drive 7-segment displays. Despite being a SIPO register primarily,
-it also features an auxiliary serial output that allows for **daisy-chaining**: connecting multiple 595s in such a way
-that the serial output of the previous IC goes to the serial input of the next one and all ICs in the chain share
-the same **clock** / **SCK** and **latch** signals. Two daisy-chained 595s form a 16-bit shift register, which is
-sufficient for controlling any typical 7-segment display.
+used. **74HC595**, sometimes simply called **595**, is a widely used 8-bit serial-in, parallel-out (SIPO) shift register
+integrated circuit (IC) commonly employed to drive 7-segment displays. Despite being a SIPO register primarily, it also
+features an auxiliary serial output that allows for **daisy-chaining**: connecting multiple 595s in such a way that
+the serial output of the previous IC goes to the serial input of the next one and all ICs in the chain share the same
+**clock** and **latch** signals. Two daisy-chained 595s form a 16-bit shift register, which is sufficient for
+controlling any typical 7-segment display.
 
 ## Control bytes
 
 This library assumes that the 16-bit register consists of two bytes with distinct roles:
 * **segment byte** (**`seg_byte`**) controls individual display segments to form recognizable symbols.
-* **position byte** (**`pos_byte`**) controls whole character positions and thus determines the character position
-on which the segment pattern (defined by `seg_byte`) will be output. 1 to 4 bits out of 8 are used, the rest are
-NC (not connected).
+* **position byte** (**`pos_byte`**) controls whole character positions and thus determines where the next segment
+pattern (defined by `seg_byte`) will be output. 1 to 4 bits out of 8 are used, the rest are NC (not connected).
 
-The library API allows for any order of `seg_byte` and `pos_byte` placement within the register, that is, 
-any of these bytes may be either upper or lower byte.
+The API allows for any order of `seg_byte` and `pos_byte` placement within the register, that is, any of these bytes may
+be either upper or lower byte.
 
-### Character position switching
+### Position switching
 
-Every position is powered (turned on) by either setting or clearing the corresponding `pos_byte` bit, which provides
+Every position is powered (turned on) by either setting or clearing the `pos_byte` bit specified during the driver
+configuration: bit value determines the logical level (either high or low) of the respective parallel output pin,
+which makes it possible to source/sink current to the corresponding position. Since 595's capacity for sourcing/sinking
+current for a whole set of 8 LEDs gets close to or exceeds its electrical limitations (although in some realistic cases
+the IC may endure it), the logical level is most commonly used to electrically connect the display's common pin to
+the ground (GND, for a common-cathode display) or to the positive rail (VCC, for a common-anode display) via a switching
+device, such as a transistor.
+
+Since the logical level required to turn on a position depends on the circuit (display's common )
+
+, this library's API provide parameters
+to handle any variant as long as all character positions are wired consistently (get turn on with the same logical
+level).
+
+which provides
 high or low logical level to the parallel output pin, respectively. Level switching allows for electrically connecting
 and disconnecting the display's common pin to the ground (GND, for a common-cathode display) or to the positive rail
 (VCC, for a common-anode display). Usually it is done via a switching device (most commonly a transistor), since 595's
@@ -47,9 +56,7 @@ ability to source/sink current by itself for a whole set of 7 LEDs gets close to
 (although in some realistic cases the IC may endure it). Switching devices themselves may be either N-type (active-high)
 or P-type (active-low).
 
-Since the logical level required to turn on a position depends on the circuit, this library's API provide parameters
-to handle any variant as long as all character positions are wired consistently (get turn on with the same logical
-level).
+
 
 ## Multiplexing
 
@@ -222,11 +229,11 @@ whose combination of bit states (set or cleared) corresponds to a pattern in whi
 ON and OFF to form a recognizable symbol. Finding the proper correspondence between the bit states and the segment
 pattern is called **mapping**.
 
-**Mapped bytes** (sometimes called **bit masks**) can be precomputed and hard-coded into a program
-run by a microcontroller unit (MCU) or a similar device that drives a display. Although it may be perfectly
-acceptable, it may become troublesome if the program needs to be adapted to a circuit with a different wiring
-order between the device's outputs and the display's control pins. To simplify and automate the task, you may want to
-try [SegMap595](https://github.com/ErlingSigurdson/SegMap595) library that provides a simple API for byte mapping and
+**Mapped bytes** (sometimes called **bit masks**) can be precomputed and hard-coded into a program run by an MC or
+a similar device that drives a display. Although it may be perfectly acceptable, it may become troublesome if
+the program needs to be adapted to a circuit with a different wiring order between the device's outputs and
+the display's control pins. To simplify and automate the task, you may want to try
+[SegMap595](https://github.com/ErlingSigurdson/SegMap595) library that provides a simple API for byte mapping and
 retrieving the necessary bytes.
 
 ## Dependencies
@@ -240,8 +247,8 @@ sketch and can greatly simplify mapping proper glyph output, but otherwise isn't
 
 ## Compatibility
 
-The library works with any Arduino-compatible MCU capable of bit-banging or SPI data transfer.
-Availability of the variant with a custom SPI pins assignment depends on MCU capabilites and
+The library works with any Arduino-compatible MC capable of bit-banging or SPI data transfer.
+Availability of the variant with a custom SPI pins assignment depends on MC capabilites and
 a corresponding `SPI.h` implementation.
 
 ### PCB design and rich circuit diagram
