@@ -3574,8 +3574,8 @@
 			(uuid "bec0f93b-b67c-497c-8b60-8a696b841c70")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 7.4775 6.35 0)
-			(layer "F.Fab")
+			(at 7.4775 6.35 270)
+			(layer "F.SilkS")
 			(uuid "2a7d5ed1-d583-4184-baaf-51ed16718b49")
 			(effects
 				(font
@@ -8319,7 +8319,7 @@
 		(uuid "fb1013cd-aa7c-49bf-b7dc-0c7f4da5a2c0")
 	)
 	(gr_text "LATCH"
-		(at 169.7 93 0)
+		(at 169.5 93 0)
 		(layer "F.SilkS")
 		(uuid "16214d5b-4956-450a-b82a-adece3454c7d")
 		(effects
@@ -8331,7 +8331,7 @@
 		)
 	)
 	(gr_text "VCC"
-		(at 170.1 88.1 0)
+		(at 170.4 88.1 0)
 		(layer "F.SilkS")
 		(uuid "18722dcf-1f22-42c8-9a57-fb03fe429a9c")
 		(effects
@@ -8343,7 +8343,7 @@
 		)
 	)
 	(gr_text "DATA"
-		(at 169.9 90.5 0)
+		(at 170 90.5 0)
 		(layer "F.SilkS")
 		(uuid "5edb0a65-772f-422c-a7d7-374c1826af6f")
 		(effects
@@ -8368,7 +8368,7 @@
 		)
 	)
 	(gr_text "GND\n"
-		(at 170.1 98 0)
+		(at 170.3 98 0)
 		(layer "F.SilkS")
 		(uuid "6bbc6a39-246e-4a83-ba42-1a472ba156af")
 		(effects
