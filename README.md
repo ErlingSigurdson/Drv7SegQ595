@@ -66,7 +66,7 @@ only one is actually turned on at a given moment. However, this comes with an un
 segments can seem to have a faint, "ghost-like" glow on positions that are supposed to be off. To avoid this effect,
 the library relies on the anti-ghosting techniques, some of them may be fine-tuned by the library user via the API.
 
-Library's anti-ghosting logic is based on the non-blocking, `micros()`-based timer. No blocking, `delay()`-based timers
+Library's anti-ghosting logic is based on a non-blocking, `micros()`-based timer. No blocking, `delay()`-based timers
 are used.
 
 ## Reference wiring
@@ -160,10 +160,60 @@ int32_t begin_spi_custom_pins(...
 
 ### Status check
 
+Check if the driver was configured successfully:
+
+```cpp
+int32_t drv_config_status = Drv7Seg.get_status();
+
+// Loop the error output if the driver configuration was unsuccessful.
+if (drv_config_status < 0) {  // If an error is detected.
+    while(true) {
+        Serial.print("Error: driver configuration failed, error code ");
+        Serial.println(drv_config_status);
+        delay(INTERVAL);
+    }
+}
+```
 
 ### Output
 
 Commence the actual output:
+```cpp
+// Basic usage.
+Drv7Seg.output(seg_byte,     // A byte that corresponds to the glyph to be output.
+               Drv7SegPos1;  // Valid arguments are Drv7SegPosN, where N is in the 1..4 range.
+               RETENTION     /* Duration (in microseconds) of a short period during which a currently output glyph
+                              * is retained on a respective character position. This parameter is omittable, default
+                              * value is 2000 microseconds.
+                              */
+              )
+
+* Call output() method in quick succession for all character positions
+* controlled by pos_byte (for every position to which a position bit was
+* assigned at begin_*() method call).
+*/
+Drv7Seg.output(minutes_tens, Drv7SegPos1);
+Drv7Seg.output(minutes_ones, Drv7SegPos2);
+Drv7Seg.output(seconds_tens, Drv7SegPos3);
+Drv7Seg.output(seconds_ones, Drv7SegPos4);
+```
+
+Refer to `Drv7Seg2x595.h` for more API details.
+
+## Edge cases
+
+* **Single-digit displays**. With a single-digit display there's usually no purpose in a switchable signal that
+turns the only digit ON and OFF (all control job can be done by `seg_byte` alone), nor there's a need for multiplexing.
+Still, you can use this library to control a single-digit display in a pinch. You can either assign a single position
+bit during `begin_*()` method call and connect your display's common pin to the corresponding 595's parallel output
+(in this case the multiplexing logic will still be applied, but your single position will always be the one to be
+turned on next) or just ignore `pos_byte` completely by powering your display directly by connecting in to GND or VCC,
+according to the polarity of its common pin. You will still have to pass a single position bit argument during
+`begin_*()` method call to comply with the library logic, but you can pick randomly from `Drv7SegPosBit0` to
+`Drv7SegPosBit7`.
+* **Not using the leftmost digit**. If you, for instance, have a 4-digit display and for some reason you want to use
+only digits 2 and 3, it's OK, you can do that. Just pass two position bits during `begin_*()` method call: one for
+the 2nd digit (it'll be treated as `Drv7SegPos1`) and another for the 3rd digit (it'll be treated as `Drv7SegPos2`).
 
 ## Glyphs and byte mapping
 
@@ -182,16 +232,11 @@ retrieving the necessary bytes.
 ## Dependencies
 
 * `SPI.h` library implementation for the Arduino core you're using. It is commonly available for all Arduino cores,
-although it's not guaranteed. In an unlikely case where it is not implemented for your core, you can still use
+although it's not strictly guaranteed. In an unlikely case where it is not implemented for your core, you can still use
 **Drv7Seg2x595** in a bit-banging mode, but in order to avoid compilation errors you'll have to manually uncomment
 the `#define DRV7SEG2X595_SPI_PROVIDED_ASSUMED` preprocessor directive in `Drv7Seg2x595.h`.
-
-TODO: note on custom pins
-
-* **SegMap595** C++ library (see links below) is used in the example sketch to
-simplify proper glyph output, but otherwise isn't necessary at all. 
-
-TODO: micros provided
+* **SegMap595** C++ library (see links below) isn't necessary to use `Drv7Seg2x595.h`, but it's used in the example
+sketch and can greatly simplify mapping proper glyph output, but otherwise isn't necessary at all. 
 
 ## Compatibility
 
@@ -220,44 +265,13 @@ Your feedback and pull requests are welcome.
 
 
 
-* * * * * * *
 
- *           TODO dependencies (SPI.h).
- *           TODO what if not first digit on a physical display?
- * TODO: note on not using a blocking timer.
+
+TODO dependencies (SPI.h).
+
 
 "Using two 74HC595 for driving a 7-segment display may seem crude since there are specialized solutions available, but I think it bears a certain appeal: it's very transparent, which suits DIY approach perfectly. Basically you control a register, and low-level register control is a big thing in microcontroller world."
 
 In Drv7Seg2x595 README: You still **can** drive a single-digit display using two 595s and this library. If your display is powered via a switch controlled by a pos_byte bit, just make sure that respective bit will always be ON. If your display is powered independently, use only seg_byte (pos_byte still must be shifted to the register, but its value is irrelevant).
 
 PCB (all KiCAD stuff) license note
-
-TODO: only one begin_*() method to choose
-
-TODO re how to use output() method:
-     * Call output() method in quick succession for all character positions
-     * controlled by pos_byte (for every position to which a position bit was
-     * assigned at begin_*() method call).
-     */
-
-Refer to `Drv7Seg2x595.h` for more API details.
-
-TODO: single-position displays
-
-TODO: single-IC arrangements
-
-TODO: ghosting definition and explanation
-
-TODO: position switch type (N-type, P-type)
-
-
-## Single-digit displays
-
-TODO: rename "Edge cases", move below
-
-With a single-digit display there's usually no purpose in a switchable signal that turns the only digit ON and OFF
-wholly. Instead, the common pin would go directly to GND (for common cathode) or VCC (for common anode). With such
-configuration using daisy-chained 595s would be commonly regarded as redundant. However, the library still supports
-driving a single-digit display. This assumes that one of `pos_byte` bits controls the only available digit.
-
-for a switchable signal and its common pin is typically connected to GND or VCC directly)
