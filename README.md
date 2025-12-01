@@ -66,6 +66,9 @@ only one is actually turned on at a given moment. However, this comes with an un
 segments can seem to have a faint, "ghost-like" glow on positions that are supposed to be off. To avoid this effect,
 the library relies on the anti-ghosting techniques, some of them may be fine-tuned by the library user via the API.
 
+Library's anti-ghosting logic is based on the non-blocking, `micros()`-based timer. No blocking, `delay()`-based timers
+are used.
+
 ## Reference wiring
 
 Here's a typical circuit diagram for the described arrangement (assumes a common-cathode display):
@@ -195,10 +198,6 @@ TODO: micros provided
 The library works with any Arduino-compatible MCU capable of bit-banging or SPI data transfer.
 Availability of the variant with a custom SPI pins assignment depends on MCU capabilites and
 a corresponding `SPI.h` implementation.
-
-## Miscellaneous
-
-No blocking, `delay()`-based timers are used. Instead, the library relies on non-blocking, `micros()`-based timers.
 
 ## Links
 
