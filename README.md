@@ -37,10 +37,19 @@ NC (not connected).
 The library API allows for any order of `seg_byte` and `pos_byte` placement within the register, that is, 
 any of these bytes may be either upper or lower byte.
 
-`pos_byte` bits switch character positions by electrically connecting and disconnecting the display's common pin to
-the ground (GND, for a common-cathode display) or to the positive rail (VCC, for a common-anode display). Usually it
-is done via a switching device (most commonly a transistor), since 595's ability to source/sink current by itself for
-a whole set of 7 LEDs gets close to exceeds its electrical limitations.
+### Character position switching
+
+Every position is powered (turned on) by either setting or clearing the corresponding `pos_byte` bit, which provides
+high or low logical level to the parallel output pin, respectively. Level switching allows for electrically connecting
+and disconnecting the display's common pin to the ground (GND, for a common-cathode display) or to the positive rail
+(VCC, for a common-anode display). Usually it is done via a switching device (most commonly a transistor), since 595's
+ability to source/sink current by itself for a whole set of 7 LEDs gets close to exceeds its electrical limitations
+(although in some realistic cases the IC may endure it). Switching devices themselves may be either N-type (active-high)
+or P-type (active-low).
+
+Since the logical level required to turn on a position depends on the circuit, this library's API provide parameters
+to handle any variant as long as all character positions are wired consistently (get turn on with the same logical
+level).
 
 ## Multiplexing
 
