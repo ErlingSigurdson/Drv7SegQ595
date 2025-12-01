@@ -5,7 +5,7 @@ two daisy-chained 74HC595 shift register ICs.
 
 ## Concept
 
-7-segment displays are simple, cheap and reliable output devices. However, interfacing them with a microcontroller
+7-segment displays are simple, cheap and reliable data output devices. However, interfacing them with a microcontroller
 unit (MCU) requires an appropriate software and hardware driver.
 
 Typically, 7-segment displays come in models with 1 to 4 character positions (digits). Number of input pins for
@@ -202,15 +202,15 @@ Refer to `Drv7Seg2x595.h` for more API details.
 
 ## Edge cases
 
-* **Single-digit displays**. With a single-digit display there's usually no purpose in a switchable signal that
-turns the only digit ON and OFF (all control job can be done by `seg_byte` alone), nor there's a need for multiplexing.
+* **Single-digit displays**. With a single-digit display there's usually no purpose in a switchable signal that turns
+the only digit ON and OFF (all control job can be done by `seg_byte` alone), nor there's a need for multiplexing.
 Still, you can use this library to control a single-digit display in a pinch. You can either assign a single position
-bit during `begin_*()` method call and connect your display's common pin to the corresponding 595's parallel output
+bit at `begin_*()` method call and connect your display's common pin to the corresponding 595's parallel output
 (in this case the multiplexing logic will still be applied, but your single position will always be the one to be
-turned on next) or just ignore `pos_byte` completely by powering your display directly by connecting in to GND or VCC,
+turned on next), or just ignore `pos_byte` completely by powering your display directly by connecting in to GND or VCC,
 according to the polarity of its common pin. You will still have to pass a single position bit argument during
-`begin_*()` method call to comply with the library logic, but you can pick randomly from `Drv7SegPosBit0` to
-`Drv7SegPosBit7`.
+`begin_*()` method call to comply with the library logic, but its particular value becomes irrelevant (you can pick
+randomly from `Drv7SegPosBit0` to `Drv7SegPosBit7`).
 * **Not using the leftmost digit**. If you, for instance, have a 4-digit display and for some reason you want to use
 only digits 2 and 3, it's OK, you can do that. Just pass two position bits during `begin_*()` method call: one for
 the 2nd digit (it'll be treated as `Drv7SegPos1`) and another for the 3rd digit (it'll be treated as `Drv7SegPos2`).
