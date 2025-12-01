@@ -181,17 +181,17 @@ Commence the actual output:
 ```cpp
 // Basic usage.
 Drv7Seg.output(seg_byte,     // A byte that corresponds to the glyph to be output.
-               Drv7SegPos1;  // Valid arguments are Drv7SegPosN, where N is in the 1..4 range.
+               Drv7SegPos1,  // Valid arguments are Drv7SegPosN, where N is in the 1..4 range.
                RETENTION     /* Duration (in microseconds) of a short period during which a currently output glyph
                               * is retained on a respective character position. This parameter is omittable, default
                               * value is 2000 microseconds.
                               */
               )
 
-* Call output() method in quick succession for all character positions
-* controlled by pos_byte (for every position to which a position bit was
-* assigned at begin_*() method call).
-*/
+/* Call output() method in quick succession for all character positions
+ * controlled by pos_byte (for every position to which a position bit was
+ * assigned at begin_*() method call).
+ */
 Drv7Seg.output(minutes_tens, Drv7SegPos1);
 Drv7Seg.output(minutes_ones, Drv7SegPos2);
 Drv7Seg.output(seconds_tens, Drv7SegPos3);
