@@ -176,10 +176,6 @@ order between the device's outputs and the display's control pins. To simplify a
 try [SegMap595](https://github.com/ErlingSigurdson/SegMap595) library that provides a simple API for byte mapping and
 retrieving the necessary bytes.
 
-## Compatibility
-
-The library works with any Arduino-compatible MCU capable of bit-banging or SPI data transfer.
-
 ## Dependencies
 
 * `SPI.h` library implementation for the Arduino core you're using. It is commonly available for all Arduino cores,
@@ -193,6 +189,12 @@ TODO: note on custom pins
 simplify proper glyph output, but otherwise isn't necessary at all. 
 
 TODO: micros provided
+
+## Compatibility
+
+The library works with any Arduino-compatible MCU capable of bit-banging or SPI data transfer.
+Availability of the variant with a custom SPI pins assignment depends on MCU capabilites and
+a corresponding `SPI.h` implementation.
 
 ## Miscellaneous
 
