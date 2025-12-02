@@ -45,7 +45,7 @@ device, such as a transistor.
 Since the logical level required to turn on a position depends on the circuit (display's common )
 
 , this library's API provide parameters
-to handle any variant as long as all character positions are wired consistently (get turn on with the same logical
+to handle any variant as long as all character positions are wired consistently (get turned on with the same logical
 level).
 
 which provides
