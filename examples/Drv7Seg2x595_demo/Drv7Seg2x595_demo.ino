@@ -178,21 +178,30 @@ void setup()
     #ifdef USE_BIT_BANGING
     Drv7Seg.begin_bb(BYTE_SHIFT_ORDER, POS_SWITCH_TYPE,
                      DATA_PIN, LATCH_PIN, CLOCK_PIN,
-                     POS_1_BIT, POS_2_BIT, POS_3_BIT, POS_4_BIT
+                     POS_1_BIT,
+                     POS_2_BIT,
+                     POS_3_BIT,
+                     POS_4_BIT
                     );
     #endif
 
     #ifdef USE_SPI_DEFAULT_PINS
     Drv7Seg.begin_spi(BYTE_SHIFT_ORDER, POS_SWITCH_TYPE,
                       LATCH_PIN,
-                      POS_1_BIT, POS_2_BIT, POS_3_BIT, POS_4_BIT
+                      POS_1_BIT,
+                      POS_2_BIT,
+                      POS_3_BIT,
+                      POS_4_BIT
                      );
     #endif
 
     #ifdef USE_SPI_CUSTOM_PINS
     Drv7Seg.begin_spi_custom_pins(BYTE_SHIFT_ORDER, POS_SWITCH_TYPE,
                                   MOSI_PIN, LATCH_PIN, SCK_PIN,
-                                  POS_1_BIT, POS_2_BIT, POS_3_BIT, POS_4_BIT
+                                  POS_1_BIT,
+                                  POS_2_BIT,
+                                  POS_3_BIT,
+                                  POS_4_BIT
                                  );
     #endif
 
