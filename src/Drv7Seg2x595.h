@@ -40,10 +40,10 @@
  */
 #define DRV7SEG2X595_SPI_PROVIDED_ASSUMED
 
-/* Duration (in microseconds) of a short period during which a currently output glyph
- * is retained on a respective character position.
+/* Duration (in microseconds) of a short period during which
+ * a currently output glyph is retained on a respective position.
  */
-#define DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION_US 2000
+#define DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION_US
 
 #define DRV7SEG2X595_POS_MIN 1
 #define DRV7SEG2X595_POS_MAX 4
@@ -63,8 +63,8 @@
 #define DRV7SEG2X595_STATUS_OK                           0
 
 // output() method additional return codes.
-#define DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS -7
-#define DRV7SEG2X595_OUTPUT_ERR_INVALID_POS                   -8
+#define DRV7SEG2X595_OUTPUT_ERR_INVALID_POS                   -7
+#define DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS -8
 #define DRV7SEG2X595_OUTPUT_NEXT                               0
 #define DRV7SEG2X595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING    1
 
@@ -74,11 +74,11 @@
     defined(ARDUINO_ARCH_SAM)                  || \
     defined(ARDUINO_ARCH_SAMD)                 || \
     defined(ARDUINO_ARCH_MBED)                 || \
-    defined(ARDUINO_ARCH_RENESAS)              || \
     defined(ARDUINO_ARCH_ESP8266)              || \
     defined(ARDUINO_ARCH_ESP32)                || \
     defined(ARDUINO_ARCH_STM32)                || \
     defined(ARDUINO_ARCH_RP2040)               || \
+    defined(ARDUINO_ARCH_RENESAS)              || \
     defined(ARDUINO_ARCH_NRF52)
     #define DRV7SEG2X595_SPI_PROVIDED
 #endif
@@ -145,11 +145,11 @@ class Drv7Seg2x595Class {
          * - byte_order                     - within a 16-bit register formed by two ICs either
          *                                    pos_byte is an upper byte and seg_byte is a lower byte or
          *                                    seg_byte is an upper byte and pos_byte is a lower byte.
-         * - pos_switch_type                - character positions are turned on either
-         *                                    by set (active-high) or cleared (active-low) pos_byte bits.
+         * - pos_switch_type                - positions are turned on either by
+         *                                    set (active-high) or cleared (active-low) pos_byte bits.
          * - data_pin, latch_pin, clock_pin - pins used for bit-banging and latching.
-         * - pos_N_bit                      - pos_byte bits that control character positions.
-         *                                    pos_1_bit must be specified, other bits are optional
+         * - pos_N_bit                      - pos_byte bits that control positions.
+         *                                    pos_1_bit is required, other bits are optional
          *                                    (respective parameters can be omitted).
          *
          * Multiple calls to this method are valid, each call leads to a fresh configuration.
@@ -170,8 +170,8 @@ class Drv7Seg2x595Class {
          * Returns: equivalent to begin_bb().
          *
          * Parameters: mostly equivalent to begin_bb(), but
-         * data_pin and clock_pin aren't specified (default
-         * MOSI and SCK pins will be used instead).
+         * data_pin and clock_pin aren't specified
+         * (default MOSI and SCK pins will be used instead).
          *
          * For many hardware platforms and SPI.h implementations default SPI pins
          * are the only SPI pins available (custom SPI pins cannot be assigned).
@@ -225,7 +225,7 @@ class Drv7Seg2x595Class {
         /* Shift two bytes into two daisy-chained ICs and then latch the data into the output register.
          *
          * Returns:
-         * - a negative integer if the driver configuration failed or not all passed parameters are valid
+         * - a negative integer if driver configuration had failed or not all passed parameters are valid
          *   (see the preprocessor macros list for possible values).
          * - zero if the program execution has reached the next glyph output code sequence.
          * - a positive integer if an anti-ghosting retention is running.
@@ -236,8 +236,8 @@ class Drv7Seg2x595Class {
          *                                         must be output on.
          * - anti_ghosting_retention_duration_us - duration (in microseconds) of a short period during which
          *                                         a currently output glyph is retained on a respective
-         *                                         character position. This parameter is optional, if
-         *                                         it's omitted, a default value will be used.
+         *                                         position. This parameter is optional: if it's omitted,
+         *                                         a default value will be used.
          */
         int32_t output(uint8_t seg_byte,
                        Pos pos,
@@ -285,8 +285,8 @@ class Drv7Seg2x595Class {
         /* Helper method that does most of the begin_*() methods' job by
          * handling checks and assignments common for all of them.
          *
-         * Returns: zero if the respective configuration stage was successful (if all passed parameters
-         * are valid), a negative integer otherwise (see the preprocessor macros list for possible values).
+         * Returns: zero if the respective configuration stage was successful (if all passed parameters are
+         * valid), a negative integer otherwise (see the preprocessor macros list for possible values).
          */
         int32_t begin_helper(int32_t config_variant,
                              ByteOrder byte_order,
@@ -294,9 +294,8 @@ class Drv7Seg2x595Class {
                              uint32_t latch_pin,
 
                              PosBit pos_1_bit,
-                             /* Following parameters are assigned with values even if
-                              * those were omitted in a begin_*() method call (in this
-                              * case default values are assigned).
+                             /* Following parameters are assigned with values even if those were omitted
+                              * in a begin_*() method call (in this case default values are assigned).
                               */
                              PosBit pos_2_bit,
                              PosBit pos_3_bit,
