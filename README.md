@@ -248,7 +248,7 @@ sketch and can greatly simplify mapping proper glyph output, but otherwise isn't
 ## Compatibility
 
 The library works with any Arduino-compatible MC capable of bit-banging or SPI data transfer.
-Availability of the variant with a custom SPI pins assignment depends on MC capabilites and
+Availability of the variant with a custom SPI pins assignment depends on MC's capabilites and
 a corresponding `SPI.h` implementation.
 
 ### PCB design and rich circuit diagram
