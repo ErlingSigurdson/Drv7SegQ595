@@ -60,7 +60,7 @@ or P-type (active-low).
 
 ## Multiplexing
 
-This library assumes a hardware driver built for **multiplexing**: a way of driving a multi-digit 7-segment display by
+This library relies on **multiplexing**: a way of driving a multi-digit 7-segment display by
 turning on only one character position at a time in quick succession, in a cycle. This approach greatly simplifies
 the circuit because it doesn't rely on a separate set of segment-control outputs for every character position and
 instead utilizes the single set of segment-control outputs shared by **all** positions (the defined segment pattern
