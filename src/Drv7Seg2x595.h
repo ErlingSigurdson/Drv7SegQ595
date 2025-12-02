@@ -36,7 +36,7 @@
 /* Comment out if SPI.h isn't provided for the Arduino core you're using or
  * for the specific board (device) you're using (a rare case, but not impossible).
  *
- * __has_include() macro is deliberately avoided due to limited availability.
+ * __has_include() macro is deliberately avoided due to limited portability.
  */
 #define DRV7SEG2X595_SPI_PROVIDED_ASSUMED
 
