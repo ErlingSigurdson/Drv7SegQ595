@@ -268,7 +268,7 @@ flexibility in mind and does **NOT** depend on a single particular wiring.
 * [Primary repository on GitHub](https://github.com/ErlingSigurdson/Drv7Seg2x595)
 * [Backup repository on GitFlic](https://gitflic.ru/project/efimov-d-v/drv7seg2x595)
 
-### A library used in the example sketch — **SegMap595**
+### SegMap595
 * [Primary repository on GitHub](https://github.com/ErlingSigurdson/SegMap595)
 * [Backup repository on GitFlic](https://gitflic.ru/project/efimov-d-v/segmap595)
 
