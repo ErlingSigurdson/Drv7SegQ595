@@ -191,7 +191,7 @@ Drv7Seg.output(seg_byte,     // A byte that corresponds to the glyph to be outpu
                Drv7SegPos1,  // Valid arguments are Drv7SegPosN, where N is in the 1..4 range.
                RETENTION     /* Duration (in microseconds) of a short period during which a currently output glyph
                               * is retained on a respective character position. This parameter is omittable, default
-                              * value is 2000 microseconds.
+                              * value is 1000 microseconds.
                               */
               )
 
