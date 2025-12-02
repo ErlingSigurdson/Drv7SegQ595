@@ -253,10 +253,14 @@ a corresponding `SPI.h` implementation.
 
 ### PCB design and rich circuit diagram
 
-You may opt to use ![KiCAD](https://www.kicad.org/) ![files](extras/kicad/) provided with this library to build a DIY
+You may opt to use [KiCAD](https://www.kicad.org/) [files](extras/kicad/) provided with this library to build a DIY
 hardware driver compliant with the library's premises and reference wiring. All hardware-related assets are licensed
-under **CERN-OHL-P v2** permissive open license. This is totally **optional**: this library is built with flexibility
-in mind and does **NOT** depend on a single particular wiring.
+under **CERN-OHL-P v2** permissive open license.
+
+![PCB](extras/Drv7Seg2x595_PCB_view_footprints.png)
+
+Using the provided design is totally **optional**! This library is built with
+flexibility in mind and does **NOT** depend on a single particular wiring.
 
 ## Links
 
