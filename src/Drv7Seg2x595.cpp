@@ -376,15 +376,15 @@ Drv7Seg2x595Class::Pos Drv7Seg2x595Class::anti_ghosting_next_pos_to_output()
 
     // Add 1 because we're checking the next position, not the current one.
     for (size_t i = pos_as_index + 1; i < DRV7SEG2X595_POS_MAX; ++i) {
-        // Search for a position that was assigned a position bit that belongs to the 0..7 range.
+        /* Search for a position that is valid for output (that was
+         * assigned a position bit that belongs to the 0..7 range).
+         */
         if (_pos_bits[i] != Drv7SegPosBitInitial) {
             // Add 1 because we're hopping back from 0-indexed to 1-indexed.
             return static_cast<Pos>(i + 1);
         }
     }
 
-    /* Character position 1 is guaranteed to be available for output
-     * (its position bit belongs to the 0..7 range).
-     */
+    // Character position 1 is guaranteed to be valid for output.
     return Drv7SegPos1;
 }

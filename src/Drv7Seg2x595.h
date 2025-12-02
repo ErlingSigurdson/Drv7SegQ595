@@ -41,7 +41,7 @@
 #define DRV7SEG2X595_SPI_PROVIDED_ASSUMED
 
 /* Duration (in microseconds) of a short period during which
- * a currently output glyph is retained on a respective position.
+ * a currently output glyph is retained on a respective character position.
  */
 #define DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION_US 1000
 
@@ -145,10 +145,10 @@ class Drv7Seg2x595Class {
          * - byte_order                     - within a 16-bit register formed by two ICs either
          *                                    pos_byte is an upper byte and seg_byte is a lower byte or
          *                                    seg_byte is an upper byte and pos_byte is a lower byte.
-         * - pos_switch_type                - positions are turned on either by
+         * - pos_switch_type                - characters positions are turned on either by
          *                                    set (active-high) or cleared (active-low) pos_byte bits.
          * - data_pin, latch_pin, clock_pin - pins used for bit-banging and latching.
-         * - pos_N_bit                      - pos_byte bits that control positions.
+         * - pos_N_bit                      - pos_byte bits that control character positions.
          *                                    pos_1_bit is required, other bits are optional
          *                                    (respective parameters can be omitted).
          *
