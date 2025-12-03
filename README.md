@@ -80,8 +80,8 @@ are used.
 
 Here's a typical circuit diagram for the described arrangement (assumes a common-cathode display):
 
-![circuit_diagram_(schematic)_preview.png](extras/images/circuit_diagram_(schematic)_preview.png)
-[Click here to view full-size image](extras/images/circuit_diagram_(schematic)_full_size.png)
+![circuit_diagram_(schematic).png](extras/images/circuit_diagram_(schematic).png)
+[Click to view full-size image](extras/images/circuit_diagram_(schematic).png)
 
 Wiring for a common-anode display is almost identical, the only difference being that the transistors' emitters
 should connect to the display's common pins and their collectors should connect to the circuit's positive rail (VCC).
@@ -261,7 +261,7 @@ under **CERN-OHL-P v2** permissive open license.
 
 ![pcb_view_w_footprints_preview.png](extras/images/pcb_view_w_footprints_preview.png)
 
-[Click here to view full-size image](extras/images/pcb_view_w_footprints_full_size.png)
+[Click to view full-size image](extras/images/pcb_view_w_footprints_full_size.png)
 
 Using the provided design is totally **optional**! This library is built with
 flexibility in mind and does **NOT** depend on a single particular wiring.
