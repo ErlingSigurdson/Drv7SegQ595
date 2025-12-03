@@ -80,7 +80,8 @@ are used.
 
 Here's a typical circuit diagram for the described arrangement (assumes a common-cathode display):
 
-<img src="extras/images/circuit_diagram_(schematic).png" alt="Circuit diagram (schematic)" style="width:80%;"/>
+![circuit_diagram_(schematic)_preview.png](extras/images/circuit_diagram_(schematic)_preview.png)
+[Click to view full-size image](extras/images/circuit_diagram_(schematic)_full_size.png)
 
 Wiring for a common-anode display is almost identical, the only difference being that the transistors' emitters
 should connect to the display's common pins and their collectors should connect to the circuit's positive rail (VCC).
@@ -258,7 +259,7 @@ You may opt to use [KiCAD](https://www.kicad.org/) [files](extras/kicad/) provid
 hardware driver compliant with the library's premises and reference wiring. All hardware-related assets are licensed
 under **CERN-OHL-P v2** permissive open license.
 
-![pcb_view_w_footprints_preview](extras/images/pcb_view_w_footprints_preview.png)
+![pcb_view_w_footprints_preview.png](extras/images/pcb_view_w_footprints_preview.png)
 
 [Click to view full-size image](extras/images/pcb_view_w_footprints_full_size.png)
 
