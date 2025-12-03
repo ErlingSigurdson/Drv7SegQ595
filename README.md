@@ -259,6 +259,7 @@ hardware driver compliant with the library's premises and reference wiring. All 
 under **CERN-OHL-P v2** permissive open license.
 
 ![pcb_view_w_footprints_preview](extras/images/pcb_view_w_footprints_preview.png)
+
 [Click to view full-size image](extras/images/pcb_view_w_footprints_full_size.png)
 
 Using the provided design is totally **optional**! This library is built with
