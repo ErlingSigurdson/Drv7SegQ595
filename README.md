@@ -79,7 +79,8 @@ are used.
 ## Reference wiring
 
 Here's a typical circuit diagram for the described arrangement (assumes a common-cathode display):
-![Circuit diagram (schematic)](extras/images/circuit_diagram_(schematic).png)
+
+<img src="extras/images/circuit_diagram_(schematic).png" alt="Circuit diagram (schematic)" style="width:80%;"/>
 
 Wiring for a common-anode display is almost identical, the only difference being that the transistors' emitters
 should connect to the display's common pins and their collectors should connect to the circuit's positive rail (VCC).
