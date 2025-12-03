@@ -210,24 +210,11 @@ the one to be turned on next), or just ignore `pos_byte` completely by powering 
 it to GND or VCC, according to the polarity of its common pin. You will still have to pass a single position bit
 argument during `begin_*()` method call to comply with the library logic, but its particular value becomes irrelevant
 (you can pick randomly from `Drv7SegPosBit0` to `Drv7SegPosBit7`).
+
 * **Not using the leftmost digit**. If you, for instance, have a 4-digit display and for some reason you want to use
 only character positions 2 and 3, it's completely OK, you can do that. Pass two position bits during `begin_*()` method
 call: one for the 2nd digit (it'll be treated as `Drv7SegPos1`) and another for the 3rd digit (it'll be treated as
 `Drv7SegPos2`).
-
-## Glyphs and byte mapping
-
-Typically, outputting a glyph (a character representation) on a 7-segment display involves composing a byte
-whose combination of bit states (set or cleared) corresponds to a pattern in which the segments must be turned
-ON and OFF to form a recognizable symbol. Finding the proper correspondence between the bit states and the segment
-pattern is called **mapping**.
-
-**Mapped bytes** (sometimes called **bit masks**) can be precomputed and hard-coded into a program run by an MC or
-a similar device that drives a display. Although it may be perfectly acceptable, it may become troublesome if
-the program needs to be adapted to a circuit with a different wiring order between the device's outputs and
-the display's control pins. To simplify and automate the task, you may want to try
-[SegMap595](https://github.com/ErlingSigurdson/SegMap595) library that provides a simple API for byte mapping and
-retrieving the necessary bytes.
 
 ## Dependencies
 
@@ -236,14 +223,16 @@ although it's not strictly guaranteed. In an unlikely case where it is not imple
 **Drv7Seg2x595** in a bit-banging mode, but in order to avoid compilation errors you'll have to manually uncomment
 the `#define DRV7SEG2X595_SPI_PROVIDED_ASSUMED` preprocessor directive in `Drv7Seg2x595.h`.
 
-* **SegMap595** C++ library (see links below) isn't necessary to use `Drv7Seg2x595.h`, but it's used in the example
-sketch and can greatly simplify mapping proper glyph output, but otherwise isn't necessary at all. 
+* **SegMap595** C++ library (see links below) is used in the example sketch in order to simplify byte mapping, but
+aside from that it's not a prerequisite for using `Drv7Seg2x595.h`.
 
 ## Compatibility
 
 The library works with any Arduino-compatible MC capable of bit-banging or SPI data transfer.
-Availability of the variant with a custom SPI pins assignment depends on MC's capabilites and
-a corresponding `SPI.h` implementation.
+
+Availability of the configuration variant that takes custom-assigned SPI pins on the capabilites
+of a given MC and a corresponding `SPI.h` implementation. As of the last update to list library,
+that variant is only provided for ESP32 and STM32 MC families.
 
 ### PCB design and rich circuit diagram
 
