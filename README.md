@@ -258,7 +258,9 @@ You may opt to use [KiCAD](https://www.kicad.org/) [files](extras/kicad/) provid
 hardware driver compliant with the library's premises and reference wiring. All hardware-related assets are licensed
 under **CERN-OHL-P v2** permissive open license.
 
-![pcb_view_w_footprints.png](extras/images/pcb_view_w_footprints.png)
+![pcb_view_w_footprints_preview.png](extras/images/pcb_view_w_footprints_preview.png)
+
+[Click here to view full-size image](extras/images/pcb_view_w_footprints_full_size.png)
 
 Using the provided design is totally **optional**! This library is built with
 flexibility in mind and does **NOT** depend on a single particular wiring.
