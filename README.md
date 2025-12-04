@@ -25,44 +25,50 @@ controlling any typical 7-segment display.
 ## Control bytes
 
 This library assumes that the 16-bit register consists of two bytes with distinct roles:
-* **segment byte** (**`seg_byte`**) controls individual display segments to form recognizable symbols.
+* **segment byte** (**`seg_byte`**) controls individual display segments to form recognizable symbols (glyphs).
 * **position byte** (**`pos_byte`**) controls whole character positions and thus determines where the next segment
-pattern (defined by `seg_byte`) will be output. 1 to 4 bits out of 8 are used, the rest are NC (not connected).
+pattern (defined by `seg_byte`) will be output. 1 to 4 bits out of 8 are used, the rest are not connected (NC).
 
-Provided API allows for any order of `seg_byte` and `pos_byte` placement within the register, that is, any of these
-bytes may be either upper or lower byte. The byte order must be specified during the driver configuration.
-
-### Position switching
-
-Every position is powered (turned on) by either setting or clearing the `pos_byte` bit specified during the driver
-configuration. It can be done because the bit value determines the logical output level (either high or low) of
-the corresponding parallel output pin, which makes it possible to source/sink current from/to that pin.
-The resulting current may be used to power the character position directly or via a switching device, such as
-a transistor. The latter approach is far more common, since 595's capacity for sourcing/sinking current for
-a whole set of 8 LEDs gets close to or exceeds its electrical limitations.
-
-Depending on the display type (its common pin polarity) and the switching device polarity (whether it's active-high,
-like an NPN transistor, or active-low, like a PNP transistor), character positiong will be turned on either by high
-or low logical output level. The API provided by this library supports both variants. The switching type (active-high or
-active-low) must be specified during the driver configuration.
+The API provided by this library allows for any order of `seg_byte` and `pos_byte` placement within the register,
+that is, any of these bytes may be either upper or lower byte. The byte order must be specified during the driver
+configuration.
 
 ## Multiplexing
 
-This library relies on **multiplexing**: a way of driving a multi-digit 7-segment display by
-turning on only one character position at a time in quick succession, in a cycle. This approach greatly simplifies
-the circuit because it doesn't rely on a separate set of segment-control outputs for every character position and
-instead utilizes the single set of segment-control outputs shared by **all** positions (the defined segment pattern
-shows up only on the intended position anyway, because only that position will be turned on at the appropriate moment).
+This library relies on **multiplexing**: a way of driving a multi-digit 7-segment display by turning on only one
+character position at a time in quick succession, in a cycle. Because the multiplexing cycle runs faster than
+the eye can follow, all positions appear to be lit continuously, even though only one is actually turned on at
+any given moment.
+
+This approach greatly simplifies the circuit because it doesn't rely on a separate set of segment-control outputs
+for every position and instead utilizes the single set of segment-control outputs shared by **all** positions
+(the defined segment pattern shows up only on the intended position anyway, because only that position will be
+turned on at the appropriate moment).
 
 ### Ghosting and countermeasures
 
-Because the multiplexing cycle run faster than the eye can follow, all digits appear to be lit continuously, even though
-only one is actually turned on at a given moment. However, this comes with an unwanted side effect called **ghosting**:
-segments can seem to have a faint, "ghost-like" glow on positions that are supposed to be off. To avoid this effect,
-the library utilizes the anti-ghosting techniques. Some of them may be fine-tuned by the library user via the API.
+Advantages of multiplexing come with an unwanted side effect called **ghosting**: segments can seem to have a faint,
+"ghost-like" glow on positions that are supposed to be off. To avoid this effect, the library utilizes the anti-ghosting
+techniques that involve retention of a currently output glyph on a respective position for a short period of time.
+Duration of the said period can be fine-tuned by the library user via the library's API.
 
-Library's anti-ghosting logic is based on a non-blocking, `micros()`-based timer. No blocking, `delay()`-based timers
-are used.
+The library's anti-ghosting logic is based on a non-blocking, `micros()`-based timer. No blocking, `delay()`-based
+timers are used.
+
+## Position switching
+
+Every character position is turned on (powered) by either setting or clearing the `pos_byte` bit specified during
+the driver configuration. It can be done because the bit value determines the digital output level (either high or low)
+of the corresponding parallel output pin, which makes it possible to source/sink current from/to that pin.
+The resulting current may be used to power the position directly or via a switching device, such as a transistor.
+The latter approach is far more common, since 595's capacity for sourcing/sinking current for a whole set of 8 LEDs gets
+close to or exceeds its electrical limitations.
+
+Depending on the display type (whether it's a common-cathode or a common-anode device) and the switching device type
+(whether it's an active-high device, like an NPN BJT or an N-channel MOSFET, or an active-low device, like a PNP BJT or
+a P-channel MOSFET), positions will be turned on either by high or low digital output level. The API provided by this
+library supports both variants. The switching type (active-high or active-low) must be specified during the driver
+configuration.
 
 ## Reference wiring
 
@@ -94,10 +100,10 @@ Bit-banging:
 ```cpp
 // Prototype.
 int32_t begin_bb(ByteOrder byte_order,           // Whether seg_byte or pos_byte will be an upper byte.
-                 PosSwitchType pos_switch_type,  // Logical level that turns on a character position on (high or low).
-                 uint32_t data_pin,              // Pin that provides the next bit to be shifted.
-                 uint32_t latch_pin,             // Pin that propagates the shifted data to the output register.
-                 uint32_t clock_pin,             // Pin that commands the next bit to be shifted.
+                 PosSwitchType pos_switch_type,  // Whether high or low output level turns on a character position.
+                 uint32_t data_pin,              // The pin that outputs the next bit value to be shifted.
+                 uint32_t latch_pin,             // The pin that propagates the shifted data to the output register.
+                 uint32_t clock_pin,             // The pin that commands the next bit value to be shifted.
                  PosBit pos_1_bit,               // Number of the pos_byte bit that will control the 1st position.
                  PosBit pos_2_bit,               // Number of the pos_byte bit that will control the 2nd position.
                  PosBit pos_3_bit,               // Number of the pos_byte bit that will control the 3rd position.
@@ -108,9 +114,7 @@ int32_t begin_bb(ByteOrder byte_order,           // Whether seg_byte or pos_byte
 Drv7Seg.begin_bb(Drv7SegPosByteFirst,  // Other option is Drv7SegSegByteFirst.
                  Drv7SegActiveHigh,    // Other option is Drv7SegActiveLow.
 
-                 /* Arguments must be unsigned integers corresponding to
-                  * the Arduino digital output pins numbering.
-                  */
+                 // Pin numbers must correspond to the pin numbering specified by the Arduino core you're using.
                  16,
                  17,
                  18,
