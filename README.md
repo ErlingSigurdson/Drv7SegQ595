@@ -43,7 +43,7 @@ a whole set of 8 LEDs gets close to or exceeds its electrical limitations.
 
 Depending on the display type (its common pin polarity) and the switching device polarity (whether it's active-high,
 like an NPN transistor, or active-low, like a PNP transistor), character positiong will be turned on either by high
-or low logical output level. Provided allows API allows for both variants. The switching type (active-high or
+or low logical output level. The API provided by this library supports both variants. The switching type (active-high or
 active-low) must be specified during the driver configuration.
 
 ## Multiplexing
@@ -56,7 +56,7 @@ shows up only on the intended position anyway, because only that position will b
 
 ### Ghosting and countermeasures
 
-Because multiplexing cycle run faster than the eye can follow, all digits appear to be lit continuously, even though
+Because the multiplexing cycle run faster than the eye can follow, all digits appear to be lit continuously, even though
 only one is actually turned on at a given moment. However, this comes with an unwanted side effect called **ghosting**:
 segments can seem to have a faint, "ghost-like" glow on positions that are supposed to be off. To avoid this effect,
 the library utilizes the anti-ghosting techniques. Some of them may be fine-tuned by the library user via the API.
@@ -99,17 +99,18 @@ int32_t begin_bb(ByteOrder byte_order,           // Whether seg_byte or pos_byte
                  uint32_t latch_pin,             // Pin that propagates the shifted data to the output register.
                  uint32_t clock_pin,             // Pin that commands the next bit to be shifted.
                  PosBit pos_1_bit,               // Number of the pos_byte bit that will control the 1st position.
-                 PosBit pos_2_bit                // Number of the pos_byte bit that will control the 2nd position.
-                 PosBit pos_3_bit                // Number of the pos_byte bit that will control the 3rd position.
-                 PosBit pos_4_bit                // Number of the pos_byte bit that will control the 4th position.
+                 PosBit pos_2_bit,               // Number of the pos_byte bit that will control the 2nd position.
+                 PosBit pos_3_bit,               // Number of the pos_byte bit that will control the 3rd position.
+                 PosBit pos_4_bit,               // Number of the pos_byte bit that will control the 4th position.
                 );
 
 // Example call.
-int32_t begin_bb(Drv7SegPosByteFirst,  // Other option is Drv7SegSegByteFirst.
+Drv7Seg.begin_bb(Drv7SegPosByteFirst,  // Other option is Drv7SegSegByteFirst.
                  Drv7SegActiveHigh,    // Other option is Drv7SegActiveLow.
 
                  /* Arguments must be unsigned integers corresponding to
                   * the Arduino digital output pins numbering.
+                  */
                  16,
                  17,
                  18,
@@ -120,10 +121,10 @@ int32_t begin_bb(Drv7SegPosByteFirst,  // Other option is Drv7SegSegByteFirst.
                   * Subsequent parameters are optional. The driver will be configured to control
                   * the number of character positions equal to the number of parameters that weren't omitted.
                   */
-                 PosBit7,
-                 PosBit5,
-                 PosBit3,
-                 PosBit1
+                 Drv7SegPosBit7,
+                 Drv7SegPosBit5,
+                 Drv7SegPosBit3,
+                 Drv7SegPosBit1
                 );
 ```
 
@@ -134,7 +135,7 @@ SPI with default pins:
  */
 
 // Example call.
-int32_t begin_spi(...
+Drv7Seg.begin_spi(...
                   LATCH_PIN,
                   ...
                  );
@@ -147,7 +148,7 @@ SPI with custom pins:
  */
 
 // Example call.
-int32_t begin_spi_custom_pins(...
+Drv7Seg.begin_spi_custom_pins(...
                               MOSI_PIN,
                               LATCH_PIN,
                               SCK_PIN
@@ -170,6 +171,7 @@ if (drv_config_status < 0) {  // If an error is detected.
     }
 }
 ```
+You can also check the value returned by `begin_*()` instead of calling `get_status()`.
 
 ### Output
 
@@ -184,7 +186,7 @@ Drv7Seg.output(uint8_t seg_byte,  // A byte that corresponds to the glyph to be 
                 * the default value is 1000 microseconds.
                 */
                uint32_t anti_ghosting_retention_duration_us
-              )
+              );
 
 /* Example calls.
  * Call output() method in quick succession for all character positions
@@ -220,25 +222,24 @@ call: one for the 2nd digit (it'll be treated as `Drv7SegPos1`) and another for 
 
 * `SPI.h` library implementation for the Arduino core you're using. It is commonly available for all Arduino cores,
 although it's not strictly guaranteed. In an unlikely case where it is not implemented for your core, you can still use
-**Drv7Seg2x595** in a bit-banging mode, but in order to avoid compilation errors you'll have to manually uncomment
+**Drv7Seg2x595** in a bit-banging mode, but in order to avoid compilation errors you'll have to manually comment out
 the `#define DRV7SEG2X595_SPI_PROVIDED_ASSUMED` preprocessor directive in `Drv7Seg2x595.h`.
 
-* **SegMap595** C++ library (see links below) is used in the example sketch in order to simplify byte mapping, but
-aside from that it's not a prerequisite for using `Drv7Seg2x595.h`.
+* **SegMap595** library (see links below, also available from Arduino Library Manager) is used in the example sketch
+in order to simplify byte mapping, but aside from that it's not a prerequisite for using `Drv7Seg2x595.h`.
 
 ## Compatibility
 
 The library works with any Arduino-compatible MC capable of bit-banging or SPI data transfer.
 
-Availability of the configuration variant that takes custom-assigned SPI pins on the capabilites
-of a given MC and a corresponding `SPI.h` implementation. As of the last update to list library,
+Availability of the configuration variant that takes custom-assigned SPI pins on the capabilities
+of a given MC and a corresponding `SPI.h` implementation. As of the last update to this library,
 that variant is only provided for ESP32 and STM32 MC families.
 
 ### PCB design and rich circuit diagram
 
 You may opt to use [KiCAD](https://www.kicad.org/) [files](extras/kicad/) provided with this library to build a DIY
-hardware driver compliant with the library's premises and reference wiring. All hardware-related assets are licensed
-under **CERN-OHL-P v2** permissive open license.
+hardware driver compliant with the library's premises and reference wiring.
 
 ![pcb_view_w_footprints_preview.png](extras/images/pcb_view_w_footprints_preview.png)
 
@@ -246,6 +247,13 @@ under **CERN-OHL-P v2** permissive open license.
 
 Using the provided design is totally **optional**! This library is built with
 flexibility in mind and does **NOT** depend on a single particular wiring.
+
+## License
+
+* The software part of this library, as well as its documentation, is licensed under the **MIT License**
+(see `LICENSE`).
+* All hardware-related files in this library are licensed under the **CERN-OHL-P v2**
+(see `extras/kicad/LICENSE_HARDWARE`).
 
 ## Links
 

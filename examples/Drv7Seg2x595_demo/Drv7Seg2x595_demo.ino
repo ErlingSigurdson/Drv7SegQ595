@@ -19,6 +19,9 @@
  *           a basic API usage description.
  *
  *           Refer to Drv7Seg2x595.h for more API details.
+ *
+ *           Requires installation of SegMap595 library
+ *           (available from Arduino Library Manager).
  */
 
 

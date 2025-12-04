@@ -267,7 +267,7 @@ class Drv7Seg2x595Class {
         uint32_t _sck_pin;
         #endif
 
-        // pos_byte bits that may correspond to the actual display character positons (digits).
+        // pos_byte bits that may correspond to the actual display character positions (digits).
         PosBit _pos_bits[DRV7SEG2X595_POS_MAX] = {PosBit::PosBitInitial,
                                                   PosBit::PosBitInitial,
                                                   PosBit::PosBitInitial,
