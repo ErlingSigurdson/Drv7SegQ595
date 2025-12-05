@@ -22,6 +22,9 @@ the serial output of the previous IC goes to the serial input of the next one an
 **clock** and **latch** signals. Two daisy-chained 595s form a 16-bit shift register, which is sufficient for
 controlling any typical 7-segment display.
 
+The API provided by this library allows for control over 1 to 4 character positions. The number of positions to be
+used must be specified during the driver configuration.
+
 ## Control bytes
 
 This library assumes that the 16-bit register consists of two bytes with distinct roles:
@@ -114,28 +117,32 @@ int32_t begin_bb(ByteOrder byte_order,           // Whether seg_byte or pos_byte
 Drv7Seg.begin_bb(Drv7SegPosByteFirst,  // Other option is Drv7SegSegByteFirst.
                  Drv7SegActiveHigh,    // Other option is Drv7SegActiveLow.
 
-                 // Pin numbers must correspond to the pin numbering specified by the Arduino core you're using.
+                 /* Digital output pins you want to use for driving the display.
+                  * Pin numbers must correspond to the pin numbering specified
+                  * by the Arduino core you're using.
+                  */
                  16,
                  17,
                  18,
 
-                 /* Valid arguments are PosBitN, where N is in the 0..7 range (MSB to LSB of pos_byte).
+                 /* Valid arguments are Drv7SegPosBitN, where N is in the 0..7 range (MSB to LSB of pos_byte).
                   *
-                  * First of these parameters (1st position bit) is required.
-                  * Subsequent parameters are optional. The driver will be configured to control
-                  * the number of character positions equal to the number of parameters that weren't omitted.
+                  * The first one of these arguments (1st position bit) is required.
+                  * Subsequent arguments are optional.
+                  * The driver will be configured to control the number of positions
+                  * equal to the number of arguments that weren't omitted.
                   */
-                 Drv7SegPosBit7,
-                 Drv7SegPosBit5,
-                 Drv7SegPosBit3,
-                 Drv7SegPosBit1
+                 Drv7SegPosBit7,  // This parameter is required.
+                 Drv7SegPosBit5,  // This parameter is optional.
+                 Drv7SegPosBit3,  // This parameter is optional.
+                 Drv7SegPosBit1   // This parameter is optional.
                 );
 ```
 
 SPI with default pins:
 ```cpp
 /* Mostly identical to the bit-banging variant, but only the latch pin needs to be specified
- * (default MOSI pin must be used as a data pin and default SCK pin must be used as a clock pin).
+ * (the default MOSI pin must be used as a data pin and the default SCK pin must be used as a clock pin).
  */
 
 // Example call.
@@ -162,10 +169,9 @@ Drv7Seg.begin_spi_custom_pins(...
 
 ### Status check
 
-Check if the driver was configured successfully:
+Get the driver configuration status (check if it was configured successfully):
 ```cpp
 int32_t drv_config_status = Drv7Seg.get_status();
-
 // Loop the error output if the driver configuration was unsuccessful.
 if (drv_config_status < 0) {  // If an error is detected.
     while(true) {
@@ -183,19 +189,30 @@ Commence the actual output:
 ```cpp
 // Prototype.
 Drv7Seg.output(uint8_t seg_byte,  // A byte that corresponds to the glyph to be output.
-               Pos pos,           // Valid arguments are Drv7SegPosN, where N is in the 1..4 range.
+               Pos pos,           // The number of the position the glyph must be output on.
 
-               /* Duration (in microseconds) of a short period during which a currently output glyph
-                * is retained on a respective character position. This parameter is optional,
-                * the default value is 1000 microseconds.
+               /* Duration (in microseconds) of the anti-ghosting glyph retention.
                 */
                uint32_t anti_ghosting_retention_duration_us
               );
 
-/* Example calls.
- * Call output() method in quick succession for all character positions
- * controlled by pos_byte (for every position to which a position bit was
- * assigned at begin_*() method call).
+// Example call (single).
+Drv7Seg.output(
+               0b00110000,
+               
+               /* Valid arguments are Drv7SegPosN, where
+                * N => 1 and
+                * N <= the number of positions the driver was configured to use.
+                */ 
+               Drv7SegPos1,
+               
+               2000  /* This argument is optional. If omitted, 
+                      * the default value of 1000 microseconds will be used.
+              );
+
+/* Example calls (typical implementation).
+ *
+ * Make calls in quick succession for all positions your driver was configured to use.
  */
 Drv7Seg.output(minutes_tens, Drv7SegPos1);
 Drv7Seg.output(minutes_ones, Drv7SegPos2);
@@ -207,38 +224,38 @@ Refer to `Drv7Seg2x595.h` for more API details.
 
 ## Edge cases
 
-* **Single-digit displays**. With a single-digit display there's usually no purpose in a switchable signal that turns
-the only character position ON and OFF (all control job can be done by `seg_byte` alone), nor there's a need for
-multiplexing. Still, you can use this library to control a single-digit display in a pinch. You can either assign
-a single position bit at `begin_*()` method call and connect your display's common pin to the corresponding 595's
-parallel output (in this case the multiplexing logic will still be applied, but your single position will always be
-the one to be turned on next), or just ignore `pos_byte` completely by powering your display directly by connecting
-it to GND or VCC, according to the polarity of its common pin. You will still have to pass a single position bit
-argument during `begin_*()` method call to comply with the library logic, but its particular value becomes irrelevant
-(you can pick randomly from `Drv7SegPosBit0` to `Drv7SegPosBit7`).
+* **Single-digit displays**. With a single-position display there's usually no purpose in a switchable signal that
+turns the only character position ON and OFF (all control job can be done by `seg_byte` alone), nor there's a need for
+multiplexing. Still, you can use this library to control a single-digit display in a pinch. You can either:
+- assign a single position bit during the driver configuration and use that bit to control your only position (in this
+case the multiplexing logic will still be applied, but the single position will always be the one to be turned on next);
+- ignore `pos_byte` completely and power your display directly by connecting it to GND or VCC, according to the display
+type. You will still have to pass a single position bit argument during the driver configuration to comply with
+the library logic, but its particular value becomes irrelevant (pick `Drv7SegPosBit0`, it'll be fine).
 
-* **Not using the leftmost digit**. If you, for instance, have a 4-digit display and for some reason you want to use
-only character positions 2 and 3, it's completely OK, you can do that. Pass two position bits during `begin_*()` method
-call: one for the 2nd digit (it'll be treated as `Drv7SegPos1`) and another for the 3rd digit (it'll be treated as
-`Drv7SegPos2`).
+* **Not using the leftmost digit**. If you, for instance, have a 4-position display and for some reason you want to use
+only positions 2 and 3, it's completely OK, you can do that using this library. Pass two position bits during the driver
+configuration: one for the 2nd physical position (it'll correspond to `Drv7SegPos1` within the library logic) and
+another one for the 3rd physical position (it'll correspond to `Drv7SegPos2` within the library logic).
 
 ## Dependencies
 
-* `SPI.h` library implementation for the Arduino core you're using. It is commonly available for all Arduino cores,
-although it's not strictly guaranteed. In an unlikely case where it is not implemented for your core, you can still use
-**Drv7Seg2x595** in a bit-banging mode, but in order to avoid compilation errors you'll have to manually comment out
-the `#define DRV7SEG2X595_SPI_PROVIDED_ASSUMED` preprocessor directive in `Drv7Seg2x595.h`.
+* `SPI.h` library implementation for the Arduino core and the board (device) you're using.
+It is available for most major Arduino cores, although it isn't guaranteed that every single Arduino core in the world
+will have it as well. In an unlikely case when it is not implemented for your Arduino core or device, you can still use
+this library's bit-banging mode, but in order to avoid compilation errors you'll have to manually comment out the
+`#define DRV7SEG2X595_SPI_PROVIDED_ASSUMED` preprocessor directive in `Drv7Seg2x595.h`.
 
-* **SegMap595** library (see links below, also available from Arduino Library Manager) is used in the example sketch
+* **SegMap595** library (available from Arduino Library Manager, also see links below) is used in the example sketch
 in order to simplify byte mapping, but aside from that it's not a prerequisite for using `Drv7Seg2x595.h`.
 
 ## Compatibility
 
 The library works with any Arduino-compatible MC capable of bit-banging or SPI data transfer.
 
-Availability of the configuration variant that takes custom-assigned SPI pins on the capabilities
-of a given MC and a corresponding `SPI.h` implementation. As of the last update to this library,
-that variant is only provided for ESP32 and STM32 MC families.
+Availability of the configuration variant that takes custom-assigned SPI pins relies on the capabilities of a given MC
+and the corresponding `SPI.h` implementation. As of the last update to this library, this variant is only available for
+ESP32 and STM32 MC families (although some STM32 devices may lack this feature).
 
 ### PCB design and rich circuit diagram
 
@@ -249,15 +266,15 @@ hardware driver compliant with the library's premises and reference wiring.
 
 [(Click here to view full-size image)](extras/images/pcb_view_w_footprints_full_size.png)
 
-Using the provided design is totally **optional**! This library is built with
-flexibility in mind and does **NOT** depend on a single particular wiring.
+Using the provided design is totally **optional**. This library is built with flexibility in mind and does **NOT**
+depend on a single particular wiring.
 
 ## License
 
 * The software part of this library, as well as its documentation, is licensed under the **MIT License**
-(see `LICENSE`).
-* All hardware-related files in this library are licensed under the **CERN-OHL-P v2**
-(see `extras/kicad/LICENSE_HARDWARE`).
+(see `LICENSE` [here](LICENSE)).
+* All hardware-related files in this library, including illustrations, are licensed under the **CERN-OHL-P v2**
+(see `extras/kicad/LICENSE_HARDWARE` [here](extras/kicad/LICENSE_HARDWARE)).
 
 ## Links
 

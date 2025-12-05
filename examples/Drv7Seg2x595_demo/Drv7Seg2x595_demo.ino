@@ -42,7 +42,7 @@
 
 /* Specify the data transfer approach. Use one variant, comment out or delete the others.
  *
- * Bit-banging uses regular digital outputs.
+ * Bit-banging uses regular digital output pins.
  *
  * SPI variant assumes an SPI.h implementation is provided for your board (device).
  * All major Arduino cores have it, although it's not guaranteed that every single
@@ -93,10 +93,9 @@
  * POS_1_BIT means the leftmost character position (often referred to as D1 in 7-segment display pinout diagrams).
  * POS_4_BIT means the rightmost character position (often referred to as D4 in 7-segment display pinout diagrams).
  *
- * Valid value syntax is as follows: Drv7SegPosBitX, where X must be
- * from 0 (LSB, Q0 output pin) to 7 (MSB, Q7 output pin).
+ * Valid arguments are Drv7SegPosBitN, where N is in the 0..7 range (MSB to LSB of pos_byte).
  */
-#define POS_1_BIT Drv7SegPosBit7  // Assumes that D1 is connected to Q7.
+#define POS_1_BIT Drv7SegPosBit7  // Assumes that D1 is connected to Q7 (Q is for a 595's parallel output number).
 #define POS_2_BIT Drv7SegPosBit5  // Assumes that D2 is connected to Q5.
 #define POS_3_BIT Drv7SegPosBit3  // Assumes that D3 is connected to Q3.
 #define POS_4_BIT Drv7SegPosBit1  // Assumes that D4 is connected to Q1.
@@ -133,6 +132,9 @@
 
 /*--- Misc ---*/
 
+#define MAX_COUNT_MINUTES 60
+#define MAX_COUNT_SECONDS 60
+
 // Comment out or delete to suppress the output of current timer values via UART.
 #define SERIAL_OUTPUT_TIMER_VALUES
 
@@ -141,9 +143,6 @@
 
 // Output interval ("once every X milliseconds").
 #define INTERVAL 1000
-
-#define MAX_COUNT_MINUTES 60
-#define MAX_COUNT_SECONDS 60
 
 
 /******************* FUNCTIONS ******************/
@@ -173,10 +172,6 @@ void setup()
 
 
     /*--- Driver object configuration ---*/
-
-    /* If you're driving a display with less than 4 character positions (digits),
-     * pass less position bits (omit up to 3 parameters counting from the end).
-     */
 
     #ifdef USE_BIT_BANGING
     Drv7Seg.begin_bb(BYTE_SHIFT_ORDER, POS_SWITCH_TYPE,
@@ -212,7 +207,6 @@ void setup()
      * You can also check the value returned by begin_*() instead of calling get_status().
      */
     int32_t drv_config_status = Drv7Seg.get_status();
-
     // Loop the error output if the driver configuration was unsuccessful.
     if (drv_config_status < 0) {  // If an error is detected.
         while(true) {
@@ -261,14 +255,20 @@ void loop()
         seg_byte_seconds_ones = SegMap595.get_mapped_byte(counter_seconds % 10);
 
         // Dot-segment blink.
-        if (counter_seconds % 2) {
-            /* Normally you should check the returned value for being negative (error status indicator),
-             * since shifting for a negative count leads to undefined behavior. But in this sketch
-             * it's safe to assume a positive value because the status has already been checked.
+        if (counter % 2) {
+            /* static keyword is only suitable if you're not planning subsequent
+             * init() calls that can change the actual dot bit position.
              */
             static int32_t dot_bit_pos = SegMap595.get_dot_bit_pos();
-            static uint8_t mask = static_cast<uint8_t>(1u << dot_bit_pos);
-            seg_byte_minutes_ones ^= mask;
+            if (dot_bit_pos >= 0) {  /* If no error is detected.
+                                      * In this example sketch, the error check is already done before, but this check
+                                      * is provided here despite the redundancy to prevent the user from omitting it in
+                                      * their own implementation (shifting by a negative value would cause undefined
+                                      * behavior, which must be avoided at all costs).
+                                      */
+                uint8_t mask = static_cast<uint8_t>(1u << dot_bit_pos);
+                byte_to_shift ^= mask;
+            }
         }
 
         #ifdef SERIAL_OUTPUT_TIMER_VALUES
@@ -283,10 +283,7 @@ void loop()
         update_due = false;
     }
 
-    /* Display output.
-     * If you're driving a display with less than 4 character positions (digits),
-     * comment out or delete up to 3 calls counting from the lowermost.
-     */
+    // Commence output.
     Drv7Seg.output(seg_byte_minutes_tens, Drv7SegPos1);
     Drv7Seg.output(seg_byte_minutes_ones, Drv7SegPos2);
     Drv7Seg.output(seg_byte_seconds_tens, Drv7SegPos3);
