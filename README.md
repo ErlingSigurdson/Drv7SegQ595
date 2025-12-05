@@ -204,8 +204,9 @@ Drv7Seg.output(
                 */ 
                Drv7SegPos1,
                
-               2000  /* This argument is optional. If omitted, 
-                      * the default value of 1000 microseconds will be used.
+               2000  /* This argument is optional. If omitted, the default value of 1000 microseconds will be used.
+                      * If you encounter ghosting, try passing a higher value.
+                      * If output glyphs seem to be too dim, try passing a lower value.
                       */
               );
 
