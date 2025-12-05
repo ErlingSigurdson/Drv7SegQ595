@@ -342,7 +342,9 @@ constexpr Drv7Seg2x595Class::Pos Drv7SegPos4 = Drv7Seg2x595Class::Pos::Pos4;
 
 /*************** GLOBAL VARIABLES ***************/
 
-// An Arduino-style singleton object.
+/* An Arduino-style singleton object.
+ * More instances of the same class can be created if necessary.
+ */
 extern Drv7Seg2x595Class Drv7Seg;
 
 
