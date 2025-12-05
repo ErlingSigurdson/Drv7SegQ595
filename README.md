@@ -6,7 +6,7 @@ two daisy-chained 74HC595 shift register ICs.
 ## Concept
 
 7-segment displays are simple, cheap and reliable data output devices. However, interfacing them with
-a microcontroller (MC) requires an appropriate software and, most commonly, an additional hardware.
+a microcontroller (MC) requires appropriate software and, most commonly, additional hardware.
 
 Typically, 7-segment displays come in models with 1 to 4 character positions (digits). Number of input pins for
 any given model equals 8 + number of positions, thus 9 is the minimum and 12 is the maximum (duplicated pins count
