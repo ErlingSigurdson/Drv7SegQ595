@@ -121,9 +121,7 @@ Drv7Seg.begin_bb(Drv7SegPosByteFirst,  // Other option is Drv7SegSegByteFirst.
                   * Pin numbers must correspond to the pin numbering specified
                   * by the Arduino core you're using.
                   */
-                 16,
-                 17,
-                 18,
+                 16, 17, 18
 
                  /* Valid arguments are Drv7SegPosBitN, where N is in the 0..7 range (MSB to LSB of pos_byte).
                   *
