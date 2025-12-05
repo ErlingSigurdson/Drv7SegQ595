@@ -110,7 +110,7 @@ int32_t begin_bb(ByteOrder byte_order,           // Whether seg_byte or pos_byte
                  PosBit pos_1_bit,               // Number of the pos_byte bit that will control the 1st position.
                  PosBit pos_2_bit,               // Number of the pos_byte bit that will control the 2nd position.
                  PosBit pos_3_bit,               // Number of the pos_byte bit that will control the 3rd position.
-                 PosBit pos_4_bit,               // Number of the pos_byte bit that will control the 4th position.
+                 PosBit pos_4_bit                // Number of the pos_byte bit that will control the 4th position.
                 );
 
 // Example call.
@@ -160,7 +160,7 @@ SPI with custom pins:
 Drv7Seg.begin_spi_custom_pins(...
                               MOSI_PIN,
                               LATCH_PIN,
-                              SCK_PIN
+                              SCK_PIN,
                               ...
                              );
 ```
@@ -206,6 +206,7 @@ Drv7Seg.output(
                
                2000  /* This argument is optional. If omitted, 
                       * the default value of 1000 microseconds will be used.
+                      */
               );
 
 /* Example calls (typical implementation).
