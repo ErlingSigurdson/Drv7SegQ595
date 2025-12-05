@@ -232,10 +232,13 @@ case the multiplexing logic will still be applied, but the single position will 
 type. You will still have to pass a single position bit argument during the driver configuration to comply with
 the library logic, but its particular value becomes irrelevant (pick `Drv7SegPosBit0`, it'll be fine).
 
-* **Not using the leftmost digit**. If you, for instance, have a 4-position display and for some reason you want to use
+* **Ignoring certain digits**. If you, for instance, have a 4-position display and for some reason you want to use
 only positions 2 and 3, it's completely OK, you can do that using this library. Pass two position bits during the driver
 configuration: one for the 2nd physical position (it'll correspond to `Drv7SegPos1` within the library logic) and
 another one for the 3rd physical position (it'll correspond to `Drv7SegPos2` within the library logic).
+
+* **Multiple drivers**. It is safe to create additional instances of `Drv7Seg2x595Class` and use them for driving
+multiple displays, but it is adviced not to employ SPI by more than one instance at a time.
 
 ## Dependencies
 
