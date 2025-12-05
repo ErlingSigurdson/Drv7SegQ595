@@ -186,7 +186,7 @@ You can also check the value returned by `begin_*()` instead of calling `get_sta
 Commence the actual output:
 ```cpp
 // Prototype.
-Drv7Seg.output(uint8_t seg_byte,  // A byte that corresponds to the glyph to be output.
+int32_t output(uint8_t seg_byte,  // A byte that corresponds to the glyph to be output.
                Pos pos,           // The number of the position the glyph must be output on.
 
                /* Duration (in microseconds) of the anti-ghosting glyph retention.
