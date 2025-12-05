@@ -50,7 +50,7 @@
  *
  * SPI variant with custom-assigned pins is only available for those hardware platforms
  * that support custom SPI pins assignment and have an SPI.h implementation that reflects
- * such support (as of the last library update those are ESP32 and STM32).
+ * such support (as of the last library update, only ESP32 family qualifies).
  */
 #define USE_BIT_BANGING
 //#define USE_SPI_DEFAULT_PINS

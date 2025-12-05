@@ -255,7 +255,7 @@ The library works with any Arduino-compatible MC capable of bit-banging or SPI d
 
 Availability of the configuration variant that takes custom-assigned SPI pins relies on the capabilities of a given MC
 and the corresponding `SPI.h` implementation. As of the last update to this library, this variant is only available for
-ESP32 and STM32 MC families (although some STM32 devices may lack this feature).
+ESP32 family.
 
 ### PCB design and rich circuit diagram
 
