@@ -221,14 +221,17 @@ Drv7Seg.output(seconds_ones, Drv7SegPos4);
 
 Refer to `Drv7Seg2x595.h` for more API details.
 
-## Edge cases
+## Special cases
+
+* **Multiple drivers**. You can create additional instances of `Drv7Seg2x595Class` and use them for driving multiple
+displays, but it is adviced not to employ SPI by more than one instance at a time.
 
 * **Single-digit displays**. With a single-position display there's usually no purpose in a switchable signal that
 turns the only character position ON and OFF (all control job can be done by `seg_byte` alone), nor there's a need for
 multiplexing. Still, you can use this library to control a single-digit display in a pinch. You can either:
-- assign a single position bit during the driver configuration and use that bit to control your only position (in this
+    - assign a single position bit during the driver configuration and use that bit to control your only position (in this
 case the multiplexing logic will still be applied, but the single position will always be the one to be turned on next);
-- ignore `pos_byte` completely and power your display directly by connecting it to GND or VCC, according to the display
+    - ignore `pos_byte` completely and power your display directly by connecting it to GND or VCC, according to the display
 type. You will still have to pass a single position bit argument during the driver configuration to comply with
 the library logic, but its particular value becomes irrelevant (pick `Drv7SegPosBit0`, it'll be fine).
 
@@ -236,9 +239,6 @@ the library logic, but its particular value becomes irrelevant (pick `Drv7SegPos
 only positions 2 and 3, it's completely OK, you can do that using this library. Pass two position bits during the driver
 configuration: one for the 2nd physical position (it'll correspond to `Drv7SegPos1` within the library logic) and
 another one for the 3rd physical position (it'll correspond to `Drv7SegPos2` within the library logic).
-
-* **Multiple drivers**. It is safe to create additional instances of `Drv7Seg2x595Class` and use them for driving
-multiple displays, but it is adviced not to employ SPI by more than one instance at a time.
 
 ## Dependencies
 
