@@ -48,8 +48,11 @@
 #define DRV7SEG2X595_POS_MIN 1
 #define DRV7SEG2X595_POS_MAX 4
 
-#define DRV7SEG2X595_MSB                   7
+#define DRV7SEG2X595_BITS_IN_BYTE          8
+#define DRV7SEG2X595_MSB                   (DRV7SEG2X595_BITS_IN_BYTE - 1)
 #define DRV7SEG2X595_LSB                   0
+#define DRV7SEG2X595_ONLY_LSB_SET_MASK     0x01u
+#define DRV7SEG2X595_ONLY_MSB_SET_MASK     (DRV7SEG2X595_ONLY_LSB_SET_MASK << DRV7SEG2X595_MSB)
 #define DRV7SEG2X595_ALL_BITS_SET_MASK     0xFF
 #define DRV7SEG2X595_ALL_BITS_CLEARED_MASK 0x00
 
@@ -301,6 +304,10 @@ class Drv7Seg2x595Class {
                              PosBit pos_3_bit,
                              PosBit pos_4_bit
                             );
+
+        /* TODO
+         */
+        void shift_out(uint8_t byte_to_shift);
 
         /* Find out which character position (digit) must be turned on
          * next after the current retention period is over.

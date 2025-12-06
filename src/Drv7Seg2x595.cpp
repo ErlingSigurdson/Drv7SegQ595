@@ -232,13 +232,13 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
              *
              * The same is applicable to the SPI variant.
              */
-            shiftOut(_data_pin, _clock_pin, MSBFIRST, DRV7SEG2X595_ALL_BITS_CLEARED_MASK);
-            shiftOut(_data_pin, _clock_pin, MSBFIRST, DRV7SEG2X595_ALL_BITS_CLEARED_MASK);
+            shift_out(DRV7SEG2X595_ALL_BITS_CLEARED_MASK);
+            shift_out(DRV7SEG2X595_ALL_BITS_CLEARED_MASK);
             digitalWrite(_latch_pin, HIGH);
 
             digitalWrite(_latch_pin, LOW);
-            shiftOut(_data_pin, _clock_pin, MSBFIRST, upper_byte);
-            shiftOut(_data_pin, _clock_pin, MSBFIRST, lower_byte);
+            shift_out(upper_byte);
+            shift_out(lower_byte);
             digitalWrite(_latch_pin, HIGH);
             break;
 
@@ -350,6 +350,16 @@ int32_t Drv7Seg2x595Class::begin_helper(int32_t variant,
                                                           */
 
     return DRV7SEG2X595_STATUS_OK;
+}
+
+void Drv7Seg2x595Class::shift_out(uint8_t byte_to_shift)
+{
+    digitalWrite(_clock_pin, LOW);
+    for (uint32_t i = 0; i < DRV7SEG2X595_BITS_IN_BYTE; i++) {
+        digitalWrite(_data_pin, (byte_to_shift << i) & DRV7SEG2X595_ONLY_MSB_SET_MASK);
+        digitalWrite(_clock_pin, HIGH);
+        digitalWrite(_clock_pin, LOW);
+    }
 }
 
 bool Drv7Seg2x595Class::anti_ghosting_timer(uint32_t anti_ghosting_retention_duration_us)
