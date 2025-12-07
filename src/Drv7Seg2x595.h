@@ -305,7 +305,16 @@ class Drv7Seg2x595Class {
                              PosBit pos_4_bit
                             );
 
-        /* TODO
+        /* Send a single byte to a shift register.
+         *
+         * Returns: nothing.
+         *
+         * A reimplementation of the shiftOut() function commonly included in Arduino cores.
+         * The main difference is the added digitalWrite() call that sets the _clock_pin output level to LOW before
+         * the actual shifting sequence begins. This is done because the de facto standard shiftOut() implementation
+         * doesn't handle the initial clock pin output level, which may result in a lack of low-to-high transition and
+         * thus in the first bit not getting shifted in case a clock pin is set to HIGH for some reason before
+         * the shifting starts.
          */
         void shift_out(uint8_t byte_to_shift);
 
