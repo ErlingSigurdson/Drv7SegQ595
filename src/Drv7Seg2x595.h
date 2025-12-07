@@ -235,12 +235,17 @@ class Drv7Seg2x595Class {
          */
         int32_t set_glyph(uint8_t seg_byte, Pos pos);
 
-        /* Shift two bytes into two daisy-chained ICs and then latch the data into the output register.
+        /* Output a glyph on a specified character position.
+         *
+         * Shifts four bytes into two daisy-chained ICs:
+         * - two blank bytes for anti-ghosting purposes.
+         * - two bytes of payload (seg_byte and pos_byte).
+         * After every second byte latches the data into the ICs' outer register.
          *
          * Returns:
          * - a negative integer if driver configuration had failed or not all passed parameters are valid
          *   (see the preprocessor macros list for possible values).
-         * - zero if the program execution has reached the next glyph output code sequence.
+         * - zero if the program execution has reached the next glyph output sequence.
          * - a positive integer if an anti-ghosting retention is running.
          *
          * Parameters:

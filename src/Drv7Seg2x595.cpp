@@ -163,8 +163,8 @@ int32_t Drv7Seg2x595Class::set_glyph(uint8_t seg_byte, Pos pos)
     }
 
 
-    /*--- Assigning a glyph to a position ---*/
-    
+    /*--- Assign a glyph to a position ---*/
+
     size_t pos_as_index = static_cast<size_t>(pos) - 1;
     if (_pos_bits[pos_as_index] == Drv7SegPosBitInitial) {
         return DRV7SEG2X595_SET_GLYPH_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
