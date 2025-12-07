@@ -65,6 +65,11 @@
 #define DRV7SEG2X595_STATUS_ERR_POS_BIT_DUPLICATION     -6
 #define DRV7SEG2X595_STATUS_OK                           0
 
+// set_glyph() method additional return codes.
+#define DRV7SEG2X595_SET_GLYPH_ERR_INVALID_POS                   -7
+#define DRV7SEG2X595_SET_GLYPH_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS -8
+#define DRV7SEG2X595_SET_GLYPH_OK                                 0
+
 // output() method additional return codes.
 #define DRV7SEG2X595_OUTPUT_ERR_INVALID_POS                   -7
 #define DRV7SEG2X595_OUTPUT_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS -8
@@ -225,6 +230,11 @@ class Drv7Seg2x595Class {
          */
         int32_t get_status();
 
+        /* TODO
+         *
+         */
+        int32_t set_glyph(uint8_t seg_byte, Pos pos);
+
         /* Shift two bytes into two daisy-chained ICs and then latch the data into the output register.
          *
          * Returns:
@@ -247,6 +257,11 @@ class Drv7Seg2x595Class {
                        uint32_t anti_ghosting_retention_duration_us =
                            DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION_US
                       );
+
+        /* TODO
+         *
+         */
+        void output_all();
 
     private:
         /*--- Variables ---*/
@@ -276,6 +291,9 @@ class Drv7Seg2x595Class {
                                                   PosBit::PosBitInitial,
                                                   PosBit::PosBitInitial
                                                  };
+
+        // TODO
+        uint8_t _pos_glyphs[DRV7SEG2X595_POS_MAX] = {0};
 
         // Elements of the anti-ghosting logic.
         bool     _anti_ghosting_first_output_call = true;

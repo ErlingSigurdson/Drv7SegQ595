@@ -147,6 +147,33 @@ int32_t Drv7Seg2x595Class::get_status()
     return _status;
 }
 
+int32_t Drv7Seg2x595Class::set_glyph(uint8_t seg_byte, Pos pos)
+{
+    /*--- Configuration status check ---*/
+
+    if (_status < 0) {
+        return _status;
+    }
+
+
+    /*--- Protection from unexpected casts ---*/
+
+    if (pos < Drv7SegPos1 || pos > Drv7SegPos4) {
+        return DRV7SEG2X595_SET_GLYPH_ERR_INVALID_POS;
+    }
+
+
+    /*--- Assigning a glyph to a position ---*/
+    
+    size_t pos_as_index = static_cast<size_t>(pos) - 1;
+    if (_pos_bits[pos_as_index] == Drv7SegPosBitInitial) {
+        return DRV7SEG2X595_SET_GLYPH_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS;
+    } else {
+        _pos_glyphs[pos_as_index] = seg_byte;
+        return DRV7SEG2X595_SET_GLYPH_OK;
+    }
+}
+
 int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
                                   Pos pos,
                                   uint32_t anti_ghosting_retention_duration_us
@@ -265,6 +292,22 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
     _anti_ghosting_timer_previous_micros = micros();
 
     return DRV7SEG2X595_OUTPUT_NEXT;
+}
+
+void Drv7Seg2x595Class::output_all()
+{
+    /*--- Configuration status check ---*/
+
+    if (_status < 0) {
+        return;
+    }
+
+
+    /*--- Output ---*/
+
+    for (size_t i = 0; i < DRV7SEG2X595_POS_MAX; ++i) {
+        output(_pos_glyphs[i], static_cast<Pos>(i + 1));
+    }
 }
 
 

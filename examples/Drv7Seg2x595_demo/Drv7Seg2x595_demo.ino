@@ -237,11 +237,6 @@ void loop()
         counter_minutes = 0;
     }
 
-    static uint8_t seg_byte_minutes_tens;
-    static uint8_t seg_byte_minutes_ones;
-    static uint8_t seg_byte_seconds_tens;
-    static uint8_t seg_byte_seconds_ones;
-
     // Value update trigger.
     static bool update_due = true;
 
@@ -249,10 +244,10 @@ void loop()
     /*--- Demo output ---*/
 
     if (update_due) {
-        seg_byte_minutes_tens = SegMap595.get_mapped_byte(counter_minutes / 10);
-        seg_byte_minutes_ones = SegMap595.get_mapped_byte(counter_minutes % 10);
-        seg_byte_seconds_tens = SegMap595.get_mapped_byte(counter_seconds / 10);
-        seg_byte_seconds_ones = SegMap595.get_mapped_byte(counter_seconds % 10);
+        uint8_t seg_byte_minutes_tens = SegMap595.get_mapped_byte(counter_minutes / 10);
+        uint8_t seg_byte_minutes_ones = SegMap595.get_mapped_byte(counter_minutes % 10);
+        uint8_t seg_byte_seconds_tens = SegMap595.get_mapped_byte(counter_seconds / 10);
+        uint8_t seg_byte_seconds_ones = SegMap595.get_mapped_byte(counter_seconds % 10);
 
         // Dot-segment blink.
         if (counter_seconds % 2) {
@@ -271,6 +266,11 @@ void loop()
             }
         }
 
+        Drv7Seg.set_glyph(seg_byte_minutes_tens, Drv7SegPos1);
+        Drv7Seg.set_glyph(seg_byte_minutes_ones, Drv7SegPos2);
+        Drv7Seg.set_glyph(seg_byte_seconds_tens, Drv7SegPos3);
+        Drv7Seg.set_glyph(seg_byte_seconds_ones, Drv7SegPos4);
+
         #ifdef SERIAL_OUTPUT_TIMER_VALUES
             Serial.print("Timer values (minutes and seconds): ");
             Serial.print(counter_minutes / 10);
@@ -284,10 +284,7 @@ void loop()
     }
 
     // Commence output.
-    Drv7Seg.output(seg_byte_minutes_tens, Drv7SegPos1);
-    Drv7Seg.output(seg_byte_minutes_ones, Drv7SegPos2);
-    Drv7Seg.output(seg_byte_seconds_tens, Drv7SegPos3);
-    Drv7Seg.output(seg_byte_seconds_ones, Drv7SegPos4);
+    Drv7Seg.output_all();
 
 
     /*--- Counter and value update trigger, continued ---*/
