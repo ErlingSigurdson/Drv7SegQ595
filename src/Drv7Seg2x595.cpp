@@ -136,7 +136,14 @@ int32_t Drv7Seg2x595Class::begin_spi_custom_pins(ByteOrder byte_order,
 
     _mosi_pin = mosi_pin;
     _sck_pin  = sck_pin;
-    SPI.begin(_sck_pin, -1, _mosi_pin, -1);
+
+    #if defined(ARDUINO_ARCH_ESP32)
+        SPI.begin(_sck_pin, -1, _mosi_pin, -1);
+    #elif defined(ARDUINO_ARCH_STM32)
+        SPI.setMOSI(_mosi_pin);
+        SPI.setSCLK(_sck_pin);
+        SPI.begin();
+    #endif
 
     return _status;
 }
