@@ -223,7 +223,7 @@ Using it will override the glyph assignment done with `set_glyph_to_pos()` calls
 ```cpp
 // Prototype.
 int32_t output(uint8_t seg_byte,  // A byte that corresponds to the glyph to be output.
-               Pos pos,           // A number of the position the glyph must be output on.
+               Pos pos            // A number of the position the glyph must be output on.
               );
 
 // Example call (single).
@@ -241,6 +241,7 @@ Drv7Seg.output(
 /* Example calls (typical implementation).
  *
  * Make recurrent calls in quick succession for all positions your driver was configured to use.
+ */
 Drv7Seg.output(seg_byte_minutes_tens, Drv7SegPos1);
 Drv7Seg.output(seg_byte_minutes_ones, Drv7SegPos2);
 Drv7Seg.output(seg_byte_seconds_tens, Drv7SegPos3);
@@ -255,7 +256,7 @@ Duration of such period has a reasonable default of 300 microseconds. However, y
 /* If you encounter ghosting, try passing a higher value (about 1000 to 2500).
  * If output glyphs seem to be too dim, try passing a lower value (about 10 to 200).
  */
-Drv7Seg.set_anti_ghosting_retention_duration(uint32_t new_val);
+Drv7Seg.set_anti_ghosting_retention_duration(1000);
 ```
 
 Refer to `Drv7Seg2x595.h` for more API details.
