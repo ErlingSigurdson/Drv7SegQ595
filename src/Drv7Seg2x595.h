@@ -91,7 +91,7 @@
     #define DRV7SEG2X595_SPI_PROVIDED
 #endif
 
-#if defined(ARDUINO_ARCH_ESP32)
+#if defined(ARDUINO_ARCH_ESP32) || defined(ARDUINO_ARCH_STM32)
     #define DRV7SEG2X595_SPI_PROVIDED_CUSTOM_PINS
 #endif
 
@@ -206,7 +206,7 @@ class Drv7Seg2x595Class {
          *
          * This method is only available (via conditional compilation) for those hardware platforms that
          * support custom SPI pins assignment and have an SPI.h implementation that reflects such support
-         * (as of the last library update, only ESP32 family qualifies).
+         * (as of the last library update those are ESP32 and STM32).
          *
          * Safety of multiple calls to this method depends on the SPI.h implementation.
          */
