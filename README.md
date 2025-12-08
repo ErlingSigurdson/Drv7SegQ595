@@ -183,14 +183,47 @@ You can also check the value returned by `begin_*()` instead of calling `get_sta
 
 ### Output
 
+Assign the glyphs you want to output to each character position:
+```cpp
+// Prototype.
+int32_t set_glyph_to_pos(uint8_t seg_byte,  // A byte that corresponds to the glyph to be output.
+                         Pos pos            // A number of the position the glyph must be output on.
+                        );
+
+// Example call (single).
+Drv7Seg.set_glyph_to_pos(
+                         0b00110000,
+               
+                         /* Valid arguments are Drv7SegPosN, where
+                          * N => 1
+                          * and
+                          * N <= the number of positions the driver was configured to use.
+                          */ 
+                          Drv7SegPos1
+                        );
+
+/* Example calls (typical implementation).
+ *
+ * Make recurrent calls in quick succession for all positions your driver was configured to use.
+ */
+Drv7Seg.set_glyph_to_pos(seg_byte_minutes_tens, Drv7SegPos1);
+Drv7Seg.set_glyph_to_pos(seg_byte_minutes_ones, Drv7SegPos2);
+Drv7Seg.set_glyph_to_pos(seg_byte_seconds_tens, Drv7SegPos3);
+Drv7Seg.set_glyph_to_pos(seg_byte_seconds_ones, Drv7SegPos4);
+```
+
 Commence the actual output:
+```cpp
+// Call it inside the loop() function.
+Drv7Seg.output_all();
+```
+
+If you want a more fine-grained control over output, you can use a lower level method.
+Using it will override the glyph assignment done with `set_glyph_to_pos()` calls.
 ```cpp
 // Prototype.
 int32_t output(uint8_t seg_byte,  // A byte that corresponds to the glyph to be output.
-               Pos pos,           // The number of the position the glyph must be output on.
-
-               // Duration (in microseconds) of the anti-ghosting glyph retention.
-               uint32_t anti_ghosting_retention_duration_us
+               Pos pos,           // A number of the position the glyph must be output on.
               );
 
 // Example call (single).
@@ -198,25 +231,31 @@ Drv7Seg.output(
                0b00110000,
                
                /* Valid arguments are Drv7SegPosN, where
-                * N => 1 and
+                * N => 1
+                * and
                 * N <= the number of positions the driver was configured to use.
                 */ 
                Drv7SegPos1,
-               
-               2000  /* This argument is optional. If omitted, the default value of 1000 microseconds will be used.
-                      * If you encounter ghosting, try passing a higher value.
-                      * If output glyphs seem to be too dim, try passing a lower value.
-                      */
               );
 
 /* Example calls (typical implementation).
  *
- * Make calls in quick succession for all positions your driver was configured to use.
+ * Make recurrent calls in quick succession for all positions your driver was configured to use.
+Drv7Seg.output(seg_byte_minutes_tens, Drv7SegPos1);
+Drv7Seg.output(seg_byte_minutes_ones, Drv7SegPos2);
+Drv7Seg.output(seg_byte_seconds_tens, Drv7SegPos3);
+Drv7Seg.output(seg_byte_seconds_ones, Drv7SegPos4);
+```
+
+### Anti-ghosting
+
+Ghosting prevention involves retention of a currently output glyph on a respective position for a short period of time.
+Duration of such period has a reasonable default of 300 microseconds. However, you can override it if necessary.
+```cpp
+/* If you encounter ghosting, try passing a higher value (about 1000 to 2500).
+ * If output glyphs seem to be too dim, try passing a lower value (about 10 to 200).
  */
-Drv7Seg.output(minutes_tens, Drv7SegPos1);
-Drv7Seg.output(minutes_ones, Drv7SegPos2);
-Drv7Seg.output(seconds_tens, Drv7SegPos3);
-Drv7Seg.output(seconds_ones, Drv7SegPos4);
+Drv7Seg.set_anti_ghosting_retention_duration(uint32_t new_val);
 ```
 
 Refer to `Drv7Seg2x595.h` for more API details.

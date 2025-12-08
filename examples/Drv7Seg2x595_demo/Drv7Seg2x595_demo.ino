@@ -100,6 +100,9 @@
 #define POS_3_BIT Drv7SegPosBit3  // Assumes that D3 is connected to Q3.
 #define POS_4_BIT Drv7SegPosBit1  // Assumes that D4 is connected to Q1.
 
+// (optional) Set a non-default anti-ghosting retention duration value (in microseconds).
+#define ANTI_GHOSTING_RETENTION_DURATION 600
+
 
 /*--- SegMap595 library API parameters ---*/
 
@@ -215,6 +218,9 @@ void setup()
             delay(INTERVAL);
         }
     }
+
+    // If necessary, you can override the default anti-ghosting retention duration (300 microseconds).
+    Drv7Seg.set_anti_ghosting_retention_duration(ANTI_GHOSTING_RETENTION_DURATION);
 }
 
 void loop()
@@ -266,10 +272,10 @@ void loop()
             }
         }
 
-        Drv7Seg.set_glyph(seg_byte_minutes_tens, Drv7SegPos1);
-        Drv7Seg.set_glyph(seg_byte_minutes_ones, Drv7SegPos2);
-        Drv7Seg.set_glyph(seg_byte_seconds_tens, Drv7SegPos3);
-        Drv7Seg.set_glyph(seg_byte_seconds_ones, Drv7SegPos4);
+        Drv7Seg.set_glyph_to_pos(seg_byte_minutes_tens, Drv7SegPos1);
+        Drv7Seg.set_glyph_to_pos(seg_byte_minutes_ones, Drv7SegPos2);
+        Drv7Seg.set_glyph_to_pos(seg_byte_seconds_tens, Drv7SegPos3);
+        Drv7Seg.set_glyph_to_pos(seg_byte_seconds_ones, Drv7SegPos4);
 
         #ifdef SERIAL_OUTPUT_TIMER_VALUES
             Serial.print("Timer values (minutes and seconds): ");

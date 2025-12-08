@@ -147,7 +147,7 @@ int32_t Drv7Seg2x595Class::get_status()
     return _status;
 }
 
-int32_t Drv7Seg2x595Class::set_glyph(uint8_t seg_byte, Pos pos)
+int32_t Drv7Seg2x595Class::set_glyph_to_pos(uint8_t seg_byte, Pos pos)
 {
     /*--- Configuration status check ---*/
 
@@ -175,8 +175,7 @@ int32_t Drv7Seg2x595Class::set_glyph(uint8_t seg_byte, Pos pos)
 }
 
 int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
-                                  Pos pos,
-                                  uint32_t anti_ghosting_retention_duration_us
+                                  Pos pos
                                  )
 {
     /*--- Configuration status check ---*/
@@ -195,7 +194,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
 
     /*--- Anti-ghosting retention ---*/
 
-    if (anti_ghosting_retention_duration_us > 0 && _anti_ghosting_first_output_call == false) {
+    if (_anti_ghosting_retention_duration > 0 && _anti_ghosting_first_output_call == false) {
         /* If this method has been called not for the character position
          * that must be turned on next, return and continue the retention.
          */
@@ -204,7 +203,7 @@ int32_t Drv7Seg2x595Class::output(uint8_t seg_byte,
         }
 
         // If the retention timer hasn't elapsed, return and continue the retention.
-        if (anti_ghosting_timer(anti_ghosting_retention_duration_us) == false) {
+        if (anti_ghosting_timer() == false) {
             return DRV7SEG2X595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING;
         }
     } else {
@@ -310,6 +309,17 @@ void Drv7Seg2x595Class::output_all()
     }
 }
 
+void Drv7Seg2x595Class::set_anti_ghosting_retention_duration(uint32_t new_val)
+{
+    /*--- Configuration status check ---*/
+
+    if (_status < 0) {
+        return;
+    }
+
+    _anti_ghosting_retention_duration = new_val;
+}
+
 
 /*--- Private methods ---*/
 
@@ -405,17 +415,17 @@ void Drv7Seg2x595Class::shift_out(uint8_t byte_to_shift)
     }
 }
 
-bool Drv7Seg2x595Class::anti_ghosting_timer(uint32_t anti_ghosting_retention_duration_us)
+bool Drv7Seg2x595Class::anti_ghosting_timer()
 {
-    if (anti_ghosting_retention_duration_us == 0) {
-        return true;  /* If the passed retention duration is zero, the timer elapses
+    if (_anti_ghosting_retention_duration == 0) {
+        return true;  /* If the applicable retention duration is zero, the timer elapses
                        * without further calculations and the function returns early.
                        */
     }
 
     uint32_t current_micros = micros();
 
-    if (current_micros - _anti_ghosting_timer_previous_micros >= anti_ghosting_retention_duration_us) {
+    if (current_micros - _anti_ghosting_timer_previous_micros >= _anti_ghosting_retention_duration) {
         return true;   // The timer has elapsed.
     } else {
         return false;  // The timer hasn't elapsed yet.

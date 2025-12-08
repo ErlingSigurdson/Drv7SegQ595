@@ -43,7 +43,7 @@
 /* Duration (in microseconds) of a short period during which
  * a currently output glyph is retained on a respective character position.
  */
-#define DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION_US 1000
+#define DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION 300
 
 #define DRV7SEG2X595_POS_MIN 1
 #define DRV7SEG2X595_POS_MAX 4
@@ -65,7 +65,7 @@
 #define DRV7SEG2X595_STATUS_ERR_POS_BIT_DUPLICATION     -6
 #define DRV7SEG2X595_STATUS_OK                           0
 
-// set_glyph() method additional return codes.
+// set_glyph_to_pos() method additional return codes.
 #define DRV7SEG2X595_SET_GLYPH_ERR_INVALID_POS                   -7
 #define DRV7SEG2X595_SET_GLYPH_ERR_POS_BIT_NOT_SPECIFIED_FOR_POS -8
 #define DRV7SEG2X595_SET_GLYPH_OK                                 0
@@ -230,10 +230,19 @@ class Drv7Seg2x595Class {
          */
         int32_t get_status();
 
-        /* TODO
+        /* Assign a glyph to be output on a specified position.
          *
+         * Returns:
+         * - a negative integer if driver configuration had failed or not all passed parameters are valid
+         *   (see the preprocessor macros list for possible values).
+         * - zero if the glyph was successfully assigned.
+         *
+         * Parameters:
+         * - seg_byte - a byte that corresponds to a glyph to be output.
+         * - pos      - a number of the character position (digit) the next glyph
+         *              must be output on.
          */
-        int32_t set_glyph(uint8_t seg_byte, Pos pos);
+        int32_t set_glyph_to_pos(uint8_t seg_byte, Pos pos);
 
         /* Output a glyph on a specified character position.
          *
@@ -252,21 +261,26 @@ class Drv7Seg2x595Class {
          * - seg_byte                            - a byte that corresponds to a glyph to be output.
          * - pos                                 - a number of the character position (digit) the next glyph
          *                                         must be output on.
-         * - anti_ghosting_retention_duration_us - duration (in microseconds) of a short period during which
-         *                                         a currently output glyph is retained on a respective
-         *                                         position. This parameter is optional: if it's omitted,
-         *                                         a default value will be used.
          */
         int32_t output(uint8_t seg_byte,
-                       Pos pos,
-                       uint32_t anti_ghosting_retention_duration_us =
-                           DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION_US
+                       Pos pos
                       );
 
-        /* TODO
+        /* Output the glyphs assigned to each valid character position in quick succession.
          *
+         * Returns: nothing.
          */
         void output_all();
+
+        /* Set new anti-ghosting retention duration.
+         *
+         * Sets the duration (in microseconds) of a short period during which
+         * a currently output glyph is retained on a respective position.
+         * Until this method is called, the default value is applied.
+         *
+         * Returns: nothing.
+         */
+        void set_anti_ghosting_retention_duration(uint32_t new_val);
 
     private:
         /*--- Variables ---*/
@@ -297,10 +311,11 @@ class Drv7Seg2x595Class {
                                                   PosBit::PosBitInitial
                                                  };
 
-        // TODO
+        // Glyphs assigned to be output next.
         uint8_t _pos_glyphs[DRV7SEG2X595_POS_MAX] = {0};
 
         // Elements of the anti-ghosting logic.
+        uint32_t  _anti_ghosting_retention_duration = DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION;
         bool     _anti_ghosting_first_output_call = true;
         Pos      _anti_ghosting_retained_pos;
         uint32_t _anti_ghosting_timer_previous_micros;
@@ -353,7 +368,7 @@ class Drv7Seg2x595Class {
          *
          * Returns: true if the timer has elapsed, false otherwise.
          */
-        bool anti_ghosting_timer(uint32_t anti_ghosting_retention_duration_us);
+        bool anti_ghosting_timer();
 };
 
 // Class-related aliases.
