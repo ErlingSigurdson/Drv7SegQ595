@@ -144,9 +144,9 @@ class Drv7SegQ595Class {
                          uint32_t latch_pin,
                          uint32_t clock_pin,
                          int32_t pos_1_pin,
-                         int32_t pos_2_pin,
-                         int32_t pos_3_pin,
-                         int32_t pos_4_pin
+                         int32_t pos_2_pin = DRV7SEG2X595_POS_PIN_INITIAL,
+                         int32_t pos_3_pin = DRV7SEG2X595_POS_PIN_INITIAL,
+                         int32_t pos_4_pin = DRV7SEG2X595_POS_PIN_INITIAL
                         );
 
         /* Configure the driver to use SPI with default pins.
@@ -165,10 +165,10 @@ class Drv7SegQ595Class {
         #ifdef DRV7SEG2X595_SPI_PROVIDED
         int32_t begin_spi(PosSwitchType pos_switch_type,
                           uint32_t latch_pin,
-                          int32_t pos_1_pin,
-                          int32_t pos_2_pin,
-                          int32_t pos_3_pin,
-                          int32_t pos_4_pin
+                          int32_t pos_1_pin = DRV7SEG2X595_POS_PIN_INITIAL,
+                          int32_t pos_2_pin = DRV7SEG2X595_POS_PIN_INITIAL,
+                          int32_t pos_3_pin = DRV7SEG2X595_POS_PIN_INITIAL,
+                          int32_t pos_4_pin = DRV7SEG2X595_POS_PIN_INITIAL
                          );
         #endif
 
@@ -190,10 +190,10 @@ class Drv7SegQ595Class {
                                       uint32_t mosi_pin,
                                       uint32_t latch_pin,
                                       uint32_t sck_pin,
-                                      int32_t pos_1_pin,
-                                      int32_t pos_2_pin,
-                                      int32_t pos_3_pin,
-                                      int32_t pos_4_pin
+                                      int32_t pos_1_pin = DRV7SEG2X595_POS_PIN_INITIAL,
+                                      int32_t pos_2_pin = DRV7SEG2X595_POS_PIN_INITIAL,
+                                      int32_t pos_3_pin = DRV7SEG2X595_POS_PIN_INITIAL,
+                                      int32_t pos_4_pin = DRV7SEG2X595_POS_PIN_INITIAL
                                      );
         #endif
 

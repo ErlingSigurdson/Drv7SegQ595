@@ -164,7 +164,7 @@ int32_t Drv7SegQ595Class::set_glyph_to_pos(uint8_t seg_byte, Pos pos)
     /*--- Assign a glyph to a position ---*/
 
     size_t pos_as_index = static_cast<size_t>(pos) - 1;
-    if (_pos_pins[pos_as_index] == DRV7SEG2X595_POS_PIN_INITIAL) {
+    if (_pos_pins[pos_as_index] <= DRV7SEG2X595_POS_PIN_INITIAL) {
         return DRV7SEG2X595_SET_GLYPH_ERR_POS_PIN_NOT_SPECIFIED_FOR_POS;
     } else {
         _pos_glyphs[pos_as_index] = seg_byte;
@@ -209,23 +209,26 @@ int32_t Drv7SegQ595Class::output(uint8_t seg_byte,
     }
 
 
-    /*--- Setting the position-control pin ---*/
+    /*--- Account for a character position switch type ---*/
 
-    int32_t current_pos_pin;
-
-    size_t  pos_as_index = static_cast<size_t>(pos) - 1;
-    if (_pos_pins[pos_as_index] <= DRV7SEG2X595_POS_PIN_INITIAL) {
-        return DRV7SEG2X595_OUTPUT_ERR_POS_PIN_NOT_SPECIFIED_FOR_POS;
-    } else {
-        current_pos_pin = _pos_pins[pos_as_index];
+    int32_t active = HIGH;
+    if (_pos_switch_type == Drv7SegActiveLow) {
+        active = !active;
     }
 
 
-    /*--- Account for a character position switch type ---*/
+    /*--- Checking the position-control pin ---*/
 
-    int32_t active = HIGH; 
-    if (_pos_switch_type == Drv7SegActiveLow) {
-        active = !active;
+    size_t pos_as_index = static_cast<size_t>(pos) - 1;
+    if (_pos_pins[pos_as_index] <= DRV7SEG2X595_POS_PIN_INITIAL) {
+        return DRV7SEG2X595_OUTPUT_ERR_POS_PIN_NOT_SPECIFIED_FOR_POS;
+    }
+
+
+    /*--- Switching the position-control pins ---*/
+
+    for (size_t i = 0; i < DRV7SEG2X595_POS_MAX; ++i) {
+        digitalWrite(_pos_pins[i], !active);
     }
 
 
@@ -259,9 +262,15 @@ int32_t Drv7SegQ595Class::output(uint8_t seg_byte,
     }
 
 
-    /*-- Switch the position --*/
+    /*--- Switching the position-control pins, continued ---*/
 
-    digitalWrite(current_pos_pin, active);
+    for (size_t i = 0; i < DRV7SEG2X595_POS_MAX; ++i) {
+        if (pos_as_index == i) {
+            digitalWrite(_pos_pins[i], active);
+        } else {
+            digitalWrite(_pos_pins[i], !active);
+        }
+    }
     
 
     // Update the values related to the anti-ghosting logic.
