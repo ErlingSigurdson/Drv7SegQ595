@@ -311,6 +311,11 @@ hardware driver compliant with the library's premises and reference wiring.
 Using the provided design is totally **optional**. This library is built with flexibility in mind and does **NOT**
 depend on a single particular wiring.
 
+## To-do list
+
+* Add support for using non-default and multiple SPI instances.
+* Make the reference PCB layout more compact.
+
 ## Licensing
 
 * The software part of this library, as well as its documentation, is licensed under the **MIT License**
