@@ -73,6 +73,12 @@ a P-channel MOSFET), positions will be turned on either by high or low digital o
 library supports both variants. The switching type (active-high or active-low) must be specified during the driver
 configuration.
 
+## Data transfer (shifting)
+
+The driver implemented by this library uses either bit-banging or SPI for shifting the data into the shift register.
+If you choose bit-banging, the driver will use whatever GPIO pins you assign to it. If you choose SPI, the driver will
+use the default SPI instance (although support for non-default and multiple SPI instances may be added later).
+
 ## Reference wiring
 
 Here's a typical circuit diagram for the described arrangement (assumes a common-cathode display):
