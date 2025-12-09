@@ -312,7 +312,7 @@ void Drv7Seg2x595Class::output_all()
     /*--- Output ---*/
 
     for (size_t i = 0; i < DRV7SEG2X595_POS_MAX; ++i) {
-        output(_pos_glyphs[i], static_cast<Pos>(i + 1));
+         output(_pos_glyphs[i], static_cast<Pos>(i + 1));
     }
 }
 
