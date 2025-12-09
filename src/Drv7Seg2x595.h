@@ -315,7 +315,7 @@ class Drv7Seg2x595Class {
         uint8_t _pos_glyphs[DRV7SEG2X595_POS_MAX] = {0};
 
         // Elements of the anti-ghosting logic.
-        uint32_t  _anti_ghosting_retention_duration = DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION;
+        uint32_t _anti_ghosting_retention_duration = DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION;
         bool     _anti_ghosting_first_output_call = true;
         Pos      _anti_ghosting_retained_pos;
         uint32_t _anti_ghosting_timer_previous_micros;
