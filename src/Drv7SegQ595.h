@@ -73,7 +73,7 @@
 #define DRV7SEGQ595_OUTPUT_NEXT                               0
 #define DRV7SEGQ595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING    1
 
-#if defined(DRV7SEGQ595_SPI_PROVIDED_ASSUMED) || \
+#if defined(DRV7SEGQ595_SPI_PROVIDED_ASSUMED)  || \
     defined(ARDUINO_ARCH_AVR)                  || \
     defined(ARDUINO_ARCH_MEGAAVR)              || \
     defined(ARDUINO_ARCH_SAM)                  || \
