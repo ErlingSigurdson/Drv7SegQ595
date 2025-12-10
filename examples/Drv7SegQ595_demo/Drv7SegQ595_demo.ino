@@ -3,7 +3,7 @@
 /**
  * Filename: Drv7SegQ595_demo.ino
  * ----------------------------------------------------------------------------|---------------------------------------|
- * Purpose:  An example sketch demonstrating basic usage of the Drv7Seg2x595
+ * Purpose:  An example sketch demonstrating basic usage of the Drv7SegQ595
  *           library.
  *
  *           Runs a simple electronic clock: counts seconds and minutes
@@ -81,18 +81,21 @@
     #define SCK_PIN   8
 #endif
 
-/* Specify appropriately based on which pos_byte bits control
+/* Specify appropriately based on which digital pins control
  * the character positions of your 7-segment display.
  *
- * POS_1_BIT means the leftmost character position (often referred to as D1 in 7-segment display pinout diagrams).
- * POS_4_BIT means the rightmost character position (often referred to as D4 in 7-segment display pinout diagrams).
+ * POS_1_PIN means the pin that controls the leftmost position
+ * (often referred to as D1 in 7-segment display pinout diagrams).
+ * POS_4_BIT means the pin that controls the rightmost position
+ * (often referred to as D4 in 7-segment display pinout diagrams).
  *
- * Valid arguments are Drv7SegPosBitN, where N is in the 0..7 range (MSB to LSB of pos_byte).
+ * Valid arguments are integers that correspond to valid (free to use) digital GPIO pins
+ * as per the pin numbering provided by your Arduino core for the device you're using.
  */
-#define POS_1_PIN 10  // Assumes that D1 is connected to Q7 (Q is for a 595's parallel output number).
-#define POS_2_PIN 11  // Assumes that D2 is connected to Q5.
-#define POS_3_PIN 12  // Assumes that D3 is connected to Q3.
-#define POS_4_PIN 9   // Assumes that D4 is connected to Q1.
+#define POS_1_PIN 10
+#define POS_2_PIN 11
+#define POS_3_PIN 12
+#define POS_4_PIN 9
 
 // (optional) Set a non-default anti-ghosting retention duration value (in microseconds).
 #define ANTI_GHOSTING_RETENTION_DURATION 600
