@@ -131,10 +131,10 @@ class Drv7SegQ595Class {
          *
          * Parameters:
          * - pos_switch_type                - character positions are turned on either by
-         *                                    set (active-high) or cleared (active-low) pos_byte bits.
+         *                                    high or low digital output level.
          * - data_pin, latch_pin, clock_pin - pins used for bit-banging and latching.
-         * - pos_N_pin                      - pos_byte bits that control character positions.
-         *                                    pos_1_bit is required, other bits are optional
+         * - pos_N_pin                      - digital GPIO pins that control character positions.
+         *                                    pos_1_pin is required, other pins are optional
          *                                    (respective parameters can be omitted).
          *
          * Multiple calls to this method are valid, each call leads to a fresh configuration.
@@ -220,10 +220,12 @@ class Drv7SegQ595Class {
 
         /* Output a glyph on a specified character position.
          *
-         * Shifts four bytes into two daisy-chained ICs:
-         * - two blank bytes for anti-ghosting purposes.
-         * - two bytes of payload (seg_byte and pos_byte).
-         * After every second byte latches the data into the ICs' outer register.
+         * Shifts two bytes into the IC:
+         * - one blank byte for anti-ghosting purposes.
+         * - one byte of payload (seg_byte).
+         * After every single byte latches the data into the IC's outer register.
+         *
+         * Turns digital pins that control switching transistors ON or OFF according to the specified position.
          *
          * Returns:
          * - a negative integer if driver configuration had failed or not all passed parameters are valid
@@ -232,9 +234,9 @@ class Drv7SegQ595Class {
          * - a positive integer if an anti-ghosting retention is running.
          *
          * Parameters:
-         * - seg_byte                            - a byte that corresponds to a glyph to be output.
-         * - pos                                 - a number of the character position (digit) the next glyph
-         *                                         must be output on.
+         * - seg_byte - a byte that corresponds to a glyph to be output.
+         * - pos      - a number of the character position (digit) the next glyph
+         *              must be output on.
          */
         int32_t output(uint8_t seg_byte,
                        Pos pos
@@ -277,7 +279,7 @@ class Drv7SegQ595Class {
         uint32_t _sck_pin;
         #endif
 
-        // Pins that may correspond to the actual display character positions (digits).
+        // Digital GPIO pins that may correspond to the actual display character positions (digits).
         int32_t _pos_pins[DRV7SEG2X595_POS_MAX] = {DRV7SEG2X595_POS_PIN_INITIAL,
                                                    DRV7SEG2X595_POS_PIN_INITIAL,
                                                    DRV7SEG2X595_POS_PIN_INITIAL,
