@@ -271,7 +271,7 @@ int32_t Drv7SegQ595Class::output(uint8_t seg_byte,
             digitalWrite(_pos_pins[i], !active);
         }
     }
-    
+
 
     // Update the values related to the anti-ghosting logic.
     _anti_ghosting_retained_pos = pos;
