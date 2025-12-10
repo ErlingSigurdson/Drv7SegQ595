@@ -1,7 +1,7 @@
 /*************** FILE DESCRIPTION ***************/
 
 /**
- * Filename: Drv7Seg2x595_demo.ino
+ * Filename: Drv7SegQ595_demo.ino
  * ----------------------------------------------------------------------------|---------------------------------------|
  * Purpose:  An example sketch demonstrating basic usage of the Drv7Seg2x595
  *           library.
@@ -18,7 +18,7 @@
  * Notes:    Refer to the README for a general library overview and
  *           a basic API usage description.
  *
- *           Refer to Drv7Seg2x595.h for more API details.
+ *           Refer to Drv7SegQ595.h for more API details.
  *
  *           Requires installation of SegMap595 library
  *           (available from Arduino Library Manager).
@@ -29,7 +29,7 @@
 
 /*--- Includes ---*/
 
-#include <Drv7Seg2x595.h>
+#include <Drv7SegQ595.h>
 
 /* Helper library.
  * Provides a user-friendly API for mapping the parallel outputs of the 74HC595 shift register IC
@@ -56,12 +56,6 @@
 //#define USE_SPI_DEFAULT_PINS
 //#define USE_SPI_CUSTOM_PINS
 
-/* Specify the order in which seg_byte and pos_byte are placed within
- * the shift register. Use one variant, comment out or delete the other.
- */
-#define BYTE_SHIFT_ORDER Drv7SegPosByteFirst
-//#define BYTE_SHIFT_ORDER Drv7SegSegByteFirst
-
 /* Specify the signal level that turns on the character positions of your display.
  * Use one variant, comment out or delete the other.
  */
@@ -70,21 +64,21 @@
 
 // Specify appropriately based on your wiring. Variant for bit-banging.
 #ifdef USE_BIT_BANGING
-    #define DATA_PIN  16
-    #define LATCH_PIN 17
-    #define CLOCK_PIN 18
+    #define DATA_PIN  6
+    #define LATCH_PIN 7
+    #define CLOCK_PIN 8
 #endif
 
 // Specify appropriately based on your wiring. Variant for SPI with default pins.
 #ifdef USE_SPI_DEFAULT_PINS
-    #define LATCH_PIN 17
+    #define LATCH_PIN 7
 #endif
 
 // Specify appropriately based on your wiring. Variant for SPI with custom-assigned pins.
 #ifdef USE_SPI_CUSTOM_PINS
-    #define MOSI_PIN  16
-    #define LATCH_PIN 17
-    #define SCK_PIN   18
+    #define MOSI_PIN  6
+    #define LATCH_PIN 7
+    #define SCK_PIN   8
 #endif
 
 /* Specify appropriately based on which pos_byte bits control
@@ -95,10 +89,10 @@
  *
  * Valid arguments are Drv7SegPosBitN, where N is in the 0..7 range (MSB to LSB of pos_byte).
  */
-#define POS_1_BIT Drv7SegPosBit7  // Assumes that D1 is connected to Q7 (Q is for a 595's parallel output number).
-#define POS_2_BIT Drv7SegPosBit5  // Assumes that D2 is connected to Q5.
-#define POS_3_BIT Drv7SegPosBit3  // Assumes that D3 is connected to Q3.
-#define POS_4_BIT Drv7SegPosBit1  // Assumes that D4 is connected to Q1.
+#define POS_1_PIN 10  // Assumes that D1 is connected to Q7 (Q is for a 595's parallel output number).
+#define POS_2_PIN 11  // Assumes that D2 is connected to Q5.
+#define POS_3_PIN 12  // Assumes that D3 is connected to Q3.
+#define POS_4_PIN 9   // Assumes that D4 is connected to Q1.
 
 // (optional) Set a non-default anti-ghosting retention duration value (in microseconds).
 #define ANTI_GHOSTING_RETENTION_DURATION 600
@@ -122,7 +116,7 @@
  * Uppercase characters may be replaced with their lowercase counterparts. Any other characters are invalid.
  * Duplicating characters is invalid as well.
  */
-#define MAP_STR "ED@CGAFB"
+#define MAP_STR "GC@DEBFA"
 
 // Specify your display type based on its common pin. Use one variant, comment out or delete the other.
 #define DISPLAY_COMMON_PIN SegMap595CommonCathode
@@ -177,32 +171,32 @@ void setup()
     /*--- Driver object configuration ---*/
 
     #ifdef USE_BIT_BANGING
-    Drv7Seg.begin_bb(BYTE_SHIFT_ORDER, POS_SWITCH_TYPE,
+    Drv7Seg.begin_bb(POS_SWITCH_TYPE,
                      DATA_PIN, LATCH_PIN, CLOCK_PIN,
-                     POS_1_BIT,
-                     POS_2_BIT,
-                     POS_3_BIT,
-                     POS_4_BIT
+                     POS_1_PIN,
+                     POS_2_PIN,
+                     POS_3_PIN,
+                     POS_4_PIN
                     );
     #endif
 
     #ifdef USE_SPI_DEFAULT_PINS
-    Drv7Seg.begin_spi(BYTE_SHIFT_ORDER, POS_SWITCH_TYPE,
+    Drv7Seg.begin_spi(POS_SWITCH_TYPE,
                       LATCH_PIN,
-                      POS_1_BIT,
-                      POS_2_BIT,
-                      POS_3_BIT,
-                      POS_4_BIT
+                      POS_1_PIN,
+                      POS_2_PIN,
+                      POS_3_PIN,
+                      POS_4_PIN
                      );
     #endif
 
     #ifdef USE_SPI_CUSTOM_PINS
-    Drv7Seg.begin_spi_custom_pins(BYTE_SHIFT_ORDER, POS_SWITCH_TYPE,
+    Drv7Seg.begin_spi_custom_pins(POS_SWITCH_TYPE,
                                   MOSI_PIN, LATCH_PIN, SCK_PIN,
-                                  POS_1_BIT,
-                                  POS_2_BIT,
-                                  POS_3_BIT,
-                                  POS_4_BIT
+                                  POS_1_PIN,
+                                  POS_2_PIN,
+                                  POS_3_PIN,
+                                  POS_4_PIN
                                  );
     #endif
 
