@@ -35,45 +35,45 @@
  *
  * __has_include() macro is deliberately avoided due to limited portability.
  */
-#define DRV7SEG2X595_SPI_PROVIDED_ASSUMED
+#define DRV7SEGQ595_SPI_PROVIDED_ASSUMED
 
 /* Duration (in microseconds) of a short period during which
  * a currently output glyph is retained on a respective character position.
  */
-#define DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION 300
+#define DRV7SEGQ595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION 300
 
-#define DRV7SEG2X595_POS_MIN 1
-#define DRV7SEG2X595_POS_MAX 4
+#define DRV7SEGQ595_POS_MIN 1
+#define DRV7SEGQ595_POS_MAX 4
 
-#define DRV7SEG2X595_BITS_IN_BYTE          8
-#define DRV7SEG2X595_MSB                   (DRV7SEG2X595_BITS_IN_BYTE - 1)
-#define DRV7SEG2X595_LSB                   0
-#define DRV7SEG2X595_ONLY_LSB_SET_MASK     0x01u
-#define DRV7SEG2X595_ONLY_MSB_SET_MASK     (DRV7SEG2X595_ONLY_LSB_SET_MASK << DRV7SEG2X595_MSB)
-#define DRV7SEG2X595_ALL_BITS_CLEARED_MASK 0x00
+#define DRV7SEGQ595_BITS_IN_BYTE          8
+#define DRV7SEGQ595_MSB                   (DRV7SEGQ595_BITS_IN_BYTE - 1)
+#define DRV7SEGQ595_LSB                   0
+#define DRV7SEGQ595_ONLY_LSB_SET_MASK     0x01u
+#define DRV7SEGQ595_ONLY_MSB_SET_MASK     (DRV7SEGQ595_ONLY_LSB_SET_MASK << DRV7SEGQ595_MSB)
+#define DRV7SEGQ595_ALL_BITS_CLEARED_MASK 0x00
 
-#define DRV7SEG2X595_POS_PIN_INITIAL -1
+#define DRV7SEGQ595_POS_PIN_INITIAL -1
 
 // Driver configuration status codes. Double as return codes for some methods.
-#define DRV7SEG2X595_STATUS_INITIAL                     -1
-#define DRV7SEG2X595_STATUS_ERR_VARIANT_NOT_SPECIFIED   -2
-#define DRV7SEG2X595_STATUS_ERR_INVALID_POS_SWITCH_TYPE -3
-#define DRV7SEG2X595_STATUS_ERR_INVALID_POS_PIN         -4
-#define DRV7SEG2X595_STATUS_ERR_POS_PIN_DUPLICATION     -5
-#define DRV7SEG2X595_STATUS_OK                           0
+#define DRV7SEGQ595_STATUS_INITIAL                     -1
+#define DRV7SEGQ595_STATUS_ERR_VARIANT_NOT_SPECIFIED   -2
+#define DRV7SEGQ595_STATUS_ERR_INVALID_POS_SWITCH_TYPE -3
+#define DRV7SEGQ595_STATUS_ERR_INVALID_POS_PIN         -4
+#define DRV7SEGQ595_STATUS_ERR_POS_PIN_DUPLICATION     -5
+#define DRV7SEGQ595_STATUS_OK                           0
 
 // set_glyph_to_pos() method additional return codes.
-#define DRV7SEG2X595_SET_GLYPH_ERR_INVALID_POS                   -6
-#define DRV7SEG2X595_SET_GLYPH_ERR_POS_PIN_NOT_SPECIFIED_FOR_POS -7
-#define DRV7SEG2X595_SET_GLYPH_OK                                 0
+#define DRV7SEGQ595_SET_GLYPH_ERR_INVALID_POS                   -6
+#define DRV7SEGQ595_SET_GLYPH_ERR_POS_PIN_NOT_SPECIFIED_FOR_POS -7
+#define DRV7SEGQ595_SET_GLYPH_OK                                 0
 
 // output() method additional return codes.
-#define DRV7SEG2X595_OUTPUT_ERR_INVALID_POS                   -6
-#define DRV7SEG2X595_OUTPUT_ERR_POS_PIN_NOT_SPECIFIED_FOR_POS -7
-#define DRV7SEG2X595_OUTPUT_NEXT                               0
-#define DRV7SEG2X595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING    1
+#define DRV7SEGQ595_OUTPUT_ERR_INVALID_POS                   -6
+#define DRV7SEGQ595_OUTPUT_ERR_POS_PIN_NOT_SPECIFIED_FOR_POS -7
+#define DRV7SEGQ595_OUTPUT_NEXT                               0
+#define DRV7SEGQ595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING    1
 
-#if defined(DRV7SEG2X595_SPI_PROVIDED_ASSUMED) || \
+#if defined(DRV7SEGQ595_SPI_PROVIDED_ASSUMED) || \
     defined(ARDUINO_ARCH_AVR)                  || \
     defined(ARDUINO_ARCH_MEGAAVR)              || \
     defined(ARDUINO_ARCH_SAM)                  || \
@@ -85,18 +85,18 @@
     defined(ARDUINO_ARCH_RP2040)               || \
     defined(ARDUINO_ARCH_RENESAS)              || \
     defined(ARDUINO_ARCH_NRF52)
-    #define DRV7SEG2X595_SPI_PROVIDED
+    #define DRV7SEGQ595_SPI_PROVIDED
 #endif
 
 #if defined(ARDUINO_ARCH_ESP32) || defined(ARDUINO_ARCH_STM32)
-    #define DRV7SEG2X595_SPI_PROVIDED_CUSTOM_PINS
+    #define DRV7SEGQ595_SPI_PROVIDED_CUSTOM_PINS
 #endif
 
 // Driver configuration variant codes.
-#define DRV7SEG2X595_VARIANT_INITIAL     -1
-#define DRV7SEG2X595_VARIANT_BIT_BANGING  0
-#ifdef DRV7SEG2X595_SPI_PROVIDED
-    #define DRV7SEG2X595_VARIANT_SPI      1
+#define DRV7SEGQ595_VARIANT_INITIAL     -1
+#define DRV7SEGQ595_VARIANT_BIT_BANGING  0
+#ifdef DRV7SEGQ595_SPI_PROVIDED
+    #define DRV7SEGQ595_VARIANT_SPI      1
 #endif
 
 
@@ -112,10 +112,10 @@ class Drv7SegQ595Class {
         };
 
         enum class Pos {
-            Pos1 =  DRV7SEG2X595_POS_MIN,  // 1
+            Pos1 =  DRV7SEGQ595_POS_MIN,  // 1
             Pos2 =  2,
             Pos3 =  3,
-            Pos4 =  DRV7SEG2X595_POS_MAX   // 4
+            Pos4 =  DRV7SEGQ595_POS_MAX   // 4
         };
 
 
@@ -144,9 +144,9 @@ class Drv7SegQ595Class {
                          uint32_t latch_pin,
                          uint32_t clock_pin,
                          int32_t pos_1_pin,
-                         int32_t pos_2_pin = DRV7SEG2X595_POS_PIN_INITIAL,
-                         int32_t pos_3_pin = DRV7SEG2X595_POS_PIN_INITIAL,
-                         int32_t pos_4_pin = DRV7SEG2X595_POS_PIN_INITIAL
+                         int32_t pos_2_pin = DRV7SEGQ595_POS_PIN_INITIAL,
+                         int32_t pos_3_pin = DRV7SEGQ595_POS_PIN_INITIAL,
+                         int32_t pos_4_pin = DRV7SEGQ595_POS_PIN_INITIAL
                         );
 
         /* Configure the driver to use SPI with default pins.
@@ -162,13 +162,13 @@ class Drv7SegQ595Class {
          *
          * Safety of multiple calls to this method depends on the SPI.h implementation.
          */
-        #ifdef DRV7SEG2X595_SPI_PROVIDED
+        #ifdef DRV7SEGQ595_SPI_PROVIDED
         int32_t begin_spi(PosSwitchType pos_switch_type,
                           uint32_t latch_pin,
-                          int32_t pos_1_pin = DRV7SEG2X595_POS_PIN_INITIAL,
-                          int32_t pos_2_pin = DRV7SEG2X595_POS_PIN_INITIAL,
-                          int32_t pos_3_pin = DRV7SEG2X595_POS_PIN_INITIAL,
-                          int32_t pos_4_pin = DRV7SEG2X595_POS_PIN_INITIAL
+                          int32_t pos_1_pin = DRV7SEGQ595_POS_PIN_INITIAL,
+                          int32_t pos_2_pin = DRV7SEGQ595_POS_PIN_INITIAL,
+                          int32_t pos_3_pin = DRV7SEGQ595_POS_PIN_INITIAL,
+                          int32_t pos_4_pin = DRV7SEGQ595_POS_PIN_INITIAL
                          );
         #endif
 
@@ -185,15 +185,15 @@ class Drv7SegQ595Class {
          *
          * Safety of multiple calls to this method depends on the SPI.h implementation.
          */
-        #ifdef DRV7SEG2X595_SPI_PROVIDED_CUSTOM_PINS
+        #ifdef DRV7SEGQ595_SPI_PROVIDED_CUSTOM_PINS
         int32_t begin_spi_custom_pins(PosSwitchType pos_switch_type,
                                       uint32_t mosi_pin,
                                       uint32_t latch_pin,
                                       uint32_t sck_pin,
-                                      int32_t pos_1_pin = DRV7SEG2X595_POS_PIN_INITIAL,
-                                      int32_t pos_2_pin = DRV7SEG2X595_POS_PIN_INITIAL,
-                                      int32_t pos_3_pin = DRV7SEG2X595_POS_PIN_INITIAL,
-                                      int32_t pos_4_pin = DRV7SEG2X595_POS_PIN_INITIAL
+                                      int32_t pos_1_pin = DRV7SEGQ595_POS_PIN_INITIAL,
+                                      int32_t pos_2_pin = DRV7SEGQ595_POS_PIN_INITIAL,
+                                      int32_t pos_3_pin = DRV7SEGQ595_POS_PIN_INITIAL,
+                                      int32_t pos_4_pin = DRV7SEGQ595_POS_PIN_INITIAL
                                      );
         #endif
 
@@ -261,8 +261,8 @@ class Drv7SegQ595Class {
     private:
         /*--- Variables ---*/
 
-        int32_t _status  = DRV7SEG2X595_STATUS_INITIAL;
-        int32_t _variant = DRV7SEG2X595_VARIANT_INITIAL;
+        int32_t _status  = DRV7SEGQ595_STATUS_INITIAL;
+        int32_t _variant = DRV7SEGQ595_VARIANT_INITIAL;
 
         PosSwitchType _pos_switch_type;
 
@@ -273,24 +273,24 @@ class Drv7SegQ595Class {
         uint32_t _data_pin;
         uint32_t _clock_pin;
 
-        #ifdef DRV7SEG2X595_SPI_PROVIDED_CUSTOM_PINS
+        #ifdef DRV7SEGQ595_SPI_PROVIDED_CUSTOM_PINS
         // Used in the custom SPI pins variant.
         uint32_t _mosi_pin;
         uint32_t _sck_pin;
         #endif
 
         // Digital GPIO pins that may correspond to the actual display character positions (digits).
-        int32_t _pos_pins[DRV7SEG2X595_POS_MAX] = {DRV7SEG2X595_POS_PIN_INITIAL,
-                                                   DRV7SEG2X595_POS_PIN_INITIAL,
-                                                   DRV7SEG2X595_POS_PIN_INITIAL,
-                                                   DRV7SEG2X595_POS_PIN_INITIAL
+        int32_t _pos_pins[DRV7SEGQ595_POS_MAX] = {DRV7SEGQ595_POS_PIN_INITIAL,
+                                                   DRV7SEGQ595_POS_PIN_INITIAL,
+                                                   DRV7SEGQ595_POS_PIN_INITIAL,
+                                                   DRV7SEGQ595_POS_PIN_INITIAL
                                                   };
 
         // Glyphs assigned to be output next.
-        uint8_t _pos_glyphs[DRV7SEG2X595_POS_MAX] = {0};
+        uint8_t _pos_glyphs[DRV7SEGQ595_POS_MAX] = {0};
 
         // Elements of the anti-ghosting logic.
-        uint32_t _anti_ghosting_retention_duration = DRV7SEG2X595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION;
+        uint32_t _anti_ghosting_retention_duration = DRV7SEGQ595_ANTI_GHOSTING_DEFAULT_RETENTION_DURATION;
         bool     _anti_ghosting_first_output_call = true;
         Pos      _anti_ghosting_retained_pos;
         uint32_t _anti_ghosting_timer_previous_micros;
