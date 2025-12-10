@@ -86,7 +86,7 @@
  *
  * POS_1_PIN means the pin that controls the leftmost position
  * (often referred to as D1 in 7-segment display pinout diagrams).
- * POS_4_BIT means the pin that controls the rightmost position
+ * POS_4_PIN means the pin that controls the rightmost position
  * (often referred to as D4 in 7-segment display pinout diagrams).
  *
  * Valid arguments are integers that correspond to valid (free to use) digital GPIO pins
