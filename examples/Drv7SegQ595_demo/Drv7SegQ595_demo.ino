@@ -8,7 +8,7 @@
  *
  *           Runs a simple electronic clock: counts seconds and minutes
  *           and outputs current values on a 7-segment 4-digit display.
- *           Additionally, prints the values and diagnostic information 
+ *           Additionally, prints the values and diagnostic information
  *           via UART.
  *
  *           The dot segment (decimal point, DP) of the second character
@@ -230,7 +230,7 @@ void loop()
 
     static size_t counter_seconds = 0;
     static size_t counter_minutes = 0;
-    
+
     if (counter_seconds >= MAX_COUNT_SECONDS) {
         ++counter_minutes;
         counter_seconds = 0;
