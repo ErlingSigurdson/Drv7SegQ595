@@ -1,7 +1,7 @@
 # Overview
 
 **Drv7SegQ595** is a single-class Arduino library for driving a multiplexed 7-segment display using
-a single 74HC595 shift register IC and 1 to 4 transistors.
+a single 74HC595 shift register and a set of transistors.
 
 ## Concept
 
