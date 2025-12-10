@@ -4,7 +4,7 @@
  * Filename: Drv7SegQ595.h
  * ----------------------------------------------------------------------------|---------------------------------------|
  * Purpose:  A class for driving a multiplexed 7-segment display using
- *           a single 74HC595 shift register IC and 1 to 4 transistors.
+ *           a single 74HC595 shift register IC and a set of transistors.
  * ----------------------------------------------------------------------------|---------------------------------------|
  * Notes:    Refer to the README for a general library overview and
  *           a basic API usage description.
