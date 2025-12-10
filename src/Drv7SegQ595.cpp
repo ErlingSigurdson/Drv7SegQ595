@@ -23,7 +23,7 @@
 #include "Drv7SegQ595.h"
 
 // Additional Arduino libraries.
-#ifdef DRV7SEG2X595_SPI_PROVIDED
+#ifdef DRV7SEGQ595_SPI_PROVIDED
     #include <SPI.h>
 #endif
 
@@ -52,7 +52,7 @@ int32_t Drv7SegQ595Class::begin_bb(PosSwitchType pos_switch_type,
                                    int32_t pos_4_pin
                                   )
 {
-    _status = begin_helper(DRV7SEG2X595_VARIANT_BIT_BANGING,
+    _status = begin_helper(DRV7SEGQ595_VARIANT_BIT_BANGING,
                            pos_switch_type,
                            latch_pin,
                            pos_1_pin,
@@ -73,7 +73,7 @@ int32_t Drv7SegQ595Class::begin_bb(PosSwitchType pos_switch_type,
     return _status;
 }
 
-#ifdef DRV7SEG2X595_SPI_PROVIDED
+#ifdef DRV7SEGQ595_SPI_PROVIDED
 int32_t Drv7SegQ595Class::begin_spi(PosSwitchType pos_switch_type,
                                     uint32_t latch_pin,
                                     int32_t pos_1_pin,
@@ -82,7 +82,7 @@ int32_t Drv7SegQ595Class::begin_spi(PosSwitchType pos_switch_type,
                                     int32_t pos_4_pin
                                    )
 {
-    _status = begin_helper(DRV7SEG2X595_VARIANT_SPI,
+    _status = begin_helper(DRV7SEGQ595_VARIANT_SPI,
                            pos_switch_type,
                            latch_pin,
                            pos_1_pin,
@@ -101,7 +101,7 @@ int32_t Drv7SegQ595Class::begin_spi(PosSwitchType pos_switch_type,
 }
 #endif
 
-#ifdef DRV7SEG2X595_SPI_PROVIDED_CUSTOM_PINS
+#ifdef DRV7SEGQ595_SPI_PROVIDED_CUSTOM_PINS
 int32_t Drv7SegQ595Class::begin_spi_custom_pins(PosSwitchType pos_switch_type,
                                                 uint32_t mosi_pin,
                                                 uint32_t latch_pin,
@@ -112,7 +112,7 @@ int32_t Drv7SegQ595Class::begin_spi_custom_pins(PosSwitchType pos_switch_type,
                                                 int32_t pos_4_pin
                                                )
 {
-    _status = begin_helper(DRV7SEG2X595_VARIANT_SPI,
+    _status = begin_helper(DRV7SEGQ595_VARIANT_SPI,
                            pos_switch_type,
                            latch_pin,
                            pos_1_pin,
@@ -157,18 +157,18 @@ int32_t Drv7SegQ595Class::set_glyph_to_pos(uint8_t seg_byte, Pos pos)
     /*--- Protection from unexpected casts ---*/
 
     if (pos < Drv7SegPos1 || pos > Drv7SegPos4) {
-        return DRV7SEG2X595_SET_GLYPH_ERR_INVALID_POS;
+        return DRV7SEGQ595_SET_GLYPH_ERR_INVALID_POS;
     }
 
 
     /*--- Assign a glyph to a position ---*/
 
     size_t pos_as_index = static_cast<size_t>(pos) - 1;
-    if (_pos_pins[pos_as_index] <= DRV7SEG2X595_POS_PIN_INITIAL) {
-        return DRV7SEG2X595_SET_GLYPH_ERR_POS_PIN_NOT_SPECIFIED_FOR_POS;
+    if (_pos_pins[pos_as_index] <= DRV7SEGQ595_POS_PIN_INITIAL) {
+        return DRV7SEGQ595_SET_GLYPH_ERR_POS_PIN_NOT_SPECIFIED_FOR_POS;
     } else {
         _pos_glyphs[pos_as_index] = seg_byte;
-        return DRV7SEG2X595_SET_GLYPH_OK;
+        return DRV7SEGQ595_SET_GLYPH_OK;
     }
 }
 
@@ -186,7 +186,7 @@ int32_t Drv7SegQ595Class::output(uint8_t seg_byte,
     /*--- Protection from unexpected casts ---*/
 
     if (pos < Drv7SegPos1 || pos > Drv7SegPos4) {
-        return DRV7SEG2X595_OUTPUT_ERR_INVALID_POS;
+        return DRV7SEGQ595_OUTPUT_ERR_INVALID_POS;
     }
 
 
@@ -197,12 +197,12 @@ int32_t Drv7SegQ595Class::output(uint8_t seg_byte,
          * that must be turned on next, return and continue the retention.
          */
         if (pos != anti_ghosting_next_pos_to_output()) {
-            return DRV7SEG2X595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING;
+            return DRV7SEGQ595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING;
         }
 
         // If the retention timer hasn't elapsed, return and continue the retention.
         if (anti_ghosting_timer() == false) {
-            return DRV7SEG2X595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING;
+            return DRV7SEGQ595_OUTPUT_ANTI_GHOSTING_RETENTION_RUNNING;
         }
     } else {
         _anti_ghosting_first_output_call = false;
@@ -220,14 +220,14 @@ int32_t Drv7SegQ595Class::output(uint8_t seg_byte,
     /*--- Position-control pin check ---*/
 
     size_t pos_as_index = static_cast<size_t>(pos) - 1;
-    if (_pos_pins[pos_as_index] <= DRV7SEG2X595_POS_PIN_INITIAL) {
-        return DRV7SEG2X595_OUTPUT_ERR_POS_PIN_NOT_SPECIFIED_FOR_POS;
+    if (_pos_pins[pos_as_index] <= DRV7SEGQ595_POS_PIN_INITIAL) {
+        return DRV7SEGQ595_OUTPUT_ERR_POS_PIN_NOT_SPECIFIED_FOR_POS;
     }
 
 
     /*--- Switching the position-control pins ---*/
 
-    for (size_t i = 0; i < DRV7SEG2X595_POS_MAX; ++i) {
+    for (size_t i = 0; i < DRV7SEGQ595_POS_MAX; ++i) {
         digitalWrite(_pos_pins[i], !active);
     }
 
@@ -235,9 +235,9 @@ int32_t Drv7SegQ595Class::output(uint8_t seg_byte,
     /*--- Shift data ---*/
 
     switch (_variant) {
-        case DRV7SEG2X595_VARIANT_BIT_BANGING:
+        case DRV7SEGQ595_VARIANT_BIT_BANGING:
             digitalWrite(_latch_pin, LOW);
-            shift_out(DRV7SEG2X595_ALL_BITS_CLEARED_MASK);
+            shift_out(DRV7SEGQ595_ALL_BITS_CLEARED_MASK);
             digitalWrite(_latch_pin, HIGH);
 
             digitalWrite(_latch_pin, LOW);
@@ -245,10 +245,10 @@ int32_t Drv7SegQ595Class::output(uint8_t seg_byte,
             digitalWrite(_latch_pin, HIGH);
             break;
 
-        #ifdef DRV7SEG2X595_SPI_PROVIDED
-        case DRV7SEG2X595_VARIANT_SPI:
+        #ifdef DRV7SEGQ595_SPI_PROVIDED
+        case DRV7SEGQ595_VARIANT_SPI:
             digitalWrite(_latch_pin, LOW);
-            SPI.transfer(DRV7SEG2X595_ALL_BITS_CLEARED_MASK);
+            SPI.transfer(DRV7SEGQ595_ALL_BITS_CLEARED_MASK);
             digitalWrite(_latch_pin, HIGH);
 
             digitalWrite(_latch_pin, LOW);
@@ -271,7 +271,7 @@ int32_t Drv7SegQ595Class::output(uint8_t seg_byte,
     _anti_ghosting_retained_pos = pos;
     _anti_ghosting_timer_previous_micros = micros();
 
-    return DRV7SEG2X595_OUTPUT_NEXT;
+    return DRV7SEGQ595_OUTPUT_NEXT;
 }
 
 void Drv7SegQ595Class::output_all()
@@ -285,7 +285,7 @@ void Drv7SegQ595Class::output_all()
 
     /*--- Output ---*/
 
-    for (size_t i = 0; i < DRV7SEG2X595_POS_MAX; ++i) {
+    for (size_t i = 0; i < DRV7SEGQ595_POS_MAX; ++i) {
          output(_pos_glyphs[i], static_cast<Pos>(i + 1));
     }
 }
@@ -317,31 +317,31 @@ int32_t Drv7SegQ595Class::begin_helper(int32_t variant,
      * but preserved as a redundant safety measure.
      */
     if (variant < 0) {
-        return DRV7SEG2X595_STATUS_ERR_VARIANT_NOT_SPECIFIED;
+        return DRV7SEGQ595_STATUS_ERR_VARIANT_NOT_SPECIFIED;
     }
 
     // Position switch type validity check.
     if (pos_switch_type != Drv7SegActiveLow && pos_switch_type != Drv7SegActiveHigh) {
-        return DRV7SEG2X595_STATUS_ERR_INVALID_POS_SWITCH_TYPE;
+        return DRV7SEGQ595_STATUS_ERR_INVALID_POS_SWITCH_TYPE;
     }
 
     // Position-control pins validity check.
-    int32_t pos_pins[DRV7SEG2X595_POS_MAX] = {pos_1_pin, pos_2_pin, pos_3_pin, pos_4_pin};
-    for (uint32_t i = 0; i < DRV7SEG2X595_POS_MAX; ++i) {
+    int32_t pos_pins[DRV7SEGQ595_POS_MAX] = {pos_1_pin, pos_2_pin, pos_3_pin, pos_4_pin};
+    for (uint32_t i = 0; i < DRV7SEGQ595_POS_MAX; ++i) {
 
         // First position pin (array index zero) must be >= 0.
         if (i == 0) {
             if (pos_pins[i] < 0) {
-                return DRV7SEG2X595_STATUS_ERR_INVALID_POS_PIN;
+                return DRV7SEGQ595_STATUS_ERR_INVALID_POS_PIN;
             }
         }
 
         // Position bits duplication check.
-        for (uint32_t j = i + 1; j < DRV7SEG2X595_POS_MAX; ++j) {
-            if (pos_pins[i] != DRV7SEG2X595_POS_PIN_INITIAL &&
-                pos_pins[j] != DRV7SEG2X595_POS_PIN_INITIAL &&
+        for (uint32_t j = i + 1; j < DRV7SEGQ595_POS_MAX; ++j) {
+            if (pos_pins[i] != DRV7SEGQ595_POS_PIN_INITIAL &&
+                pos_pins[j] != DRV7SEGQ595_POS_PIN_INITIAL &&
                 pos_pins[i] == pos_pins[j]) {
-                return DRV7SEG2X595_STATUS_ERR_POS_PIN_DUPLICATION;
+                return DRV7SEGQ595_STATUS_ERR_POS_PIN_DUPLICATION;
             }
         }
     }
@@ -369,14 +369,14 @@ int32_t Drv7SegQ595Class::begin_helper(int32_t variant,
                                                           * as a redundant safety measure.
                                                           */
 
-    return DRV7SEG2X595_STATUS_OK;
+    return DRV7SEGQ595_STATUS_OK;
 }
 
 void Drv7SegQ595Class::shift_out(uint8_t byte_to_shift)
 {
     digitalWrite(_clock_pin, LOW);
-    for (uint32_t i = 0; i < DRV7SEG2X595_BITS_IN_BYTE; i++) {
-        digitalWrite(_data_pin, (byte_to_shift << i) & DRV7SEG2X595_ONLY_MSB_SET_MASK);
+    for (uint32_t i = 0; i < DRV7SEGQ595_BITS_IN_BYTE; i++) {
+        digitalWrite(_data_pin, (byte_to_shift << i) & DRV7SEGQ595_ONLY_MSB_SET_MASK);
         digitalWrite(_clock_pin, HIGH);
         digitalWrite(_clock_pin, LOW);
     }
@@ -405,11 +405,11 @@ Drv7SegQ595Class::Pos Drv7SegQ595Class::anti_ghosting_next_pos_to_output()
     size_t pos_as_index = static_cast<size_t>(_anti_ghosting_retained_pos) - 1;
 
     // Add 1 because we're checking the next position, not the current one.
-    for (size_t i = pos_as_index + 1; i < DRV7SEG2X595_POS_MAX; ++i) {
+    for (size_t i = pos_as_index + 1; i < DRV7SEGQ595_POS_MAX; ++i) {
         /* Search for a position that is valid for output (that was
          * assigned a position bit that belongs to the 0..7 range).
          */
-        if (_pos_pins[i] > DRV7SEG2X595_POS_PIN_INITIAL) {
+        if (_pos_pins[i] > DRV7SEGQ595_POS_PIN_INITIAL) {
             // Add 1 because we're hopping back from 0-indexed to 1-indexed.
             return static_cast<Pos>(i + 1);
         }
