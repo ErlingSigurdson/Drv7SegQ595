@@ -217,7 +217,7 @@ int32_t Drv7SegQ595Class::output(uint8_t seg_byte,
     }
 
 
-    /*--- Checking the position-control pin ---*/
+    /*--- Position-control pin check ---*/
 
     size_t pos_as_index = static_cast<size_t>(pos) - 1;
     if (_pos_pins[pos_as_index] <= DRV7SEG2X595_POS_PIN_INITIAL) {
@@ -264,13 +264,7 @@ int32_t Drv7SegQ595Class::output(uint8_t seg_byte,
 
     /*--- Switching the position-control pins, continued ---*/
 
-    for (size_t i = 0; i < DRV7SEG2X595_POS_MAX; ++i) {
-        if (pos_as_index == i) {
-            digitalWrite(_pos_pins[i], active);
-        } else {
-            digitalWrite(_pos_pins[i], !active);
-        }
-    }
+    digitalWrite(_pos_pins[pos_as_index], active);
 
 
     // Update the values related to the anti-ghosting logic.
@@ -331,7 +325,7 @@ int32_t Drv7SegQ595Class::begin_helper(int32_t variant,
         return DRV7SEG2X595_STATUS_ERR_INVALID_POS_SWITCH_TYPE;
     }
 
-    // Position pins validity check.
+    // Position-control pins validity check.
     int32_t pos_pins[DRV7SEG2X595_POS_MAX] = {pos_1_pin, pos_2_pin, pos_3_pin, pos_4_pin};
     for (uint32_t i = 0; i < DRV7SEG2X595_POS_MAX; ++i) {
 
