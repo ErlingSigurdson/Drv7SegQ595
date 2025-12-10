@@ -18,15 +18,15 @@ This library is licensed under the **MIT License** (see `LICENSE` [here](LICENSE
 * [Backup repository on GitFlic](https://gitflic.ru/project/efimov-d-v/drv7segq595)
 * [Backup repository on Codeberg](https://codeberg.org/ErlingSigurdson/Drv7SegQ595)
 
-### Drv7Seg2x595 (parent project)
-* [Primary repository on GitHub](https://github.com/ErlingSigurdson/Drv7Seg2x595)
-* [Backup repository on GitFlic](https://gitflic.ru/project/efimov-d-v/drv7seg2x595)
-* [Backup repository on Codeberg](https://codeberg.org/ErlingSigurdson/Drv7Seg2x595)
-
 ### SegMap595
 * [Primary repository on GitHub](https://github.com/ErlingSigurdson/SegMap595)
 * [Backup repository on GitFlic](https://gitflic.ru/project/efimov-d-v/segmap595)
 * [Backup repository on Codeberg](https://codeberg.org/ErlingSigurdson/SegMap595)
+
+### Drv7Seg2x595 (parent project)
+* [Primary repository on GitHub](https://github.com/ErlingSigurdson/Drv7Seg2x595)
+* [Backup repository on GitFlic](https://gitflic.ru/project/efimov-d-v/drv7seg2x595)
+* [Backup repository on Codeberg](https://codeberg.org/ErlingSigurdson/Drv7Seg2x595)
 
 ## Contact details
 
