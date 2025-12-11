@@ -233,7 +233,7 @@ void loop()
 
     static size_t counter_seconds = 0;
     static size_t counter_minutes = 0;
-    
+
     if (counter_seconds >= MAX_COUNT_SECONDS) {
         ++counter_minutes;
         counter_seconds = 0;

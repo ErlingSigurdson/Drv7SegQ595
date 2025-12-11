@@ -199,12 +199,12 @@ int32_t set_glyph_to_pos(uint8_t seg_byte,  // A byte that corresponds to the gl
 // Example call (single).
 Drv7Seg.set_glyph_to_pos(
                          0b00010001,  // Depending on wiring, may represent character '1'.
-               
+
                          /* Valid arguments are Drv7SegPosN, where
                           * N => 1
                           * and
                           * N <= the number of positions the driver was configured to use.
-                          */ 
+                          */
                           Drv7SegPos1
                         );
 
@@ -235,12 +235,12 @@ int32_t output(uint8_t seg_byte,  // A byte that corresponds to the glyph to be 
 // Example call (single).
 Drv7Seg.output(
                0b00010001,  // Depending on wiring, may represent character '1'.
-               
+
                /* Valid arguments are Drv7SegPosN, where
                 * N => 1
                 * and
                 * N <= the number of positions the driver was configured to use.
-                */ 
+                */
                Drv7SegPos1,
               );
 
