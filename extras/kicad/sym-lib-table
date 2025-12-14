@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "Drv7Seg2x595")(type "KiCad")(uri "${KIPRJMOD}/libs/Drv7Seg2x595.kicad_sym")(options "")(descr ""))
+)

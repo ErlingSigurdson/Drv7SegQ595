@@ -465,7 +465,9 @@
   },
   "libraries": {
     "pinned_footprint_libs": [],
-    "pinned_symbol_libs": []
+    "pinned_symbol_libs": [
+      "Drv7Seg2x595"
+    ]
   },
   "meta": {
     "filename": "Drv7Seg2x595.kicad_pro",
