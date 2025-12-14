@@ -1,3 +1,4 @@
-*fp-info-cache
 *.lck
-*Drv7Seg2x595-backups
+*.kicad_prl
+*fp-info-cache
+*-backups
