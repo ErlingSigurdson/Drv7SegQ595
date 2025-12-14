@@ -5,7 +5,7 @@
 	(uuid "379795a0-c68f-4c94-9399-90603a2bef2e")
 	(paper "A4")
 	(title_block
-		(date "01.12.2025")
+		(date "15.12.2025")
 		(comment 1 "Documentation: github.com/ErlingSigurdson/Drv7Seg2x595")
 		(comment 2 "Licensed under CERN-OHL-P v2")
 		(comment 3 "Copyright (c) 2025 Dmitriy Efimov aka Erling Sigurdson")
@@ -5043,7 +5043,7 @@
 				)
 			)
 		)
-		(property "Value" "150"
+		(property "Value" "1k5"
 			(at 144.78 93.98 90)
 			(effects
 				(font
@@ -5177,7 +5177,7 @@
 				)
 			)
 		)
-		(property "Value" "150"
+		(property "Value" "1k5"
 			(at 144.78 116.84 90)
 			(effects
 				(font
@@ -5942,7 +5942,7 @@
 				)
 			)
 		)
-		(property "Value" "150"
+		(property "Value" "1k5"
 			(at 144.78 101.6 90)
 			(effects
 				(font
@@ -6695,7 +6695,7 @@
 				)
 			)
 		)
-		(property "Value" "150"
+		(property "Value" "1k5"
 			(at 144.78 109.22 90)
 			(effects
 				(font
