@@ -317,8 +317,9 @@ ESP32 and STM32 MC families.
 
 ### PCB design and rich circuit diagram
 
-You may opt to use [KiCAD](https://www.kicad.org/) [files](extras/kicad/) provided with this library to build a DIY
-hardware driver compliant with the library's premises and the reference circuit. All files are created using KiCAD 9.0.
+You may opt to use the [KiCAD](https://www.kicad.org/) [project](extras/kicad/) provided with this library to build
+a DIY hardware driver compliant with the library's premises and the reference circuit. The project was created in
+KiCAD 9.0.
 
 ![pcb_view_w_footprints_preview.png](extras/images/pcb_view_w_footprints_preview.png)
 
