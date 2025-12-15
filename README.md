@@ -100,7 +100,7 @@ In the reference schematic:
 see below), 2N3904, 2N4401, 2N2222, or BC548. You can even use a [KT315](https://ru.wikipedia.org/wiki/%D0%9A%D0%A2315),
 comrade.
 * If the display segment LEDs are too bright, or if you notice visible brightness changes when the DP blinks, increase
-the R0..R7 resistor values to around 470–680 Ω. This is especially advisable if your circuit is powered from a 5 V
+the R0..R7 resistor values to around 470-680 Ω. This is especially advisable if your circuit is powered from a 5 V
 supply.
 
 ## API usage
