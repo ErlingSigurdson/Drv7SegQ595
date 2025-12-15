@@ -79,7 +79,7 @@ The driver implemented by this library uses either bit-banging or SPI for shifti
 If you choose bit-banging, the driver will use whatever GPIO pins you assign to it. If you choose SPI, the driver will
 use the default SPI instance (although support for non-default and multiple SPI instances may be added later).
 
-## Reference wiring
+## Reference schematic
 
 Here's a typical circuit diagram for the described arrangement (assumes a common-cathode display):
 
@@ -318,7 +318,7 @@ ESP32 and STM32 MC families.
 ### PCB design and rich circuit diagram
 
 You may opt to use [KiCAD](https://www.kicad.org/) [files](extras/kicad/) provided with this library to build a DIY
-hardware driver compliant with the library's premises and reference schematic. All files are created using KiCAD 9.0.
+hardware driver compliant with the library's premises and the reference circuit. All files are created using KiCAD 9.0.
 
 ![pcb_view_w_footprints_preview.png](extras/images/pcb_view_w_footprints_preview.png)
 
