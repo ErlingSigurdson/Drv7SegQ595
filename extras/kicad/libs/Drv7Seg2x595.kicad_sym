@@ -393,7 +393,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Display_7Segment:CA56-12EWA"
+		(property "Footprint" "Drv7Seg2x595:display_7seg_4d_0.56in"
 			(at -0.508 -26.67 0)
 			(effects
 				(font
@@ -421,15 +421,6 @@
 			)
 		)
 		(property "ki_keywords" "display LED 7-segment"
-			(at 0 0 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "ki_fp_filters" "*CA56*12EWA*"
 			(at 0 0 0)
 			(effects
 				(font
