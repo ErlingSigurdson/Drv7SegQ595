@@ -93,6 +93,16 @@ should connect to the display's common pins and their collectors should connect 
 The wiring in your circuit **may** differ from the provided schematic to some degree, and the library will still be
 applicable as long as your circuit complies with the premise of the `seg_byte` and `pos_byte` distinct roles.
 
+### Notes on components
+
+In the reference schematic:
+* Transistors Q1..Q4 are intended to be general-purpose NPN BJTs such as MMBT3904 (assumed by the reference PCB design,
+see below), 2N3904, 2N4401, 2N2222, or BC548. You can even use a [KT315](https://ru.wikipedia.org/wiki/%D0%9A%D0%A2315),
+comrade.
+* If the display segment LEDs are too bright, or if you notice visible brightness changes when the DP blinks, increase
+the R0..R7 resistor values to around 470–680 Ω. This is especially advisable if your circuit is powered from a 5 V
+supply.
+
 ## API usage
 
 Include the library:
