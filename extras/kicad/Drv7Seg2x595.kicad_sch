@@ -3908,7 +3908,7 @@
 				)
 			)
 		)
-		(property "Value" "1k5"
+		(property "Value" "47k"
 			(at 137.16 99.06 90)
 			(effects
 				(font
@@ -5326,7 +5326,7 @@
 				)
 			)
 		)
-		(property "Value" "1k5"
+		(property "Value" "47k"
 			(at 102.87 125.73 90)
 			(effects
 				(font
@@ -5393,7 +5393,7 @@
 				)
 			)
 		)
-		(property "Value" "1k5"
+		(property "Value" "47k"
 			(at 114.3 116.84 90)
 			(effects
 				(font
@@ -6121,7 +6121,7 @@
 				)
 			)
 		)
-		(property "Value" "1k5"
+		(property "Value" "47k"
 			(at 125.73 107.95 90)
 			(effects
 				(font
