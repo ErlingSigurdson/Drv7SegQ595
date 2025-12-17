@@ -1,5 +1,16 @@
+# Lock files
 *.lck
+
+# Per-user and cache files
 *.kicad_prl
-*fp-info-cache
+fp-info-cache
+
+# Backup and autosave files
 *-backups
+*.kicad_pcb-bak
+*.kicad_sch-bak
 *.bak
+*.bck
+_autosave-*
+*.tmp
+*~
