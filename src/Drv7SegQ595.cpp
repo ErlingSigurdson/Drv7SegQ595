@@ -349,10 +349,15 @@ int32_t Drv7SegQ595Class::begin_helper(int32_t variant,
     _variant         = variant;
     _pos_switch_type = pos_switch_type;
     _latch_pin       = latch_pin;
+
     _pos_pins[0]     = pos_1_pin;
+    pinMode(_pos_pins[0], OUTPUT);
     _pos_pins[1]     = pos_2_pin;
+    pinMode(_pos_pins[1], OUTPUT);
     _pos_pins[2]     = pos_3_pin;
+    pinMode(_pos_pins[2], OUTPUT);
     _pos_pins[3]     = pos_4_pin;
+    pinMode(_pos_pins[3], OUTPUT);
 
     pinMode(_latch_pin, OUTPUT);
 
