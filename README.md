@@ -5,7 +5,8 @@ a single 74HC595 shift register and a set of transistors.
 
 ## Concept
 
-It's like [Drv7Seg2x595](https://github.com/ErlingSigurdson/Drv7Seg2x595), but it uses GPIO-driven transistors instead of a second IC.
+It's like [Drv7Seg2x595](https://github.com/ErlingSigurdson/Drv7Seg2x595), but it uses 1 to 4 GPIO-driven
+transistors instead of a second IC.
 
 ## License
 
