@@ -217,7 +217,7 @@ int32_t Drv7SegQ595Class::output(uint8_t seg_byte,
     }
 
 
-    /*--- Position-control pin check ---*/
+    /*--- Position control pin check ---*/
 
     size_t pos_as_index = static_cast<size_t>(pos) - 1;
     if (_pos_pins[pos_as_index] <= DRV7SEGQ595_POS_PIN_INITIAL) {
@@ -225,7 +225,7 @@ int32_t Drv7SegQ595Class::output(uint8_t seg_byte,
     }
 
 
-    /*--- Switching the position-control pins ---*/
+    /*--- Switching the position control pins ---*/
 
     for (size_t i = 0; i < DRV7SEGQ595_POS_MAX; ++i) {
         digitalWrite(_pos_pins[i], !active);
@@ -262,7 +262,7 @@ int32_t Drv7SegQ595Class::output(uint8_t seg_byte,
     }
 
 
-    /*--- Switching the position-control pins, continued ---*/
+    /*--- Switching the position control pins, continued ---*/
 
     digitalWrite(_pos_pins[pos_as_index], active);
 
@@ -325,18 +325,25 @@ int32_t Drv7SegQ595Class::begin_helper(int32_t variant,
         return DRV7SEGQ595_STATUS_ERR_INVALID_POS_SWITCH_TYPE;
     }
 
-    // Position-control pins validity check.
+    // Position control pins validity check.
     int32_t pos_pins[DRV7SEGQ595_POS_MAX] = {pos_1_pin, pos_2_pin, pos_3_pin, pos_4_pin};
     for (uint32_t i = 0; i < DRV7SEGQ595_POS_MAX; ++i) {
 
-        // First position pin (array index zero) must be >= 0.
+        // First position control pin (array index zero) must be >= 0.
         if (i == 0) {
-            if (pos_pins[i] < 0) {
+            if (pos_pins[i] <= DRV7SEGQ595_POS_PIN_INITIAL) {
                 return DRV7SEGQ595_STATUS_ERR_INVALID_POS_PIN;
             }
         }
 
-        // Position bits duplication check.
+        // Other position control pins must be >= -1.
+        if (i > 0) {
+            if (pos_pins[i] < DRV7SEGQ595_POS_PIN_INITIAL) {
+                return DRV7SEGQ595_STATUS_ERR_INVALID_POS_PIN;
+            }
+        }
+
+        // Position control pins duplication check.
         for (uint32_t j = i + 1; j < DRV7SEGQ595_POS_MAX; ++j) {
             if (pos_pins[i] != DRV7SEGQ595_POS_PIN_INITIAL &&
                 pos_pins[j] != DRV7SEGQ595_POS_PIN_INITIAL &&
@@ -411,9 +418,7 @@ Drv7SegQ595Class::Pos Drv7SegQ595Class::anti_ghosting_next_pos_to_output()
 
     // Add 1 because we're checking the next position, not the current one.
     for (size_t i = pos_as_index + 1; i < DRV7SEGQ595_POS_MAX; ++i) {
-        /* Search for a position that is valid for output (that was
-         * assigned a position bit that belongs to the 0..7 range).
-         */
+        // Search for a position that is valid for output (that was assigned a valid controlling GPIO).
         if (_pos_pins[i] > DRV7SEGQ595_POS_PIN_INITIAL) {
             // Add 1 because we're hopping back from 0-indexed to 1-indexed.
             return static_cast<Pos>(i + 1);
