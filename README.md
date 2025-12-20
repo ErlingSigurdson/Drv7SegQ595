@@ -20,7 +20,7 @@ as one). Driving such a display requires a number of individual signals equal to
 * 8 signals to turn ON and OFF individual segments (including a dot segment, also known as a decimal point or DP).
 * 1 to 4 signals to turn ON and OFF whole positions.
 
-WORKING HERE
+WORKING BELOW
 
 Due to significant number of required signals, output-extending devices, such as output shift registers, are commonly
 used. **74HC595**, sometimes simply called **595**, is a widely used 8-bit serial-in, parallel-out (SIPO) shift register
@@ -30,12 +30,19 @@ which is sufficient for controlling any typical 7-segment display.
 The API provided by this library allows for control over 1 to 4 character positions. The number of positions to be
 used must be specified during the driver configuration.
 
-DIDN'T GO FURTHER THAN HERE
-TODO notice there's no PCB design
+RESUME ABOVE
 
-## License
+### KiCAD project
 
-This library is licensed under the **MIT License** (see `LICENSE` [here](LICENSE)).
+This library includes a [KiCAD](https://www.kicad.org/) [project](extras/kicad/) that provides a reference schematic.
+PCB layout is not included though. The project was created in KiCAD 9.0.
+
+## Licensing
+
+* The software part of this library, as well as its documentation, is licensed under the **MIT License**
+(see `LICENSE` [here](LICENSE)).
+* All hardware-related files in this library, including illustrations, are licensed under the **CERN-OHL-P v2**
+(see `extras/kicad/LICENSE_HARDWARE` [here](extras/kicad/LICENSE_HARDWARE)).
 
 ## Links
 
