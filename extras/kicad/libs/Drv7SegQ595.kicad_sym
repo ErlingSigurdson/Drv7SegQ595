@@ -399,7 +399,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Drv7Seg2x595:SOT-23"
+		(property "Footprint" "Drv7SegQ595:SOT-23"
 			(at 5.08 -1.905 0)
 			(effects
 				(font
@@ -599,7 +599,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Drv7Seg2x595:display_7seg_4d_0.56in"
+		(property "Footprint" "Drv7SegQ595:display_7seg_4d_0.56in"
 			(at -0.508 -26.67 0)
 			(effects
 				(font
@@ -1340,7 +1340,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Drv7Seg2x595:PinHeader_1x02_P2.54mm_Horizontal"
+		(property "Footprint" "Drv7SegQ595:PinHeader_1x02_P2.54mm_Horizontal"
 			(at 1.778 -1.524 0)
 			(effects
 				(font

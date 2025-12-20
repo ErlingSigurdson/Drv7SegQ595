@@ -465,14 +465,14 @@
   },
   "libraries": {
     "pinned_footprint_libs": [
-      "Drv7Seg2x595"
+      "Drv7SegQ595"
     ],
     "pinned_symbol_libs": [
-      "Drv7Seg2x595"
+      "Drv7SegQ595"
     ]
   },
   "meta": {
-    "filename": "Drv7Seg2x595.kicad_pro",
+    "filename": "Drv7SegQ595.kicad_pro",
     "version": 3
   },
   "net_settings": {

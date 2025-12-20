@@ -6,7 +6,7 @@
 	(paper "A4")
 	(title_block
 		(date "15.12.2025")
-		(comment 1 "Documentation: github.com/ErlingSigurdson/Drv7Seg2x595")
+		(comment 1 "Documentation: github.com/ErlingSigurdson/Drv7SegQ595")
 		(comment 2 "Licensed under CERN-OHL-P v2")
 		(comment 3 "Copyright (c) 2025 Dmitriy Efimov aka Erling Sigurdson")
 	)
@@ -457,7 +457,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Drv7Seg2x595:74HC595"
+		(symbol "Drv7SegQ595:74HC595"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -827,7 +827,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Drv7Seg2x595:MMBT3904"
+		(symbol "Drv7SegQ595:MMBT3904"
 			(pin_names
 				(offset 0)
 				(hide yes)
@@ -854,7 +854,7 @@
 					(hide yes)
 				)
 			)
-			(property "Footprint" "Drv7Seg2x595:SOT-23"
+			(property "Footprint" "Drv7SegQ595:SOT-23"
 				(at 5.08 -1.905 0)
 				(effects
 					(font
@@ -1033,7 +1033,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Drv7Seg2x595:display_7seg_4d"
+		(symbol "Drv7SegQ595:display_7seg_4d"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -1054,7 +1054,7 @@
 					(hide yes)
 				)
 			)
-			(property "Footprint" "Drv7Seg2x595:display_7seg_4d_0.56in"
+			(property "Footprint" "Drv7SegQ595:display_7seg_4d_0.56in"
 				(at -0.508 -26.67 0)
 				(effects
 					(font
@@ -1771,7 +1771,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Drv7Seg2x595:pin_header_1-row_2-pin_horizontal"
+		(symbol "Drv7SegQ595:pin_header_1-row_2-pin_horizontal"
 			(pin_names
 				(offset 2.032)
 			)
@@ -1795,7 +1795,7 @@
 					(hide yes)
 				)
 			)
-			(property "Footprint" "Drv7Seg2x595:PinHeader_1x02_P2.54mm_Horizontal"
+			(property "Footprint" "Drv7SegQ595:PinHeader_1x02_P2.54mm_Horizontal"
 				(at 1.778 -1.524 0)
 				(effects
 					(font
@@ -1917,7 +1917,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Drv7Seg2x595:pin_header_1-row_5-pin_horizontal"
+		(symbol "Drv7SegQ595:pin_header_1-row_5-pin_horizontal"
 			(pin_names
 				(offset 2.032)
 			)
@@ -2190,7 +2190,7 @@
 			(pin_names
 				(offset 1.016)
 			)
-			(exclude_from_sim yes)
+			(exclude_from_sim no)
 			(in_bom no)
 			(on_board yes)
 			(property "Reference" "H"
@@ -2255,255 +2255,6 @@
 				)
 			)
 			(symbol "MountingHole_0_1"
-				(circle
-					(center 0 0)
-					(radius 1.27)
-					(stroke
-						(width 1.27)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "MountingHole_1"
-			(pin_names
-				(offset 1.016)
-			)
-			(exclude_from_sim yes)
-			(in_bom no)
-			(on_board yes)
-			(property "Reference" "H"
-				(at 0 5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "MountingHole"
-				(at 0 3.175 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Mounting Hole without connection"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "mounting hole"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "MountingHole*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "MountingHole_1_0_1"
-				(circle
-					(center 0 0)
-					(radius 1.27)
-					(stroke
-						(width 1.27)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "MountingHole_2"
-			(pin_names
-				(offset 1.016)
-			)
-			(exclude_from_sim yes)
-			(in_bom no)
-			(on_board yes)
-			(property "Reference" "H"
-				(at 0 5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "MountingHole"
-				(at 0 3.175 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Mounting Hole without connection"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "mounting hole"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "MountingHole*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "MountingHole_2_0_1"
-				(circle
-					(center 0 0)
-					(radius 1.27)
-					(stroke
-						(width 1.27)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "MountingHole_3"
-			(pin_names
-				(offset 1.016)
-			)
-			(exclude_from_sim yes)
-			(in_bom no)
-			(on_board yes)
-			(property "Reference" "H"
-				(at 0 5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "MountingHole"
-				(at 0 3.175 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Mounting Hole without connection"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "mounting hole"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "MountingHole*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "MountingHole_3_0_1"
 				(circle
 					(center 0 0)
 					(radius 1.27)
@@ -3519,7 +3270,7 @@
 		(uuid "fdda9603-961a-4628-85cf-95dd5f5c9c74")
 	)
 	(symbol
-		(lib_id "Drv7Seg2x595:74HC595")
+		(lib_id "Drv7SegQ595:74HC595")
 		(at 158.75 69.85 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -4092,7 +3843,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Drv7Seg2x595:MMBT3904")
+		(lib_id "Drv7SegQ595:MMBT3904")
 		(at 133.35 93.98 0)
 		(mirror y)
 		(unit 1)
@@ -4120,7 +3871,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Drv7Seg2x595:SOT-23"
+		(property "Footprint" "Drv7SegQ595:SOT-23"
 			(at 128.27 95.885 0)
 			(effects
 				(font
@@ -4767,7 +4518,6 @@
 		)
 	)
 	(symbol
-		(lib_name "MountingHole_3")
 		(lib_id "Mechanical:MountingHole")
 		(at 234.95 102.87 0)
 		(unit 1)
@@ -5642,7 +5392,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Drv7Seg2x595:display_7seg_4d")
+		(lib_id "Drv7SegQ595:display_7seg_4d")
 		(at 113.03 69.85 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5667,7 +5417,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Drv7Seg2x595:display_7seg_4d_0.56in"
+		(property "Footprint" "Drv7SegQ595:display_7seg_4d_0.56in"
 			(at 112.522 96.52 0)
 			(effects
 				(font
@@ -5873,7 +5623,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Drv7Seg2x595:MMBT3904")
+		(lib_id "Drv7SegQ595:MMBT3904")
 		(at 110.49 111.76 0)
 		(mirror y)
 		(unit 1)
@@ -5901,7 +5651,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Drv7Seg2x595:SOT-23"
+		(property "Footprint" "Drv7SegQ595:SOT-23"
 			(at 105.41 113.665 0)
 			(effects
 				(font
@@ -5950,7 +5700,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Drv7Seg2x595:MMBT3904")
+		(lib_id "Drv7SegQ595:MMBT3904")
 		(at 99.06 120.65 0)
 		(mirror y)
 		(unit 1)
@@ -5978,7 +5728,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Drv7Seg2x595:SOT-23"
+		(property "Footprint" "Drv7SegQ595:SOT-23"
 			(at 93.98 122.555 0)
 			(effects
 				(font
@@ -6027,7 +5777,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Drv7Seg2x595:pin_header_1-row_5-pin_horizontal")
+		(lib_id "Drv7SegQ595:pin_header_1-row_5-pin_horizontal")
 		(at 196.85 67.31 0)
 		(mirror y)
 		(unit 1)
@@ -6053,7 +5803,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Drv7Seg2x595:PinHeader_1x05_P2.54mm_Horizontal"
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Horizontal"
 			(at 196.342 80.772 0)
 			(effects
 				(font
@@ -6239,7 +5989,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Drv7Seg2x595:74HC595")
+		(lib_id "Drv7SegQ595:74HC595")
 		(at 158.75 106.68 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -6348,7 +6098,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Drv7Seg2x595:MMBT3904")
+		(lib_id "Drv7SegQ595:MMBT3904")
 		(at 121.92 102.87 0)
 		(mirror y)
 		(unit 1)
@@ -6376,7 +6126,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Drv7Seg2x595:SOT-23"
+		(property "Footprint" "Drv7SegQ595:SOT-23"
 			(at 116.84 104.775 0)
 			(effects
 				(font
@@ -6625,7 +6375,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Drv7Seg2x595:pin_header_1-row_2-pin_horizontal")
+		(lib_id "Drv7SegQ595:pin_header_1-row_2-pin_horizontal")
 		(at 196.85 115.57 0)
 		(mirror y)
 		(unit 1)
@@ -6636,11 +6386,12 @@
 		(fields_autoplaced yes)
 		(uuid "e9461244-c111-48e6-bceb-59b1bb5dbe83")
 		(property "Reference" "J2"
-			(at 196.215 102.87 0)
+			(at 198.12 106.6799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify right)
 			)
 		)
 		(property "Value" "PWR_LED_JMP"
@@ -6652,7 +6403,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Drv7Seg2x595:PinHeader_1x02_P2.54mm_Horizontal"
+		(property "Footprint" "Drv7SegQ595:PinHeader_1x02_P2.54mm_Horizontal"
 			(at 195.072 117.094 0)
 			(effects
 				(font
@@ -6892,7 +6643,6 @@
 		)
 	)
 	(symbol
-		(lib_name "MountingHole_2")
 		(lib_id "Mechanical:MountingHole")
 		(at 234.95 90.17 0)
 		(unit 1)
@@ -6957,7 +6707,6 @@
 		)
 	)
 	(symbol
-		(lib_name "MountingHole_1")
 		(lib_id "Mechanical:MountingHole")
 		(at 234.95 109.22 0)
 		(unit 1)

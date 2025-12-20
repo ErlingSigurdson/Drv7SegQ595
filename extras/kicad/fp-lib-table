@@ -1,4 +1,4 @@
 (fp_lib_table
   (version 7)
-  (lib (name "Drv7Seg2x595")(type "KiCad")(uri "${KIPRJMOD}/libs/Drv7Seg2x595.pretty")(options "")(descr ""))
+  (lib (name "Drv7SegQ595")(type "KiCad")(uri "${KIPRJMOD}/libs/Drv7SegQ595.pretty")(options "")(descr ""))
 )
