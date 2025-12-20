@@ -38,7 +38,7 @@
 #include <SegMap595.h>
 
 
-/*--- Drv7Seg2x595 library API parameters ---*/
+/*--- Drv7SegQ595 library API parameters ---*/
 
 /* Specify the data transfer approach. Use one variant, comment out or delete the others.
  *
