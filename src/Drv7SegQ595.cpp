@@ -360,13 +360,14 @@ int32_t Drv7SegQ595Class::begin_helper(int32_t variant,
     pinMode(_latch_pin, OUTPUT);
 
     _pos_pins[0] = pos_1_pin;
-    pinMode(_pos_pins[0], OUTPUT);
     _pos_pins[1] = pos_2_pin;
-    pinMode(_pos_pins[1], OUTPUT);
     _pos_pins[2] = pos_3_pin;
-    pinMode(_pos_pins[2], OUTPUT);
     _pos_pins[3] = pos_4_pin;
-    pinMode(_pos_pins[3], OUTPUT);
+    for (size_t i = 0; i < DRV7SEGQ595_POS_MAX; ++i) {
+        if (_pos_pins[i] > DRV7SEGQ595_POS_PIN_INITIAL) {
+            pinMode(_pos_pins[i], OUTPUT);
+        }
+    }
 
     /* Reset the variables related to the anti-ghosting logic
      * (useful if the driver gets reconfigured mid-use).
