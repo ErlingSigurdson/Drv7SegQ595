@@ -98,7 +98,7 @@
 #define POS_4_PIN 9
 
 // (optional) Set a non-default anti-ghosting retention duration value (in microseconds).
-#define ANTI_GHOSTING_RETENTION_DURATION 600
+#define ANTI_GHOSTING_RETENTION_DURATION 1000
 
 
 /*--- SegMap595 library API parameters ---*/
@@ -216,8 +216,10 @@ void setup()
         }
     }
 
-    // If necessary, you can override the default anti-ghosting retention duration (300 microseconds).
+    // (optional) Override the default anti-ghosting retention duration value.
+    #ifdef ANTI_GHOSTING_RETENTION_DURATION
     Drv7Seg.set_anti_ghosting_retention_duration(ANTI_GHOSTING_RETENTION_DURATION);
+    #endif
 }
 
 void loop()

@@ -31,10 +31,6 @@ controlling any typical 7-segment display.
 The API provided by this library allows for control over 1 to 4 character positions. The number of positions to be
 used must be specified during the driver configuration.
 
-
-
-
-
 ### KiCAD project
 
 This library includes a [KiCAD](https://www.kicad.org/) [project](extras/kicad/) that provides a reference schematic.
