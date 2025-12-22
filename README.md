@@ -23,7 +23,7 @@ as one). Driving such a display requires a number of individual signals equal to
 Due to significant number of required signals, output-extending devices, such as output shift registers, are commonly
 used. **74HC595**, sometimes simply called **595**, is a widely used 8-bit serial-in, parallel-out (SIPO) shift register
 integrated circuit (IC) commonly employed to drive 7-segment displays. A single 595 provides an 8-bit shift register,
-which is sufficient to hold a segment pattern corresponding to a glyph. The register's 8 bits are reffered to as
+which is sufficient to hold a segment pattern corresponding to a glyph. The register's 8 bits are referred to as
 **segment byte** or **`seg_byte`**.
 
 Another 1 to 4 signals come from a set of GPIO-driven transistors. Combined with the shift register, it is sufficient
@@ -89,12 +89,12 @@ roles.
 
 ### Notes on the reference schematic
 
-* Power your 595s with the same voltage your MC runs on.
+* Power your 595 with the same voltage your MC runs on.
 * Transistors Q1..Q4 are intended to be general-purpose NPN BJTs such as MMBT3904 (assumed by the reference PCB design,
 see below), 2N3904, 2N4401, 2N2222, or BC548. You can even use a [KT315](https://ru.wikipedia.org/wiki/%D0%9A%D0%A2315),
 comrade.
 * If the display segment LEDs are too bright, or if you notice visible brightness changes when the DP blinks, increase
-the R0..R7 resistor values to around 470-680 Ω. This is especially advisable if your 595s are powered from a 5 V supply.
+the R0..R7 resistor values to around 470-680 Ω. This is especially advisable if your 595 is powered from a 5 V supply.
 
 ## API usage
 
@@ -274,7 +274,7 @@ Refer to `Drv7SegQ595.h` for more API details.
 ## Special cases
 
 * **Multiple drivers**. You can create additional instances of `Drv7SegQ595Class` and use them for driving multiple
-displays, but it is adviced not to employ SPI by more than one instance at a time.
+displays, but you shouldn't employ SPI by more than one instance at a time.
 
 * **Single-digit displays**. With a single-position display there's usually no purpose in a switchable signal that
 turns the only character position ON and OFF (all control job can be done by `seg_byte` alone), nor there's a need for
