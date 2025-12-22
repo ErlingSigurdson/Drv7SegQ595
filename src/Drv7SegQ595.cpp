@@ -228,7 +228,9 @@ int32_t Drv7SegQ595Class::output(uint8_t seg_byte,
     /*--- Switching the position control pins ---*/
 
     for (size_t i = 0; i < DRV7SEGQ595_POS_MAX; ++i) {
-        digitalWrite(_pos_pins[i], !active);
+        if (_pos_pins[i] > DRV7SEGQ595_POS_PIN_INITIAL) {
+            digitalWrite(_pos_pins[i], !active);
+        }
     }
 
 
