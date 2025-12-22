@@ -1,7 +1,7 @@
 # Overview
 
 **Drv7SegQ595** is a single-class Arduino library for driving a multiplexed 7-segment display using
-a single 74HC595 shift register and a set of transistors.
+a single 74HC595 shift register IC and a set of GPIO-driven transistors.
 
 ## Parent project
 
@@ -22,11 +22,11 @@ as one). Driving such a display requires a number of individual signals equal to
 
 Due to significant number of required signals, output-extending devices, such as output shift registers, are commonly
 used. **74HC595**, sometimes simply called **595**, is a widely used 8-bit serial-in, parallel-out (SIPO) shift register
-integrated circuit (IC) commonly employed to drive 7-segment displays. A single 595 provies an 8-bit shift register,
+integrated circuit (IC) commonly employed to drive 7-segment displays. A single 595 provides an 8-bit shift register,
 which is sufficient to hold a segment pattern corresponding to a glyph.
 
-Another 1 to 4 signals come from a set of GPIO-driven transistors. Combined with a shift register, it is sufficient for
-controlling any typical 7-segment display.
+Another 1 to 4 signals come from a set of GPIO-driven transistors. Combined with the shift register, it is sufficient
+for controlling any typical 7-segment display.
 
 The API provided by this library allows for control over 1 to 4 character positions. The number of positions to be
 used must be specified during the driver configuration.
