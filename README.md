@@ -29,7 +29,7 @@ which is sufficient to hold a segment pattern corresponding to a glyph. The regi
 Another 1 to 4 signals come from a set of GPIO-driven transistors. Combined with the shift register, it is sufficient
 for controlling any typical 7-segment display.
 
-The API provided by this library allows for control over 1 to 4 character positions. The number of positions to be
+The API provided by this library allows for control over 1 to 4 character positions. The number of ns to be
 used must be specified during the driver configuration.
 
 ## Multiplexing
@@ -84,7 +84,7 @@ Wiring for a common-anode display is almost identical, the only difference being
 should connect to the display's common pins and their collectors should connect to the circuit's positive rail (VCC).
 
 The wiring in your circuit **may** differ from the provided schematic to some degree, and the library will still be
-applicable as long as your circuit complies with the premise of the `seg_byte` and the transistor control GPIO distinct
+applicable as long as your circuit complies with the premise of the `seg_byte` and the position-control pins' distinct
 roles.
 
 ### Notes on the reference schematic
@@ -134,7 +134,7 @@ Drv7Seg.begin_bb(Drv7SegActiveHigh,  // Other option is Drv7SegActiveLow.
                   * Pin numbers must correspond to the pin numbering specified
                   * by the Arduino core you're using.
                   *
-                  * The first one of these arguments (1st position pin) is required.
+                  * The first one of these arguments (1st position-control pin) is required.
                   * Subsequent arguments are optional.
                   * The driver will be configured to control the number of positions
                   * equal to the number of arguments that weren't omitted.
@@ -279,16 +279,16 @@ displays, but you shouldn't employ SPI by more than one instance at a time.
 * **Single-digit displays**. With a single-position display there's usually no purpose in a switchable signal that
 turns the only character position ON and OFF (all control job can be done by `seg_byte` alone), nor there's a need for
 multiplexing. Still, you can use this library to control a single-digit display in a pinch. You can either:
-    - assign a single position control pin during the driver configuration and use that pin to control your only
+    - assign a single position-control pin during the driver configuration and use that pin to control your only
 position (in this case the multiplexing logic will still be applied, but the single position will always be the one
 to be turned on next);
-    - ignore the position control pins completely and power your display directly by connecting it to GND or VCC,
-according to the display type. You will still have to pass a single position control pin argument during the driver
+    - ignore the position-control pins completely and power your display directly by connecting it to GND or VCC,
+according to the display type. You will still have to pass a single position-control pin argument during the driver
 configuration to comply with the library logic, but its particular value becomes mostly irrelevant (pick any GPIO
-available for driving).
+pin available for driving).
 
 * **Ignoring certain digits**. If you, for instance, have a 4-position display and for some reason you want to use
-only positions 2 and 3, it's completely OK, you can do that using this library. Pass two position control pins during
+only positions 2 and 3, it's completely OK, you can do that using this library. Pass two position-control pins during
 the driver configuration: one for the 2nd physical position (it'll correspond to `Drv7SegPos1` within the library logic)
 and another one for the 3rd physical position (it'll correspond to `Drv7SegPos2` within the library logic).
 
